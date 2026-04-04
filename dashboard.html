@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Impulso Operations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #050508; --surface: #0d0d14; --card: #111118;
+      --border: rgba(255,255,255,0.06); --purple: #7c3aed;
+      --purple-light: #a855f7; --gold: #f59e0b;
+      --white: #ffffff; --gray: #6b7280; --light: #e5e7eb;
+      --green: #10b981; --red: #ef4444; --blue: #3b82f6;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; }
+
+    /* CURSOR */
+    .cursor { width:10px;height:10px;background:var(--purple-light);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform .1s;mix-blend-mode:screen; }
+    .cursor-ring { width:36px;height:36px;border:1.5px solid rgba(168,85,247,.5);border-radius:50%;position:fixed;pointer-events:none;z-index:9998; }
+
+    /* SIDEBAR */
+    .sidebar { position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50;transition:transform .3s; }
+    .sidebar-logo { padding:1.5rem;border-bottom:1px solid var(--border); }
+    .sidebar-logo a { font-size:1.15rem;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--white); }
+    .sidebar-logo .dot { color:var(--gold); }
+    .sidebar-nav { flex:1;padding:1.2rem 0;overflow-y:auto; }
+    .nav-section { padding:.5rem 1.2rem .2rem;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-top:.5rem; }
+    .nav-item { display:flex;align-items:center;gap:.75rem;padding:.7rem 1.2rem;color:var(--gray);text-decoration:none;font-size:.875rem;font-weight:500;transition:all .2s;border-radius:0;cursor:pointer;border:none;background:none;width:100%;font-family:inherit; }
+    .nav-item:hover, .nav-item.active { color:var(--white);background:rgba(124,58,237,.1); }
+    .nav-item.active { border-right:2px solid var(--purple-light); }
+    .nav-item .icon { width:18px;text-align:center;font-style:normal; }
+    .sidebar-footer { padding:1.2rem;border-top:1px solid var(--border); }
+    .user-mini { display:flex;align-items:center;gap:.75rem;margin-bottom:.8rem; }
+    .avatar { width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple-light));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0; }
+    .user-mini-info { flex:1;min-width:0; }
+    .user-mini-name { font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .user-mini-plan { font-size:.7rem;color:var(--gray); }
+    .logout-btn { width:100%;padding:.6rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;color:#fca5a5;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s; }
+    .logout-btn:hover { background:rgba(239,68,68,.15); }
+
+    /* MAIN */
+    .main { margin-left:240px;min-height:100vh;display:flex;flex-direction:column; }
+    .topbar { padding:1.2rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,8,.7);backdrop-filter:blur(20px);position:sticky;top:0;z-index:40; }
+    .topbar-title { font-size:1.1rem;font-weight:700;letter-spacing:-.3px; }
+    .topbar-right { display:flex;align-items:center;gap:1rem; }
+    .status-dot { width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(16,185,129,.6); }
+    .status-label { font-size:.8rem;color:var(--gray); }
+    .menu-toggle { display:none;background:none;border:none;color:var(--white);font-size:1.4rem;cursor:pointer;padding:.25rem; }
+
+    .content { flex:1;padding:2rem; }
+
+    /* VERIFY BANNER */
+    .verify-banner { background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem; }
+    .verify-banner p { font-size:.875rem;color:#fcd34d;flex:1; }
+    .verify-banner button { background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.4);border-radius:6px;color:#fcd34d;padding:.4rem .8rem;font-size:.8rem;cursor:pointer;font-family:inherit;white-space:nowrap; }
+
+    /* WELCOME */
+    .welcome { margin-bottom:2rem; }
+    .welcome h1 { font-size:1.8rem;font-weight:800;letter-spacing:-1px;margin-bottom:.3rem; }
+    .welcome p { color:var(--gray);font-size:.9rem; }
+    .gradient-text { background:linear-gradient(135deg,var(--purple-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+
+    /* STATS */
+    .stats-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem; }
+    .stat-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;transition:all .3s; }
+    .stat-card:hover { border-color:rgba(168,85,247,.2);transform:translateY(-2px); }
+    .stat-label { font-size:.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem; }
+    .stat-val { font-size:1.8rem;font-weight:800;letter-spacing:-1px; }
+    .stat-sub { font-size:.75rem;color:var(--gray);margin-top:.25rem; }
+    .stat-badge { display:inline-block;background:rgba(16,185,129,.15);color:#6ee7b7;font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:20px;margin-top:.3rem; }
+    .stat-badge.pending { background:rgba(245,158,11,.15);color:#fcd34d; }
+
+    /* SECTIONS */
+    .section-title { font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem; }
+
+    /* FEATURE CARDS */
+    .feature-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem; }
+    .feature-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;transition:all .3s;cursor:pointer; }
+    .feature-card:hover { border-color:rgba(168,85,247,.3);background:rgba(124,58,237,.05);transform:translateY(-2px); }
+    .fc-icon { font-size:1.6rem;margin-bottom:.8rem; }
+    .fc-title { font-size:.95rem;font-weight:700;margin-bottom:.35rem; }
+    .fc-desc { font-size:.8rem;color:var(--gray);line-height:1.5; }
+    .fc-badge { display:inline-block;font-size:.7rem;font-weight:600;padding:.2rem .6rem;border-radius:20px;margin-top:.6rem; }
+    .fc-badge.live { background:rgba(16,185,129,.15);color:#6ee7b7; }
+    .fc-badge.soon { background:rgba(107,114,128,.15);color:var(--gray); }
+    .fc-badge.pending { background:rgba(245,158,11,.15);color:#fcd34d; }
+
+    /* ACTIVITY */
+    .activity-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:2rem; }
+    .activity-empty { text-align:center;padding:2rem;color:var(--gray);font-size:.875rem; }
+    .activity-empty .ae-icon { font-size:2.5rem;margin-bottom:.75rem; }
+
+    /* PLAN CARD */
+    .plan-card { background:var(--card);border:1px solid rgba(168,85,247,.3);border-radius:14px;padding:1.4rem;position:relative;overflow:hidden;margin-bottom:2rem; }
+    .plan-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple-light),var(--gold)); }
+    .plan-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem; }
+    .plan-name { font-size:1rem;font-weight:700; }
+    .plan-status { font-size:.75rem;font-weight:600;padding:.25rem .7rem;border-radius:20px;background:rgba(245,158,11,.15);color:#fcd34d; }
+    .plan-status.active { background:rgba(16,185,129,.15);color:#6ee7b7; }
+    .plan-cta { display:inline-block;margin-top:1rem;padding:.7rem 1.4rem;background:linear-gradient(135deg,var(--purple),var(--purple-light));border-radius:8px;color:white;font-size:.85rem;font-weight:700;text-decoration:none;transition:all .3s; }
+    .plan-cta:hover { box-shadow:0 4px 16px rgba(124,58,237,.4);transform:translateY(-1px); }
+
+    /* SUPPORT */
+    .support-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem; }
+    .support-card p { color:var(--gray);font-size:.875rem;line-height:1.6;margin-bottom:1rem; }
+    .support-links { display:flex;gap:.75rem;flex-wrap:wrap; }
+    .support-link { display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1rem;border:1px solid var(--border);border-radius:8px;color:var(--light);text-decoration:none;font-size:.82rem;font-weight:500;transition:all .2s; }
+    .support-link:hover { border-color:rgba(168,85,247,.4);color:var(--purple-light); }
+
+    /* TOAST */
+    .toast { position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.4rem;font-size:.875rem;font-weight:500;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:9999;max-width:320px; }
+    .toast.show { transform:translateY(0);opacity:1; }
+    .toast.success { border-color:rgba(16,185,129,.3);color:#6ee7b7; }
+    .toast.error { border-color:rgba(239,68,68,.3);color:#fca5a5; }
+
+    /* LOADING */
+    #loadingScreen { position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:1rem; }
+    .load-logo { font-size:1.4rem;font-weight:800;letter-spacing:-.5px; }
+    .load-logo .dot { color:var(--gold); }
+    .load-bar { width:120px;height:2px;background:var(--border);border-radius:2px;overflow:hidden; }
+    .load-fill { height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:2px;animation:load 1.2s ease forwards; }
+    @keyframes load { from { width:0 } to { width:100% } }
+
+    /* RESPONSIVE */
+    @media(max-width:900px) {
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+      .feature-grid { grid-template-columns:repeat(2,1fr); }
+    }
+    @media(max-width:640px) {
+      .sidebar { transform:translateX(-100%); }
+      .sidebar.open { transform:translateX(0); }
+      .main { margin-left:0; }
+      .menu-toggle { display:block; }
+      .stats-grid { grid-template-columns:1fr 1fr; }
+      .feature-grid { grid-template-columns:1fr; }
+      .content { padding:1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="loadingScreen">
+  <p class="load-logo">IMPULSO<span class="dot">.</span></p>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <a href="index.html">IMPULSO<span class="dot">.</span></a>
+  </div>
+  <nav class="sidebar-nav">
+    <p class="nav-section">Overview</p>
+    <button class="nav-item active" onclick="showSection('overview')"><i class="icon">📊</i> Dashboard</button>
+    <button class="nav-item" onclick="showSection('pipeline')"><i class="icon">🎯</i> Lead Pipeline</button>
+    <button class="nav-item" onclick="showSection('reports')"><i class="icon">📈</i> Reports</button>
+
+    <p class="nav-section">Tools</p>
+    <button class="nav-item" onclick="showSection('ai')"><i class="icon">🤖</i> AI Command Center</button>
+    <button class="nav-item" onclick="showSection('content')"><i class="icon">✍️</i> Content Generator</button>
+
+    <p class="nav-section">Account</p>
+    <button class="nav-item" onclick="showSection('billing')"><i class="icon">💳</i> Billing</button>
+    <button class="nav-item" onclick="showSection('profile')"><i class="icon">👤</i> Profile</button>
+    <button class="nav-item" onclick="showSection('support')"><i class="icon">📞</i> Support</button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-mini">
+      <div class="avatar" id="avatarInitials">?</div>
+      <div class="user-mini-info">
+        <div class="user-mini-name" id="sidebarName">Loading...</div>
+        <div class="user-mini-plan" id="sidebarPlan">Pending activation</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="handleLogout()">Sign Out</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <header class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      <span class="topbar-title" id="topbarTitle">Dashboard</span>
+    </div>
+    <div class="topbar-right">
+      <div class="status-dot"></div>
+      <span class="status-label">System Online</span>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- VERIFY EMAIL BANNER -->
+    <div class="verify-banner" id="verifyBanner" style="display:none;">
+      <span>⚠️</span>
+      <p>Please verify your email address to unlock full access. Check your inbox for the verification link.</p>
+      <button onclick="resendVerify()">Resend email</button>
+    </div>
+
+    <!-- OVERVIEW SECTION -->
+    <div id="section-overview">
+      <div class="welcome">
+        <h1>Welcome back, <span class="gradient-text" id="welcomeName">there</span> 👋</h1>
+        <p id="welcomeSub">Here's a live snapshot of your Impulso system.</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Leads Generated</div>
+          <div class="stat-val" id="statLeads">—</div>
+          <div class="stat-sub">All-time pipeline entries</div>
+          <span class="stat-badge pending">Activating</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Outreach Sent</div>
+          <div class="stat-val" id="statOutreach">—</div>
+          <div class="stat-sub">Emails + SMS combined</div>
+          <span class="stat-badge pending">Activating</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Calls Booked</div>
+          <div class="stat-val" id="statCalls">—</div>
+          <div class="stat-sub">Discovery calls scheduled</div>
+          <span class="stat-badge pending">Activating</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Revenue Automated</div>
+          <div class="stat-val" id="statRev">—</div>
+          <div class="stat-sub">Tracked from your pipeline</div>
+          <span class="stat-badge pending">Activating</span>
+        </div>
+      </div>
+
+      <!-- PLAN -->
+      <div class="plan-card" id="planCard">
+        <div class="plan-header">
+          <span class="plan-name" id="planName">Plan</span>
+          <span class="plan-status" id="planStatus">Pending</span>
+        </div>
+        <p style="color:var(--gray);font-size:.875rem;line-height:1.6;">Your account is set up. Our team will activate your plan within 24 hours of your payment confirmation. Once active, your live data will appear here.</p>
+        <a href="index.html#packages" class="plan-cta">View Plans →</a>
+      </div>
+
+      <!-- FEATURES -->
+      <p class="section-title">🛠 Your Tools</p>
+      <div class="feature-grid">
+        <div class="feature-card" onclick="showSection('pipeline')">
+          <div class="fc-icon">🎯</div>
+          <div class="fc-title">Lead Pipeline</div>
+          <div class="fc-desc">View, score, and manage every lead your AI system has found for your business.</div>
+          <span class="fc-badge pending">Activating soon</span>
+        </div>
+        <div class="feature-card" onclick="showSection('ai')">
+          <div class="fc-icon">🤖</div>
+          <div class="fc-title">AI Command Center</div>
+          <div class="fc-desc">Access 52 AI-powered commands: lead hunt, outreach, content, reports, and more.</div>
+          <span class="fc-badge pending">Activating soon</span>
+        </div>
+        <div class="feature-card" onclick="showSection('reports')">
+          <div class="fc-icon">📈</div>
+          <div class="fc-title">Monthly Reports</div>
+          <div class="fc-desc">Full breakdown of leads generated, emails sent, calls booked, and revenue tracked.</div>
+          <span class="fc-badge pending">Activating soon</span>
+        </div>
+        <div class="feature-card" onclick="showSection('content')">
+          <div class="fc-icon">✍️</div>
+          <div class="fc-title">Content Generator</div>
+          <div class="fc-desc">AI-written posts, emails, and ads tailored to your business and niche.</div>
+          <span class="fc-badge soon">Coming soon</span>
+        </div>
+        <div class="feature-card" onclick="showSection('billing')">
+          <div class="fc-icon">💳</div>
+          <div class="fc-title">Billing & Invoices</div>
+          <div class="fc-desc">Manage your subscription, view invoices, and update payment methods.</div>
+          <span class="fc-badge live">Available</span>
+        </div>
+        <div class="feature-card" onclick="showSection('support')">
+          <div class="fc-icon">📞</div>
+          <div class="fc-title">Direct Support</div>
+          <div class="fc-desc">Reach your dedicated account manager. Response guaranteed within 24 hours.</div>
+          <span class="fc-badge live">Available</span>
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <p class="section-title">🕐 Recent Activity</p>
+      <div class="activity-card">
+        <div class="activity-empty">
+          <div class="ae-icon">🚀</div>
+          <p>Your activity will appear here once your system is activated.<br>Our team will be in touch within 24 hours.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIPELINE -->
+    <div id="section-pipeline" style="display:none;">
+      <div class="welcome"><h1>Lead <span class="gradient-text">Pipeline</span></h1><p>Your live lead tracking system.</p></div>
+      <div class="activity-card"><div class="activity-empty"><div class="ae-icon">🎯</div><p>Your lead pipeline will appear here once your account is activated.<br>Leads are generated 24/7 by your AI system.</p></div></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div id="section-reports" style="display:none;">
+      <div class="welcome"><h1>Monthly <span class="gradient-text">Reports</span></h1><p>Full performance breakdowns.</p></div>
+      <div class="activity-card"><div class="activity-empty"><div class="ae-icon">📈</div><p>Reports generate automatically at the end of each month.<br>Your first report will appear after your system goes live.</p></div></div>
+    </div>
+
+    <!-- AI COMMANDS -->
+    <div id="section-ai" style="display:none;">
+      <div class="welcome"><h1>AI <span class="gradient-text">Command Center</span></h1><p>52 AI-powered commands at your fingertips.</p></div>
+      <div class="activity-card"><div class="activity-empty"><div class="ae-icon">🤖</div><p>Your AI command center is being configured.<br>You'll have access to all 52 commands once your account is activated.</p></div></div>
+    </div>
+
+    <!-- CONTENT -->
+    <div id="section-content" style="display:none;">
+      <div class="welcome"><h1>Content <span class="gradient-text">Generator</span></h1><p>AI-written content for your business.</p></div>
+      <div class="activity-card"><div class="activity-empty"><div class="ae-icon">✍️</div><p>Content generation tools are coming soon.<br>This feature will be available in Q2 2026.</p></div></div>
+    </div>
+
+    <!-- BILLING -->
+    <div id="section-billing" style="display:none;">
+      <div class="welcome"><h1>Billing & <span class="gradient-text">Invoices</span></h1><p>Manage your subscription.</p></div>
+      <div class="plan-card">
+        <div class="plan-header">
+          <span class="plan-name">Current Plan</span>
+          <span class="plan-status" id="billingPlanStatus">Pending Activation</span>
+        </div>
+        <p style="color:var(--gray);font-size:.875rem;line-height:1.6;margin-bottom:1rem;">Once your plan is active, billing details and invoice history will appear here. For immediate billing questions, contact us directly.</p>
+        <div class="support-links">
+          <a href="mailto:impulsoogrowth@gmail.com" class="support-link">📧 Email billing support</a>
+          <a href="index.html#packages" class="support-link">💳 View payment options</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="section-profile" style="display:none;">
+      <div class="welcome"><h1>Your <span class="gradient-text">Profile</span></h1><p>Account details and settings.</p></div>
+      <div class="plan-card">
+        <p class="section-title" style="margin-bottom:1.2rem;">Account Info</p>
+        <div style="display:grid;gap:.8rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.85rem;">Name</span>
+            <span style="font-size:.875rem;font-weight:600;" id="profileName">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.85rem;">Email</span>
+            <span style="font-size:.875rem;font-weight:600;" id="profileEmail">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.85rem;">Business</span>
+            <span style="font-size:.875rem;font-weight:600;" id="profileBiz">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.85rem;">Member since</span>
+            <span style="font-size:.875rem;font-weight:600;" id="profileJoined">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div id="section-support" style="display:none;">
+      <div class="welcome"><h1>Direct <span class="gradient-text">Support</span></h1><p>We're here to help — fast.</p></div>
+      <div class="support-card">
+        <p>Your dedicated account manager is available Monday–Friday, 9am–6pm ET. All messages are responded to within 24 hours, guaranteed.</p>
+        <div class="support-links">
+          <a href="mailto:impulsoogrowth@gmail.com" class="support-link">📧 Email support</a>
+          <a href="tel:7865677337" class="support-link">📱 786-567-7337</a>
+          <a href="https://calendly.com/impulsoogrowth" target="_blank" class="support-link">📅 Book a call</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ============================================================
+// FIREBASE CONFIG — Replace with your Firebase project values
+// Get from: console.firebase.google.com → Project Settings → Your apps
+// ============================================================
+const firebaseConfig = {
+  apiKey: "REPLACE_WITH_YOUR_API_KEY",
+  authDomain: "REPLACE_WITH_YOUR_PROJECT.firebaseapp.com",
+  projectId: "REPLACE_WITH_YOUR_PROJECT_ID",
+  storageBucket: "REPLACE_WITH_YOUR_PROJECT.appspot.com",
+  messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",
+  appId: "REPLACE_WITH_YOUR_APP_ID"
+};
+
+let auth, db;
+try {
+  firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db = firebase.firestore();
+} catch(e) {
+  console.warn('Firebase not configured');
+}
+
+// Auth guard
+if (auth) {
+  auth.onAuthStateChanged(async user => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    document.getElementById('loadingScreen').style.opacity = '0';
+    setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 400);
+
+    // Show unverified banner if needed
+    if (!user.emailVerified) {
+      document.getElementById('verifyBanner').style.display = 'flex';
+    }
+
+    // Set name
+    const name = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+    document.getElementById('welcomeName').textContent = name;
+    document.getElementById('sidebarName').textContent = user.displayName || user.email;
+    document.getElementById('avatarInitials').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('profileName').textContent = user.displayName || '—';
+    document.getElementById('profileEmail').textContent = user.email;
+    document.getElementById('profileJoined').textContent = user.metadata.creationTime
+      ? new Date(user.metadata.creationTime).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+      : '—';
+
+    // Load Firestore profile
+    if (db) {
+      try {
+        const doc = await db.collection('users').doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          const plan = data.plan || 'pending';
+          const biz = data.businessName || '—';
+          document.getElementById('profileBiz').textContent = biz;
+          document.getElementById('sidebarPlan').textContent =
+            plan === 'pending' ? 'Pending activation' :
+            plan === 'coaching' ? 'Coaching Plan' :
+            plan === 'dwy' ? 'Done-With-You' :
+            plan === 'dfy' ? 'Done-For-You' : plan;
+          document.getElementById('planName').textContent =
+            plan === 'pending' ? 'No Active Plan' :
+            plan === 'coaching' ? 'Coaching' :
+            plan === 'dwy' ? 'Done-With-You' :
+            plan === 'dfy' ? 'Done-For-You' : plan;
+          const isActive = plan !== 'pending';
+          document.getElementById('planStatus').textContent = isActive ? 'Active' : 'Pending Activation';
+          document.getElementById('planStatus').className = 'plan-status' + (isActive ? ' active' : '');
+          document.getElementById('billingPlanStatus').textContent = isActive ? 'Active' : 'Pending Activation';
+          document.getElementById('billingPlanStatus').className = 'plan-status' + (isActive ? ' active' : '');
+          if (isActive) {
+            document.getElementById('statLeads').textContent = data.leads || '0';
+            document.getElementById('statOutreach').textContent = data.outreach || '0';
+            document.getElementById('statCalls').textContent = data.calls || '0';
+            document.getElementById('statRev').textContent = data.revenue ? '$' + data.revenue : '$0';
+          }
+          document.getElementById('welcomeSub').textContent = biz !== '—'
+            ? `Here's a live snapshot of your Impulso system for ${biz}.`
+            : `Here's a live snapshot of your Impulso system.`;
+        }
+      } catch(e) { console.warn('Could not load profile', e); }
+    }
+  });
+} else {
+  // Firebase not configured — show demo mode
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('welcomeName').textContent = 'there';
+  showToast('Firebase not configured. Running in demo mode.', '');
+}
+
+async function handleLogout() {
+  if (auth) { await auth.signOut(); }
+  window.location.href = 'login.html';
+}
+
+async function resendVerify() {
+  if (auth && auth.currentUser) {
+    try {
+      await auth.currentUser.sendEmailVerification({ url: 'https://impulso-operations.com/login.html' });
+      showToast('Verification email resent!', 'success');
+    } catch(e) { showToast('Could not resend. Try again in a minute.', 'error'); }
+  }
+}
+
+// Section nav
+const sections = ['overview','pipeline','reports','ai','content','billing','profile','support'];
+const navItems = document.querySelectorAll('.nav-item');
+function showSection(id) {
+  sections.forEach(s => {
+    const el = document.getElementById('section-' + s);
+    if (el) el.style.display = s === id ? 'block' : 'none';
+  });
+  navItems.forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase().includes(
+      id === 'overview' ? 'dashboard' : id === 'ai' ? 'ai command' : id
+    ));
+  });
+  const titles = { overview:'Dashboard', pipeline:'Lead Pipeline', reports:'Reports',
+    ai:'AI Command Center', content:'Content Generator', billing:'Billing', profile:'Profile', support:'Support' };
+  document.getElementById('topbarTitle').textContent = titles[id] || 'Dashboard';
+  // Close sidebar on mobile
+  if (window.innerWidth < 640) document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX - 5 + 'px';
+  cursor.style.top = e.clientY - 5 + 'px';
+  rx += (e.clientX - 18 - rx) * 0.12;
+  ry += (e.clientY - 18 - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(() => {});
+});
+if (window.innerWidth < 768) { cursor.style.display='none'; ring.style.display='none'; }
+</script>
+</body>
+</html>

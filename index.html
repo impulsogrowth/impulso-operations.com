@@ -251,7 +251,7 @@
     <li><a href="#faq">FAQ</a></li>
   </ul>
   <div class="nav-right">
-    <a href="#portal" class="btn-login">Log In</a>
+    <a href="login.html" class="btn-login">Log In</a>
     <a href="#packages" class="nav-cta">Get Started →</a>
   </div>
   <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
@@ -260,7 +260,7 @@
 <div class="mobile-menu" id="mobileMenu">
   <a href="#how" class="mobile-link">How it Works</a>
   <a href="#packages" class="mobile-link">Packages</a>
-  <a href="#portal" class="mobile-link">Client Portal</a>
+  <a href="login.html" class="mobile-link">Client Portal</a>
   <a href="#faq" class="mobile-link">FAQ</a>
   <a href="#packages" class="mobile-cta mobile-link">Get Started →</a>
 </div>
@@ -423,24 +423,10 @@
     </div>
     <div class="portal-card">
       <h3>Access Your Portal</h3>
-      <p>Log in or create your account to get started.</p>
-      <div class="form-tabs">
-        <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
-        <button class="tab-btn" onclick="switchTab('signup')">Create Account</button>
-      </div>
-      <div class="form-panel active" id="login-panel">
-        <div class="form-group"><input type="email" placeholder="Email address" id="login-email" /></div>
-        <div class="form-group"><input type="password" placeholder="Password" id="login-pass" /></div>
-        <button class="portal-submit" onclick="handleLogin()">Log In →</button>
-      </div>
-      <div class="form-panel" id="signup-panel">
-        <div class="form-group"><input type="text" placeholder="Your name" id="signup-name" /></div>
-        <div class="form-group"><input type="email" placeholder="Email address" id="signup-email" /></div>
-        <div class="form-group"><input type="text" placeholder="Business name" id="signup-biz" /></div>
-        <div class="form-group"><input type="password" placeholder="Create a password" id="signup-pass" /></div>
-        <button class="portal-submit" onclick="handleSignup()">Create Account →</button>
-      </div>
-      <p class="portal-note">Already a client? <a href="mailto:impulsoogrowth@gmail.com">Contact us</a> to activate your account.</p>
+      <p>Log in or create your client account to access your AI pipeline dashboard, reports, and tools.</p>
+      <a href="login.html" class="portal-submit" style="display:block;text-align:center;text-decoration:none;margin-bottom:.75rem;">Log In →</a>
+      <a href="signup.html" class="portal-submit" style="display:block;text-align:center;text-decoration:none;background:transparent;border:1px solid rgba(168,85,247,.4);color:var(--purple-light);">Create Account</a>
+      <p class="portal-note" style="margin-top:1.2rem;">Already a client? <a href="mailto:impulsoogrowth@gmail.com">Contact us</a> to activate your account.</p>
     </div>
   </div>
 </section>
