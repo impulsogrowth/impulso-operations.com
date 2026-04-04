@@ -418,6 +418,7 @@ if (auth) {
       window.location.href = 'login.html';
       return;
     }
+    // Allow unverified users in — show banner instead of blocking
 
     document.getElementById('loadingScreen').style.opacity = '0';
     setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 400);

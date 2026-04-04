@@ -279,10 +279,9 @@ async function handleSignup() {
     // Send verification email
     await currentUser.sendEmailVerification();
 
-    // Show verification state
-    document.getElementById('signupForm').style.display = 'none';
-    document.getElementById('sentEmail').textContent = email;
-    document.getElementById('verifyState').classList.add('active');
+    // Go straight to dashboard
+    showToast('Account created! Taking you to your dashboard...', 'success');
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
 
   } catch(err) {
     btn.disabled = false;

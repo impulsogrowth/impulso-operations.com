@@ -208,15 +208,7 @@ async function handleLogin() {
   btn.innerHTML = '<div class="spinner"></div>';
 
   try {
-    const result = await auth.signInWithEmailAndPassword(email, pass);
-    if (!result.user.emailVerified) {
-      await auth.signOut();
-      msg.className = 'msg-box error';
-      msg.textContent = 'Please verify your email first. Check your inbox for the verification link.';
-      btn.disabled = false;
-      btn.textContent = 'Log In →';
-      return;
-    }
+    await auth.signInWithEmailAndPassword(email, pass);
     showToast('Welcome back! Redirecting...', 'success');
     setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
   } catch(err) {
