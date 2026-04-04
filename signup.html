@@ -277,9 +277,7 @@ async function handleSignup() {
     }
 
     // Send verification email
-    await currentUser.sendEmailVerification({
-      url: 'https://impulso-operations.com/login.html'
-    });
+    await currentUser.sendEmailVerification();
 
     // Show verification state
     document.getElementById('signupForm').style.display = 'none';
@@ -321,7 +319,7 @@ async function handleGoogleSignup() {
 async function resendVerification() {
   if (currentUser) {
     try {
-      await currentUser.sendEmailVerification({ url: 'https://impulso-operations.com/login.html' });
+      await currentUser.sendEmailVerification();
       showToast('Verification email resent!', 'success');
     } catch(e) {
       showToast('Could not resend. Try again in a minute.', 'error');

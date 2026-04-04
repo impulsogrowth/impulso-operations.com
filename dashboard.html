@@ -490,7 +490,7 @@ async function handleLogout() {
 async function resendVerify() {
   if (auth && auth.currentUser) {
     try {
-      await auth.currentUser.sendEmailVerification({ url: 'https://impulso-operations.com/login.html' });
+      await auth.currentUser.sendEmailVerification();
       showToast('Verification email resent!', 'success');
     } catch(e) { showToast('Could not resend. Try again in a minute.', 'error'); }
   }
