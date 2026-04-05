@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Intake Form — Impulso Operations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #050508; --surface: #0d0d14; --card: #111118;
+      --border: rgba(255,255,255,0.06); --purple: #7c3aed;
+      --purple-light: #a855f7; --gold: #f59e0b;
+      --white: #ffffff; --gray: #6b7280; --light: #e5e7eb;
+      --green: #10b981;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; }
+    .cursor { width:10px;height:10px;background:var(--purple-light);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:screen; }
+    .cursor-ring { width:36px;height:36px;border:1.5px solid rgba(168,85,247,.5);border-radius:50%;position:fixed;pointer-events:none;z-index:9998; }
+
+    nav { width:100%;padding:0 6%;display:flex;align-items:center;justify-content:space-between;height:72px;background:rgba(5,5,8,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100; }
+    .logo { font-size:1.25rem;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--white); }
+    .logo .dot { color:var(--gold); }
+    .nav-back { color:var(--gray);text-decoration:none;font-size:.875rem;font-weight:500;transition:color .2s; }
+    .nav-back:hover { color:var(--white); }
+
+    main { flex:1;padding:4rem 6% 5rem; }
+    .page-header { text-align:center;margin-bottom:3rem; }
+    .page-tag { display:inline-block;background:rgba(124,58,237,.15);border:1px solid rgba(168,85,247,.3);color:var(--purple-light);font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.35rem .9rem;border-radius:20px;margin-bottom:1.2rem; }
+    .page-title { font-size:2.2rem;font-weight:800;letter-spacing:-1px;margin-bottom:.75rem; }
+    .gradient-text { background:linear-gradient(135deg,var(--purple-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .page-sub { color:var(--gray);font-size:.95rem;max-width:520px;margin:0 auto; }
+
+    /* PROGRESS */
+    .progress-wrap { max-width:680px;margin:0 auto 2.5rem; }
+    .progress-steps { display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem; }
+    .step { display:flex;flex-direction:column;align-items:center;gap:.35rem;flex:1; }
+    .step-dot { width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:var(--gray);transition:all .3s;background:var(--card); }
+    .step-dot.active { border-color:var(--purple-light);color:var(--purple-light);background:rgba(168,85,247,.1); }
+    .step-dot.done { border-color:var(--green);background:rgba(16,185,129,.15);color:var(--green); }
+    .step-label { font-size:.72rem;color:var(--gray);font-weight:500;text-align:center; }
+    .step-label.active { color:var(--purple-light); }
+    .progress-line { flex:1;height:1px;background:var(--border);margin:0 .5rem;margin-bottom:1.5rem; }
+    .progress-line.done { background:rgba(168,85,247,.4); }
+
+    /* FORM */
+    .form-wrap { max-width:680px;margin:0 auto; }
+    .form-section { display:none; }
+    .form-section.active { display:block; }
+
+    .section-title { font-size:1.1rem;font-weight:700;margin-bottom:.3rem; }
+    .section-sub { color:var(--gray);font-size:.875rem;margin-bottom:1.8rem; }
+
+    .form-card { background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden; }
+    .form-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple-light)); }
+
+    .form-group { margin-bottom:1.2rem; }
+    .form-group label { display:block;font-size:.8rem;font-weight:600;color:var(--light);margin-bottom:.45rem;letter-spacing:.02em; }
+    .form-group label span { color:var(--purple-light); }
+    .form-group input, .form-group select, .form-group textarea { width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--white);font-size:.9rem;font-family:inherit;outline:none;transition:all .2s; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color:var(--gray); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.04); }
+    .form-group select option { background:var(--card);color:var(--white); }
+    .form-group textarea { resize:vertical;min-height:90px;line-height:1.5; }
+    .form-row { display:grid;grid-template-columns:1fr 1fr;gap:1rem; }
+
+    /* CHECKBOXES */
+    .check-grid { display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.5rem; }
+    .check-item { display:flex;align-items:center;gap:.6rem;padding:.65rem .9rem;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s; }
+    .check-item:hover { border-color:rgba(168,85,247,.3); }
+    .check-item input[type=checkbox] { width:15px;height:15px;accent-color:var(--purple-light);flex-shrink:0; }
+    .check-item label { font-size:.85rem;color:var(--light);cursor:pointer; }
+
+    /* RATING */
+    .rating-row { display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem; }
+    .rating-btn { padding:.5rem 1rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--gray);font-size:.85rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s; }
+    .rating-btn.selected { background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.5);color:var(--purple-light); }
+
+    /* NAV BUTTONS */
+    .form-nav { display:flex;gap:1rem;margin-top:1.5rem; }
+    .btn-next { flex:1;padding:.9rem;background:linear-gradient(135deg,var(--purple),var(--purple-light));border:none;border-radius:10px;color:white;font-weight:700;font-size:1rem;cursor:pointer;font-family:inherit;transition:all .3s; }
+    .btn-next:hover { box-shadow:0 6px 24px rgba(124,58,237,.4);transform:translateY(-1px); }
+    .btn-back { padding:.9rem 1.4rem;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--gray);font-weight:600;font-size:.9rem;cursor:pointer;font-family:inherit;transition:all .2s; }
+    .btn-back:hover { border-color:rgba(168,85,247,.3);color:var(--white); }
+
+    /* SUCCESS */
+    .success-state { display:none;text-align:center;padding:2rem; }
+    .success-state.active { display:block; }
+    .success-icon { font-size:4rem;margin-bottom:1.5rem; }
+    .success-state h2 { font-size:2rem;font-weight:800;letter-spacing:-1px;margin-bottom:.75rem; }
+    .success-state p { color:var(--gray);font-size:.95rem;line-height:1.7;max-width:480px;margin:0 auto 2rem; }
+    .success-actions { display:flex;gap:1rem;justify-content:center;flex-wrap:wrap; }
+    .success-actions a { padding:.9rem 1.8rem;border-radius:10px;font-weight:700;font-size:.9rem;text-decoration:none;transition:all .3s; }
+    .btn-checkout { background:linear-gradient(135deg,var(--purple),var(--purple-light));color:white; }
+    .btn-checkout:hover { box-shadow:0 6px 24px rgba(124,58,237,.4);transform:translateY(-1px); }
+    .btn-home { background:transparent;border:1px solid var(--border);color:var(--gray); }
+    .btn-home:hover { border-color:rgba(168,85,247,.3);color:var(--white); }
+
+    .spinner { width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;display:inline-block; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    footer { text-align:center;padding:1.5rem;color:var(--gray);font-size:.8rem;border-top:1px solid var(--border); }
+    footer a { color:var(--purple-light);text-decoration:none; }
+
+    .toast { position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid rgba(168,85,247,.3);border-radius:12px;padding:1rem 1.4rem;font-size:.875rem;font-weight:500;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:9999;color:#c4b5fd; }
+    .toast.show { transform:translateY(0);opacity:1; }
+
+    @media(max-width:600px) { .form-row { grid-template-columns:1fr; } .check-grid { grid-template-columns:1fr; } main { padding:3rem 5% 4rem; } .page-title { font-size:1.7rem; } }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="logo">IMPULSO<span class="dot">.</span></a>
+  <a href="checkout.html" class="nav-back">← Back to plans</a>
+</nav>
+
+<main>
+  <div class="page-header">
+    <span class="page-tag">New Client</span>
+    <h1 class="page-title">Business <span class="gradient-text">Intake Form</span></h1>
+    <p class="page-sub">Tell us about your business so we can build the exact system you need. Takes about 3 minutes.</p>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-wrap">
+    <div class="progress-steps">
+      <div class="step">
+        <div class="step-dot active" id="dot1">1</div>
+        <div class="step-label active" id="label1">Business</div>
+      </div>
+      <div class="progress-line" id="line1"></div>
+      <div class="step">
+        <div class="step-dot" id="dot2">2</div>
+        <div class="step-label" id="label2">Goals</div>
+      </div>
+      <div class="progress-line" id="line2"></div>
+      <div class="step">
+        <div class="step-dot" id="dot3">3</div>
+        <div class="step-label" id="label3">Current Setup</div>
+      </div>
+      <div class="progress-line" id="line3"></div>
+      <div class="step">
+        <div class="step-dot" id="dot4">4</div>
+        <div class="step-label" id="label4">Plan</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-wrap">
+
+    <!-- SUCCESS STATE -->
+    <div class="success-state" id="successState">
+      <div class="success-icon">🚀</div>
+      <h2>You're all set!</h2>
+      <p>We received your intake form and will review it within 24 hours. Our team will reach out to schedule your onboarding call and get your system live.</p>
+      <div class="success-actions">
+        <a href="checkout.html" class="success-actions btn-checkout">Choose Your Plan →</a>
+        <a href="index.html" class="success-actions btn-home">Back to site</a>
+      </div>
+    </div>
+
+    <!-- STEP 1: BUSINESS INFO -->
+    <div class="form-section active" id="step1">
+      <p class="section-title">About Your Business</p>
+      <p class="section-sub">Let's start with the basics.</p>
+      <div class="form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name <span>*</span></label>
+            <input type="text" id="firstName" placeholder="Alex" />
+          </div>
+          <div class="form-group">
+            <label>Last Name <span>*</span></label>
+            <input type="text" id="lastName" placeholder="Rivera" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Business Name <span>*</span></label>
+          <input type="text" id="bizName" placeholder="Rivera Realty Group" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email Address <span>*</span></label>
+            <input type="email" id="email" placeholder="alex@yourbusiness.com" />
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="(786) 000-0000" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Business Niche / Industry <span>*</span></label>
+          <select id="niche">
+            <option value="">Select your industry...</option>
+            <option>Real Estate</option>
+            <option>Med Spa / Aesthetics</option>
+            <option>Gym / Fitness Studio</option>
+            <option>Law Firm</option>
+            <option>Mortgage / Finance</option>
+            <option>Dental / Medical</option>
+            <option>Home Services / Contracting</option>
+            <option>Restaurant / Food & Beverage</option>
+            <option>Chiropractic / Wellness</option>
+            <option>Auto Services</option>
+            <option>E-commerce</option>
+            <option>Marketing Agency</option>
+            <option>Coaching / Consulting</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>City / Location</label>
+          <input type="text" id="location" placeholder="Miami, FL" />
+        </div>
+      </div>
+      <div class="form-nav">
+        <button class="btn-next" onclick="nextStep(1)">Next: Goals →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: GOALS -->
+    <div class="form-section" id="step2">
+      <p class="section-title">Your Goals</p>
+      <p class="section-sub">What are you trying to grow or fix?</p>
+      <div class="form-card">
+        <div class="form-group">
+          <label>What's your #1 challenge right now? <span>*</span></label>
+          <select id="challenge">
+            <option value="">Select your biggest challenge...</option>
+            <option>Not enough leads coming in</option>
+            <option>Leads aren't converting to clients</option>
+            <option>Too much manual work / no automation</option>
+            <option>No consistent follow-up system</option>
+            <option>No online presence / weak marketing</option>
+            <option>Can't scale — doing everything myself</option>
+            <option>Need more recurring revenue</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>What does success look like in 90 days? <span>*</span></label>
+          <textarea id="goal90" placeholder="e.g. 10 new clients per month, a full pipeline, automated follow-up running 24/7..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Monthly revenue goal</label>
+          <select id="revenueGoal">
+            <option value="">Select a range...</option>
+            <option>Under $5K/month</option>
+            <option>$5K – $10K/month</option>
+            <option>$10K – $25K/month</option>
+            <option>$25K – $50K/month</option>
+            <option>$50K+/month</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Which areas do you need help with most?</label>
+          <div class="check-grid">
+            <div class="check-item"><input type="checkbox" id="c1" /><label for="c1">Lead Generation</label></div>
+            <div class="check-item"><input type="checkbox" id="c2" /><label for="c2">Email Outreach</label></div>
+            <div class="check-item"><input type="checkbox" id="c3" /><label for="c3">SMS Follow-up</label></div>
+            <div class="check-item"><input type="checkbox" id="c4" /><label for="c4">Social Media Content</label></div>
+            <div class="check-item"><input type="checkbox" id="c5" /><label for="c5">CRM / Pipeline</label></div>
+            <div class="check-item"><input type="checkbox" id="c6" /><label for="c6">Booking Automation</label></div>
+            <div class="check-item"><input type="checkbox" id="c7" /><label for="c7">Client Reporting</label></div>
+            <div class="check-item"><input type="checkbox" id="c8" /><label for="c8">Custom AI Agent</label></div>
+          </div>
+        </div>
+      </div>
+      <div class="form-nav">
+        <button class="btn-back" onclick="prevStep(2)">← Back</button>
+        <button class="btn-next" onclick="nextStep(2)">Next: Current Setup →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: CURRENT SETUP -->
+    <div class="form-section" id="step3">
+      <p class="section-title">Your Current Setup</p>
+      <p class="section-sub">Help us understand what you're already using.</p>
+      <div class="form-card">
+        <div class="form-group">
+          <label>What tools/software are you currently using?</label>
+          <div class="check-grid">
+            <div class="check-item"><input type="checkbox" id="t1" /><label for="t1">HubSpot / CRM</label></div>
+            <div class="check-item"><input type="checkbox" id="t2" /><label for="t2">GoHighLevel</label></div>
+            <div class="check-item"><input type="checkbox" id="t3" /><label for="t3">Mailchimp / Email tool</label></div>
+            <div class="check-item"><input type="checkbox" id="t4" /><label for="t4">Calendly / Booking</label></div>
+            <div class="check-item"><input type="checkbox" id="t5" /><label for="t5">Zapier / Make</label></div>
+            <div class="check-item"><input type="checkbox" id="t6" /><label for="t6">Google Workspace</label></div>
+            <div class="check-item"><input type="checkbox" id="t7" /><label for="t7">Shopify / E-commerce</label></div>
+            <div class="check-item"><input type="checkbox" id="t8" /><label for="t8">None / Starting fresh</label></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>How are you currently getting leads?</label>
+          <textarea id="currentLeads" placeholder="e.g. mostly referrals, some Instagram, tried Facebook ads once..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>How would you rate your current marketing? <span>*</span></label>
+          <div class="rating-row" id="marketingRating">
+            <button class="rating-btn" onclick="selectRating('marketingRating', this, '1')">1 — Nonexistent</button>
+            <button class="rating-btn" onclick="selectRating('marketingRating', this, '2')">2 — Weak</button>
+            <button class="rating-btn" onclick="selectRating('marketingRating', this, '3')">3 — Average</button>
+            <button class="rating-btn" onclick="selectRating('marketingRating', this, '4')">4 — Good</button>
+            <button class="rating-btn" onclick="selectRating('marketingRating', this, '5')">5 — Strong</button>
+          </div>
+          <input type="hidden" id="marketingScore" value="" />
+        </div>
+        <div class="form-group">
+          <label>Team size</label>
+          <select id="teamSize">
+            <option value="">Select...</option>
+            <option>Just me (solo)</option>
+            <option>2–5 people</option>
+            <option>6–15 people</option>
+            <option>16–50 people</option>
+            <option>50+ people</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-nav">
+        <button class="btn-back" onclick="prevStep(3)">← Back</button>
+        <button class="btn-next" onclick="nextStep(3)">Next: Choose Plan →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: PLAN SELECTION -->
+    <div class="form-section" id="step4">
+      <p class="section-title">Choose Your Plan</p>
+      <p class="section-sub">Which service fits your needs best?</p>
+      <div class="form-card">
+        <div class="form-group">
+          <label>Which plan are you interested in? <span>*</span></label>
+          <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:.5rem;">
+            <div class="check-item" style="flex-direction:column;align-items:flex-start;gap:.3rem;padding:1rem;">
+              <div style="display:flex;align-items:center;gap:.6rem;width:100%;">
+                <input type="radio" name="plan" id="p1" value="marketing" />
+                <label for="p1" style="font-weight:700;">Marketing Only — $250/mo</label>
+              </div>
+              <p style="font-size:.8rem;color:var(--gray);padding-left:1.5rem;">Leads, outreach, content. You run it, we generate it.</p>
+            </div>
+            <div class="check-item" style="flex-direction:column;align-items:flex-start;gap:.3rem;padding:1rem;border-color:rgba(168,85,247,.3);">
+              <div style="display:flex;align-items:center;gap:.6rem;width:100%;">
+                <input type="radio" name="plan" id="p2" value="system" />
+                <label for="p2" style="font-weight:700;">System Install — $600/mo</label>
+              </div>
+              <p style="font-size:.8rem;color:var(--gray);padding-left:1.5rem;">Full AI system built into your business. CRM, automation, outreach.</p>
+            </div>
+            <div class="check-item" style="flex-direction:column;align-items:flex-start;gap:.3rem;padding:1rem;">
+              <div style="display:flex;align-items:center;gap:.6rem;width:100%;">
+                <input type="radio" name="plan" id="p3" value="agent" />
+                <label for="p3" style="font-weight:700;">System + Agent — $1,200/mo</label>
+              </div>
+              <p style="font-size:.8rem;color:var(--gray);padding-left:1.5rem;">Everything + a custom AI agent built specifically for your niche.</p>
+            </div>
+            <div class="check-item" style="flex-direction:column;align-items:flex-start;gap:.3rem;padding:1rem;">
+              <div style="display:flex;align-items:center;gap:.6rem;width:100%;">
+                <input type="radio" name="plan" id="p4" value="unsure" />
+                <label for="p4" style="font-weight:700;">Not sure yet — help me decide</label>
+              </div>
+              <p style="font-size:.8rem;color:var(--gray);padding-left:1.5rem;">We'll recommend the right plan after reviewing your form.</p>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Anything else we should know?</label>
+          <textarea id="notes" placeholder="Special requirements, timeline, questions, anything on your mind..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>How did you hear about us?</label>
+          <select id="referral">
+            <option value="">Select...</option>
+            <option>Instagram</option>
+            <option>TikTok</option>
+            <option>Google Search</option>
+            <option>Referral from someone</option>
+            <option>LinkedIn</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-nav">
+        <button class="btn-back" onclick="prevStep(4)">← Back</button>
+        <button class="btn-next" id="submitBtn" onclick="submitForm()">Submit & Get Started →</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>© 2026 Impulso Operations · <a href="index.html">Back to site</a> · <a href="mailto:impulsoogrowth@gmail.com">Contact</a></p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentStep = 1;
+const totalSteps = 4;
+const ratings = {};
+
+function nextStep(from) {
+  if (!validateStep(from)) return;
+  currentStep = from + 1;
+  updateUI();
+}
+function prevStep(from) {
+  currentStep = from - 1;
+  updateUI();
+}
+
+function updateUI() {
+  // Show/hide sections
+  for (let i = 1; i <= totalSteps; i++) {
+    document.getElementById('step' + i).classList.toggle('active', i === currentStep);
+    const dot = document.getElementById('dot' + i);
+    const label = document.getElementById('label' + i);
+    if (i < currentStep) {
+      dot.className = 'step-dot done';
+      dot.textContent = '✓';
+    } else if (i === currentStep) {
+      dot.className = 'step-dot active';
+      dot.textContent = i;
+      label.className = 'step-label active';
+    } else {
+      dot.className = 'step-dot';
+      dot.textContent = i;
+      label.className = 'step-label';
+    }
+    if (i < totalSteps) {
+      const line = document.getElementById('line' + i);
+      if (line) line.className = 'progress-line' + (i < currentStep ? ' done' : '');
+    }
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateStep(step) {
+  if (step === 1) {
+    const fields = ['firstName', 'lastName', 'bizName', 'email', 'niche'];
+    for (const f of fields) {
+      if (!document.getElementById(f).value.trim()) {
+        showToast('Please fill in all required fields.');
+        document.getElementById(f).focus();
+        return false;
+      }
+    }
+  }
+  if (step === 2) {
+    if (!document.getElementById('challenge').value) {
+      showToast('Please select your biggest challenge.');
+      return false;
+    }
+    if (!document.getElementById('goal90').value.trim()) {
+      showToast('Please describe your 90-day goal.');
+      return false;
+    }
+  }
+  return true;
+}
+
+function selectRating(groupId, btn, val) {
+  document.querySelectorAll('#' + groupId + ' .rating-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  ratings[groupId] = val;
+  const input = document.getElementById(groupId.replace('Rating', 'Score'));
+  if (input) input.value = val;
+}
+
+async function submitForm() {
+  const plan = document.querySelector('input[name=plan]:checked');
+  if (!plan) { showToast('Please select a plan.'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+  // Collect all data
+  const data = {
+    firstName: document.getElementById('firstName').value,
+    lastName: document.getElementById('lastName').value,
+    bizName: document.getElementById('bizName').value,
+    email: document.getElementById('email').value,
+    phone: document.getElementById('phone').value,
+    niche: document.getElementById('niche').value,
+    location: document.getElementById('location').value,
+    challenge: document.getElementById('challenge').value,
+    goal90: document.getElementById('goal90').value,
+    revenueGoal: document.getElementById('revenueGoal').value,
+    helpAreas: ['c1','c2','c3','c4','c5','c6','c7','c8'].filter(id => document.getElementById(id).checked).map(id => document.querySelector('label[for='+id+']').textContent),
+    currentTools: ['t1','t2','t3','t4','t5','t6','t7','t8'].filter(id => document.getElementById(id).checked).map(id => document.querySelector('label[for='+id+']').textContent),
+    currentLeads: document.getElementById('currentLeads').value,
+    marketingScore: document.getElementById('marketingScore').value,
+    teamSize: document.getElementById('teamSize').value,
+    selectedPlan: plan.value,
+    notes: document.getElementById('notes').value,
+    referral: document.getElementById('referral').value,
+    submittedAt: new Date().toISOString()
+  };
+
+  // Send via email using mailto as fallback (works without backend)
+  const subject = encodeURIComponent(`New Intake: ${data.firstName} ${data.lastName} — ${data.bizName}`);
+  const body = encodeURIComponent(
+    `NEW CLIENT INTAKE FORM\n\n` +
+    `Name: ${data.firstName} ${data.lastName}\n` +
+    `Business: ${data.bizName}\n` +
+    `Email: ${data.email}\n` +
+    `Phone: ${data.phone}\n` +
+    `Niche: ${data.niche}\n` +
+    `Location: ${data.location}\n\n` +
+    `GOALS\n` +
+    `Challenge: ${data.challenge}\n` +
+    `90-Day Goal: ${data.goal90}\n` +
+    `Revenue Goal: ${data.revenueGoal}\n` +
+    `Help Needed: ${data.helpAreas.join(', ')}\n\n` +
+    `CURRENT SETUP\n` +
+    `Tools: ${data.currentTools.join(', ')}\n` +
+    `Current Leads: ${data.currentLeads}\n` +
+    `Marketing Score: ${data.marketingScore}/5\n` +
+    `Team Size: ${data.teamSize}\n\n` +
+    `PLAN\n` +
+    `Selected Plan: ${data.selectedPlan}\n` +
+    `Notes: ${data.notes}\n` +
+    `Referral: ${data.referral}\n` +
+    `Submitted: ${data.submittedAt}`
+  );
+
+  // Open email client
+  window.location.href = `mailto:impulsoogrowth@gmail.com?subject=${subject}&body=${body}`;
+
+  // Show success after short delay
+  setTimeout(() => {
+    document.getElementById('step4').classList.remove('active');
+    document.getElementById('successState').classList.add('active');
+    // Update all dots to done
+    for (let i = 1; i <= 4; i++) {
+      const dot = document.getElementById('dot' + i);
+      dot.className = 'step-dot done';
+      dot.textContent = '✓';
+      if (i < 4) document.getElementById('line' + i).className = 'progress-line done';
+    }
+  }, 800);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX - 5 + 'px';
+  cursor.style.top = e.clientY - 5 + 'px';
+  ring.style.left = e.clientX - 18 + 'px';
+  ring.style.top = e.clientY - 18 + 'px';
+});
+if (window.innerWidth < 768) { cursor.style.display='none'; ring.style.display='none'; }
+</script>
+</body>
+</html>
