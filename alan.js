@@ -5,7 +5,7 @@
 
 (function() {
   const ALAN = {
-    name: 'Alan',
+    name: 'Alan T',
     title: 'Impulso AI Assistant',
     avatar: '🤖',
     color: '#7c3aed',
@@ -32,9 +32,9 @@
 
     responses: {
       greeting: [
-        "Hey! I'm Alan, your Impulso assistant 👋 I can help you pick the right plan, answer questions, or get you started. What's on your mind?",
-        "Hi there! I'm Alan from Impulso Operations. Whether you want to learn about our plans, see how it all works, or just have questions — I'm here. What can I help with?",
-        "Hello! Alan here 👋 I know everything about Impulso — pricing, what we do, how it works. Ask me anything!"
+        "Hey! I'm Alan T, your Impulso assistant 👋 I can help you pick the right plan, answer questions, or get you started. What's on your mind?",
+        "Hi there! I'm Alan T from Impulso Operations. Whether you want to learn about our plans, see how it all works, or just have questions — I'm here. What can I help with?",
+        "Hello! Alan T here 👋 I know everything about Impulso — pricing, what we do, how it works. Ask me anything!"
       ],
       pricing: `Here's our pricing breakdown:\n\n💜 **Marketing Only — $250/mo**\nLeads, outreach, content, video editing & ads.\n\n⭐ **System Install — $600/mo** *(Most Popular)*\nFull AI system built into your business — CRM, automation, booking, follow-up.\n\n⚡ **System + Agent — $1,200/mo**\nEverything + a custom AI agent built for your exact niche.\n\nNo contracts. Cancel anytime. Which one sounds closest to what you need?`,
       marketing: `The **Marketing Only plan ($250/mo)** covers:\n\n✓ Daily lead hunting (50–100 leads/week)\n✓ AI outreach emails + SMS\n✓ Social media content + captions\n✓ Video editing, recording & ad creation\n✓ Weekly performance reports\n✓ Direct support channel\n\nWant to get started or do you have more questions?`,
@@ -222,7 +222,7 @@
       document.getElementById('alan-fab-icon').textContent = '✕';
       if (!this.history.length) {
         setTimeout(() => {
-          this.renderMsg("Hey! I'm **Alan**, your Impulso assistant 👋\n\nI can help you pick the right plan, answer questions, or get you started. What can I help with?");
+          this.renderMsg("Hey! I'm **Alan T**, your Impulso assistant 👋\n\nI can help you pick the right plan, answer questions, or get you started. What can I help with?");
           this.showQuickReplies();
           this.history.push(1);
         }, 300);
@@ -296,7 +296,7 @@
       const wrap = document.createElement('div');
       wrap.id = 'alan-fab';
       wrap.innerHTML = `
-        <div id="alan-bubble">👋 Hi! I'm Alan — ask me anything!</div>
+        <div id="alan-bubble">👋 Hi! I'm Alan T — ask me anything!</div>
         <button id="alan-btn" onclick="ALAN.toggle()">
           <span id="alan-fab-icon">💬</span>
         </button>
@@ -309,7 +309,7 @@
         <div id="alan-header">
           <div id="alan-avatar">🤖</div>
           <div id="alan-info">
-            <strong>Alan</strong>
+            <strong>Alan T</strong>
             <span>● Online · Impulso Assistant</span>
           </div>
           <button id="alan-close-btn" onclick="ALAN.close()">✕</button>
