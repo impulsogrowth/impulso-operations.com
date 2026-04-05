@@ -14,67 +14,78 @@
 
     // ---- KNOWLEDGE BASE ----
     kb: {
-      greetings: ['hi', 'hello', 'hey', 'hola', 'sup', 'what\'s up', 'good morning', 'good afternoon'],
-      pricing: ['price', 'pricing', 'cost', 'how much', 'plans', 'plan', 'packages', 'package', 'fee', 'fees', 'rate', 'rates', 'monthly', 'subscription'],
-      marketing: ['marketing', 'marketing only', 'leads', 'lead gen', 'outreach', 'content', 'social media', 'video', 'ads', 'email', 'sms'],
-      system: ['system', 'system install', 'crm', 'automation', 'pipeline', 'follow up', 'follow-up', 'booking', 'install'],
-      agent: ['agent', 'custom agent', 'ai agent', 'bot', 'chatbot', 'alan', 'build', 'niche'],
-      results: ['results', 'how fast', 'when', 'timeline', 'how long', 'work', 'does it work', 'proof'],
-      contract: ['contract', 'cancel', 'cancellation', 'lock in', 'locked', 'commitment', 'refund'],
-      start: ['get started', 'start', 'sign up', 'signup', 'begin', 'how do i', 'onboard', 'intake'],
-      contact: ['contact', 'email', 'call', 'talk', 'speak', 'human', 'person', 'team', 'reach', 'phone'],
-      payment: ['pay', 'payment', 'stripe', 'square', 'checkout', 'invoice', 'billing', 'charge'],
-      niches: ['niche', 'industry', 'realtor', 'real estate', 'med spa', 'gym', 'dentist', 'contractor', 'lawyer', 'restaurant', 'chiropractor', 'gym', 'fitness', 'mortgage'],
-      login: ['login', 'log in', 'sign in', 'account', 'dashboard', 'portal', 'access'],
-      thanks: ['thank', 'thanks', 'appreciate', 'perfect', 'great', 'awesome', 'amazing', 'good'],
-      bye: ['bye', 'goodbye', 'see you', 'later', 'talk later', 'done'],
-      whatisimpulso: ['what is impulso', 'what do you do', 'what does impulso do', 'tell me about', 'who are you', 'what is this', 'explain'],
-      difference: ['difference', 'different', 'compare', 'vs', 'versus', 'better', 'which plan', 'which one', 'recommend'],
-      guarantee: ['guarantee', 'risk', 'free trial', 'refund', 'money back', 'safe'],
-      onboarding: ['onboard', 'setup', 'how does it work', 'process', 'steps', 'what happens', 'after i sign'],
-      general: ['can you', 'do you', 'are you', 'is there', 'question', 'help me', 'i need', 'i want', 'looking for'],
+      greetings:     ['hi', 'hello', 'hey', 'hola', 'sup', "what's up", 'good morning', 'good afternoon', 'good evening', 'yo', 'wassup'],
+      howru:         ['how are you', 'how r u', 'how are u', "what's good", 'you good', 'hows it going', "how's it going", 'how you doing'],
+      whoalan:       ['who are you', 'what are you', 'are you a bot', 'are you ai', 'are you real', 'are you human', 'what can you do', 'what do you do', 'your name', 'tell me about yourself'],
+      pricing:       ['price', 'pricing', 'cost', 'how much', 'plans', 'plan', 'packages', 'package', 'fee', 'fees', 'rate', 'rates', 'monthly', 'subscription', 'charge', '500', '600', '1200'],
+      marketing:     ['marketing', 'marketing only', 'lead gen', 'outreach', 'content', 'social media', 'video', 'ads', 'captions', 'tiktok', 'instagram', 'facebook', 'meta', 'google ads'],
+      leads:         ['leads', 'lead', 'more leads', 'get leads', 'find leads', 'lead generation', 'prospects', 'clients', 'customers', 'more clients', 'more customers', 'appointments'],
+      system:        ['system', 'system install', 'crm', 'automation', 'pipeline', 'follow up', 'follow-up', 'booking', 'install', 'automate', 'automated'],
+      agent:         ['agent', 'custom agent', 'ai agent', 'bot', 'chatbot', 'build me', 'build an agent', 'niche agent', 'my own agent'],
+      results:       ['results', 'how fast', 'when', 'timeline', 'how long', 'work', 'does it work', 'proof', 'show me', 'guarantee results', 'what results'],
+      contract:      ['contract', 'cancel', 'cancellation', 'lock in', 'locked', 'commitment', 'refund', 'quit', 'leave', 'exit', 'month to month'],
+      start:         ['get started', 'start', 'sign up', 'signup', 'begin', 'how do i start', 'onboard', 'intake', 'ready to start', 'lets go', "let's go", 'i want in', 'join'],
+      contact:       ['contact', 'talk to someone', 'speak', 'human', 'person', 'team', 'reach', 'phone number', 'call you', 'speak to'],
+      phone:         ['phone', 'number', 'call', 'telephone', '786'],
+      email:         ['email', 'email address', 'mail', 'nes@'],
+      payment:       ['pay', 'payment', 'stripe', 'checkout', 'invoice', 'billing', 'buy', 'purchase', 'credit card'],
+      niches:        ['niche', 'industry', 'realtor', 'real estate', 'med spa', 'gym', 'dentist', 'contractor', 'lawyer', 'restaurant', 'chiropractor', 'fitness', 'mortgage', 'cleaning', 'auto', 'coach', 'consultant', 'law firm', 'dental'],
+      login:         ['login', 'log in', 'sign in', 'dashboard', 'portal', 'access', 'my account', 'client area'],
+      services:      ['services', 'what do you offer', 'what do you provide', 'what do you sell', 'offerings', 'what you do', 'tell me what', 'service'],
+      difference:    ['difference', 'different', 'compare', 'vs', 'versus', 'better', 'which plan', 'which one', 'recommend', 'best plan', 'what plan', 'which should i'],
+      guarantee:     ['guarantee', 'risk', 'free trial', 'refund', 'money back', 'safe', 'worth it', 'is it worth'],
+      onboarding:    ['onboard', 'setup', 'how does it work', 'process', 'steps', 'what happens', 'after i sign', 'next steps', 'what do i do'],
+      whatisimpulso: ['what is impulso', 'impulso', 'tell me about impulso', 'about you', 'about impulso', 'your company', 'this company'],
+      thanks:        ['thank', 'thanks', 'appreciate', 'perfect', 'great', 'awesome', 'amazing', 'that helps', 'got it', 'makes sense', 'nice', 'dope', 'fire', 'cool'],
+      bye:           ['bye', 'goodbye', 'see you', 'later', 'talk later', 'done', 'gotta go', 'peace', 'ttyl'],
     },
 
     responses: {
       greeting: [
-        "Hey! I'm Alan T, your Impulso assistant 👋 I can help you pick the right plan, answer questions, or get you started. What's on your mind?",
-        "Hi there! I'm Alan T from Impulso Operations. Whether you want to learn about our plans, see how it all works, or just have questions — I'm here. What can I help with?",
-        "Hello! Alan T here 👋 I know everything about Impulso — pricing, what we do, how it works. Ask me anything!"
+        "Hey! I'm **Alan T**, Impulso's AI. I can break down our plans, tell you how the system works, or help you get started. What's on your mind?",
+        "What's good! Alan T here — ask me anything about Impulso. Pricing, how it works, which plan fits you — I've got answers.",
+        "Hey 👋 I'm Alan T. I know everything about Impulso Operations — plans, pricing, results, how to get started. Fire away."
       ],
-      pricing: `Here's our pricing breakdown:\n\n💜 **Premium Marketing — $500/mo**\nProfessional video production, recording, editing, ads, content & lead generation.\n\n⭐ **System Install — $600/mo** *(Most Popular)*\nFull AI system built into your business — CRM, automation, booking, follow-up.\n\n⚡ **System + Agent — $1,200/mo**\nEverything + a custom AI agent built for your exact niche.\n\n90-day commitment. First-class priority service from day one. Which one sounds closest to what you need?`,
-      marketing: `The **Premium Marketing plan ($500/mo)** is a full-service, high-end marketing operation:\n\n✓ Professional video recording & editing\n✓ Ad creation (Meta, Google, TikTok)\n✓ Daily lead hunting (50–100 leads/week)\n✓ AI outreach emails + SMS\n✓ Social media content + captions\n✓ Weekly performance reports\n✓ Direct support channel\n\nThis is premium — not just posting, but full production. Want to get started?`,
-      system: `The **System Install ($600/mo)** is our most popular plan. We build and install a full AI growth system into your business:\n\n✓ Everything in Marketing Only\n✓ CRM + pipeline setup\n✓ Automated follow-up sequences\n✓ Booking & intake automation\n✓ Monthly strategy call\n✓ Priority support\n\nMost clients are fully live within 24 hours. Want to see if it's the right fit?`,
-      agent: `The **System + Agent ($1,200/mo)** is our premium plan. You get everything in System Install PLUS a custom AI agent built specifically for your niche:\n\n✓ Custom agent trained on your business\n✓ Handles client intake automatically\n✓ Responds to leads 24/7\n✓ Qualifies prospects automatically\n✓ Dedicated account manager\n✓ Weekly reports + strategy calls\n\nEvery agent is 100% unique to your business. Want to learn more?`,
-      results: `Most clients see results fast:\n\n🎯 **48 hours** — Leads appear in your pipeline\n📨 **Day 3–5** — Outreach campaigns running\n📅 **Week 1–2** — First booked discovery calls\n💰 **Month 1** — Revenue tracked from pipeline\n\nWe back this with our **zero-risk guarantee** — if you don't see results in 48 hours, we keep working for free until you do.`,
-      contract: `We operate on a **90-day commitment** — and here's why that's actually better for you 💪\n\n✓ Real results require real dedication\n✓ We go all in from day one — first-class priority service\n✓ High-priority access to your account manager every day\n✓ Full system built, optimized, and scaling within 90 days\n✓ No shortcuts, no half-measures\n\nWe don't do month-to-month because we're not here to dip our toes in. We're here to build something serious with you. Ready to commit?`,
-      start: `Getting started is easy:\n\n1️⃣ Fill out our **intake form** (3 min) so we understand your business\n2️⃣ Choose your plan on the **checkout page**\n3️⃣ We activate your system within **24 hours**\n4️⃣ First leads hit your pipeline\n\nReady? [Fill intake form →](intake.html) or [View plans →](checkout.html)`,
-      contact: `You can reach us directly:\n\n📧 **nes@impulso-operations.com**\n📱 **786-567-7337**\n\nWe respond within 24 hours, Mon–Fri. Or I can help you right here — what do you need?`,
-      payment: `We accept payments through **Stripe** (coming live shortly) and currently via email invoice.\n\nOnce Stripe is live, you'll be able to pay directly on the checkout page with any card. For now, just [choose your plan](checkout.html) and we'll send an invoice.\n\nAny billing questions? Email nes@impulso-operations.com`,
-      niches: `We work with all local service businesses:\n\n🏠 Real Estate • 💆 Med Spas • 💪 Gyms\n⚖️ Law Firms • 🏦 Mortgage • 🦷 Dental\n🔨 Contractors • 🍽️ Restaurants • 🚗 Auto\n💼 Coaches & Consultants • and more\n\nEvery system is built specifically for your niche. What industry are you in?`,
-      login: `You can access your client portal here:\n\n🔐 [Log In →](login.html)\n📝 [Create Account →](signup.html)\n\nOnce logged in, you'll see your lead pipeline, reports, billing, and support — all in one place.`,
-      whatisimpulso: `Impulso Operations is an AI-powered growth agency for local businesses 🚀\n\nWe build fully automated systems that:\n✓ Hunt leads 24/7\n✓ Send outreach automatically\n✓ Book calls on your behalf\n✓ Create content & run ads\n✓ Install a custom AI agent for your business\n\nEssentially — we plug an AI system into your business so you can focus on closing, not chasing. Want to see our plans?`,
-      difference: `Great question! Here's how the plans compare:\n\n💜 **Premium Marketing ($500/mo)** — Best if you need high-quality content, video production, and lead generation but already have your systems in place.\n\n⭐ **System Install ($600/mo)** — Best if you want a full AI system built into your business — CRM, automation, follow-up, booking.\n\n⚡ **System + Agent ($1,200/mo)** — Best if you want everything PLUS a custom AI agent that works 24/7 specifically for your niche.\n\nNot sure? Fill out the [intake form](intake.html) and we'll recommend the exact right fit.`,
-      guarantee: `We take our commitment to you seriously — that's why we operate on a **90-day contract** 🏆\n\n✓ First-class, high-priority service every single day\n✓ Dedicated account manager on your business daily\n✓ Full system built and scaling within 90 days\n✓ Weekly reports + strategy calls included\n✓ We go all in — no shortcuts, no excuses\n\nThis isn't a trial. This is a partnership. We commit to your growth 100%. Ready to get started?`,
-      onboarding: `Here's exactly what happens after you sign up:\n\n1️⃣ **Fill intake form** — tells us about your business, goals & niche (3 min)\n2️⃣ **Onboarding call** — we map out your custom system\n3️⃣ **System built** — we set everything up within 24 hours\n4️⃣ **Go live** — leads start hitting your pipeline\n5️⃣ **Weekly updates** — reports, calls, and continuous optimization\n\nMost clients are fully live within 24–48 hours. Ready? [Start here →](intake.html)`,
-      general: [
-        "I'm here to help! I can tell you about our plans, pricing, how it works, or get you connected to our team. What specifically are you looking for?",
-        "Good question! Ask me anything — pricing, how it works, what plan fits you, or anything about Impulso. I'm here 24/7.",
-        "I've got you! Whether it's about our services, pricing, or getting started — just ask and I'll point you in the right direction."
+      howru: [
+        "I'm running at full capacity 😄 More importantly — how can I help *you* grow your business today?",
+        "Doing great, thanks for asking! Now let's talk about getting you more clients. What do you need to know?",
+        "All systems go! What can I help you with today?"
       ],
+      whoalan: "I'm **Alan T** — the AI for Impulso Operations. I can answer questions about our plans, pricing, how the system works, and help you figure out the best fit for your business.\n\nI'm not human, but I know everything Impulso offers. Want me to break something down for you?",
+      services: `Here's what Impulso does:\n\n🎯 **Lead Generation** — Qualified leads, consistently.\n🌐 **Website Systems** — High-converting sites that turn visitors into clients.\n✍️ **Content Strategy** — Video, social, ads, captions — all handled.\n⚙️ **Automation & CRM** — Follow-up, booking, and nurturing on autopilot.\n\nAll of this is packaged into three plans starting at **$500/mo**. Want to see the breakdown?`,
+      pricing: `Here's the full pricing breakdown:\n\n**Premium Marketing — $500/mo**\nVideo production, ads, lead gen, content & outreach.\n\n**System Install — $600/mo** ⭐ Most Popular\nFull AI system — CRM, automation, follow-up, booking.\n\n**System + Agent — $1,200/mo**\nEverything above + a custom AI agent built for your niche.\n\n90-day commitment. First-class service from day one.\n\n[View all plans →](checkout.html) — Which one sounds like a fit?`,
+      marketing: `**Premium Marketing — $500/mo**\n\n✓ Professional video recording & editing\n✓ Ad creation (Meta, Google, TikTok)\n✓ Daily lead hunting (50–100/week)\n✓ AI outreach emails + SMS\n✓ Social media content + captions\n✓ Weekly performance reports\n✓ Direct support channel\n\nThis is full production — not just posting. [Get started →](checkout.html)`,
+      leads: `Lead generation is at the core of everything we do.\n\nHere's how it works:\n\n✓ We identify qualified prospects in your niche daily\n✓ Your pipeline fills within **48 hours** of going live\n✓ AI outreach runs automatically — emails + SMS\n✓ Leads are scored and tracked in your CRM\n\nMost clients see **300% more lead volume** within 60 days. Want to know which plan gets you there? [See plans →](checkout.html)`,
+      system: `**System Install — $600/mo** (our most popular)\n\nWe build and install a full AI growth system into your business:\n\n✓ Everything in Premium Marketing\n✓ CRM + pipeline setup\n✓ Automated follow-up sequences\n✓ Booking & intake automation\n✓ Monthly strategy call\n✓ Priority support\n\nLive within **24 hours**. [Get started →](checkout.html)`,
+      agent: `**System + Agent — $1,200/mo**\n\nYou get the full System Install PLUS a custom AI agent built for your exact niche:\n\n✓ Agent trained specifically on your business\n✓ Handles client intake automatically\n✓ Responds to leads 24/7\n✓ Qualifies prospects without you lifting a finger\n✓ Dedicated account manager\n✓ Weekly reports + strategy calls\n\nEvery agent is 100% unique. [Apply now →](checkout.html)`,
+      results: `Results clients typically see:\n\n🎯 **48 hours** — First leads in your pipeline\n📨 **Days 3–5** — Outreach campaigns live\n📅 **Week 1–2** — First booked discovery calls\n💰 **Month 1** — Revenue tracked from pipeline\n📈 **60 days** — Average 300% increase in lead volume\n\nWe're built around measurable growth — not impressions or vanity metrics. [See our plans →](checkout.html)`,
+      contract: `We run on a **90-day commitment** — here's why that's good for you:\n\n✓ Real results take real dedication — 90 days gives us time to build, optimize, and scale\n✓ First-class priority service every single day\n✓ Dedicated account manager on your business daily\n✓ Full system built and dialed in within the 90 days\n✓ No shortcuts — we go all in\n\nThis isn't a trial. It's a serious partnership. Ready to commit? [View plans →](checkout.html)`,
+      start: `Getting started takes about 5 minutes:\n\n1️⃣ **[Fill intake form →](intake.html)** — 3 min, tells us about your business\n2️⃣ **[Choose your plan →](checkout.html)** — $500, $600, or $1,200/mo\n3️⃣ **We activate your system** — within 24 hours\n4️⃣ **Leads hit your pipeline** — you focus on closing\n\nWant me to help you pick the right plan first?`,
+      phone: `You can reach the team at:\n\n📱 **786-228-6229**\n\nCalls and texts welcome, Mon–Fri. Or I can answer your questions right here — what do you need?`,
+      email: `Reach us by email at:\n\n📧 **nes@impulso-operations.com**\n\nWe respond within 24 hours, Mon–Fri. What can I help you with right now?`,
+      contact: `Here's how to reach the Impulso team directly:\n\n📧 **nes@impulso-operations.com**\n📱 **786-228-6229**\n\nWe respond within 24 hours, Mon–Fri. Or keep chatting with me — I can answer most questions right here.`,
+      payment: `Payments are processed securely through **Stripe**.\n\nYou can pay directly on the [checkout page →](checkout.html) with any major card. After payment, you'll be walked through onboarding and your system goes live within 24 hours.\n\nBilling questions? Email nes@impulso-operations.com`,
+      niches: `We work with any local service business. Most common:\n\n🏠 Real Estate & Mortgage · 💆 Med Spas\n💪 Gyms & Fitness · 🦷 Dental & Clinics\n🔨 Contractors & Home Services · ⚖️ Law Firms\n🍽️ Restaurants · 🚗 Auto · 💼 Coaches\n\nEvery system is built for your specific niche — not a template. What's your industry?`,
+      login: `Access your client dashboard here:\n\n🔐 [Log In →](login.html)\n📝 [Create Account →](signup.html)\n\nYour dashboard has your lead pipeline, reports, billing, and direct support — all in one place.`,
+      whatisimpulso: `**Impulso Operations** is an AI-powered growth agency for local service businesses.\n\nWe build automated systems that:\n✓ Generate qualified leads consistently\n✓ Send outreach automatically (email + SMS)\n✓ Follow up and book calls on your behalf\n✓ Create content and run ads\n✓ Track everything in a live CRM dashboard\n\nYou focus on closing. We handle everything else. [See our plans →](checkout.html)`,
+      difference: `Here's the honest breakdown:\n\n**$500 — Premium Marketing**\nBest if you need high-quality content, video production, and lead gen — and already have your own systems.\n\n**$600 — System Install** ⭐\nBest if you want the full AI system built into your business — CRM, automation, follow-up, booking. Most popular.\n\n**$1,200 — System + Agent**\nBest if you want everything above PLUS a 24/7 AI agent that works specifically for your niche.\n\nNot sure? Fill out the [intake form →](intake.html) and we'll tell you exactly which one fits.`,
+      guarantee: `We stand behind our work with a **90-day first-class commitment**:\n\n✓ High-priority access to your account manager every day\n✓ Full system built, optimized, and scaling within 90 days\n✓ Weekly reports + strategy calls included\n✓ We don't cut corners or disappear after onboarding\n✓ If you're not seeing movement, we keep working\n\nThis is a real partnership. We go all in. [Get started →](checkout.html)`,
+      onboarding: `Here's exactly what happens step by step:\n\n1️⃣ **Intake form** (3 min) — tells us your business, niche, goals\n2️⃣ **Onboarding call** — we map out your custom system\n3️⃣ **We build it** — system live within 24 hours\n4️⃣ **Go live** — leads start hitting your pipeline\n5️⃣ **Weekly updates** — reports, calls, continuous optimization\n\nMost clients are fully live within **24–48 hours**. [Start here →](intake.html)`,
       thanks: [
-        "Of course! Anything else I can help with? 😊",
-        "Happy to help! Got more questions?",
-        "Absolutely! Let me know if there's anything else you need."
+        "Of course! What else can I help with?",
+        "Happy to help. Got more questions — I've got answers.",
+        "Absolutely. Anything else you want to know about Impulso?",
+        "That's what I'm here for. What else?"
       ],
       bye: [
-        "Talk soon! Feel free to come back anytime 👋",
-        "See you! Don't hesitate to reach out if you have more questions.",
-        "Take care! You can always email us at nes@impulso-operations.com 🚀"
+        "Talk soon! Come back anytime 👋",
+        "See you! You can also reach us at nes@impulso-operations.com anytime.",
+        "Take care — and when you're ready to get more clients, we're here. 🚀"
       ],
       fallback: [
-        "Great question! I might not have that exact answer, but I can connect you with our team. Email us at nes@impulso-operations.com or call 786-567-7337.",
-        "I'm not sure about that one — but our team definitely can help. Reach out at nes@impulso-operations.com and we'll get back to you within 24 hours.",
-        "That's a bit outside my knowledge! For anything complex, our team is the best resource. Email nes@impulso-operations.com or fill out the [intake form](intake.html) and we'll take it from there."
+        "Good question — let me point you in the right direction. For that, reach out directly: **nes@impulso-operations.com** or **786-228-6229**. The team will get back to you within 24 hours.",
+        "I want to make sure you get the right answer on that — email us at **nes@impulso-operations.com** and we'll handle it personally.",
+        "That's a bit specific for me, but our team has you covered. Hit us at **nes@impulso-operations.com** or call **786-228-6229** and we'll sort it out."
       ]
     },
 
@@ -100,26 +111,33 @@
 
     // ---- MATCH INTENT ----
     match(input) {
-      const text = input.toLowerCase().trim();
-      if (this.kb.greetings.some(w => text.includes(w))) return 'greeting';
-      if (this.kb.pricing.some(w => text.includes(w))) return 'pricing';
-      if (this.kb.agent.some(w => text.includes(w))) return 'agent';
-      if (this.kb.system.some(w => text.includes(w))) return 'system';
-      if (this.kb.marketing.some(w => text.includes(w))) return 'marketing';
-      if (this.kb.results.some(w => text.includes(w))) return 'results';
-      if (this.kb.contract.some(w => text.includes(w))) return 'contract';
-      if (this.kb.start.some(w => text.includes(w))) return 'start';
-      if (this.kb.contact.some(w => text.includes(w))) return 'contact';
-      if (this.kb.payment.some(w => text.includes(w))) return 'payment';
-      if (this.kb.niches.some(w => text.includes(w))) return 'niches';
-      if (this.kb.login.some(w => text.includes(w))) return 'login';
-      if (this.kb.whatisimpulso.some(w => text.includes(w))) return 'whatisimpulso';
-      if (this.kb.difference.some(w => text.includes(w))) return 'difference';
-      if (this.kb.guarantee.some(w => text.includes(w))) return 'guarantee';
-      if (this.kb.onboarding.some(w => text.includes(w))) return 'onboarding';
-      if (this.kb.thanks.some(w => text.includes(w))) return 'thanks';
-      if (this.kb.bye.some(w => text.includes(w))) return 'bye';
-      if (this.kb.general.some(w => text.includes(w))) return 'general';
+      const t = input.toLowerCase().trim();
+      const has = (arr) => arr.some(w => t.includes(w));
+      // Order matters — specific before generic
+      if (has(this.kb.bye))           return 'bye';
+      if (has(this.kb.thanks))        return 'thanks';
+      if (has(this.kb.howru))         return 'howru';
+      if (has(this.kb.whoalan))       return 'whoalan';
+      if (has(this.kb.greetings))     return 'greeting';
+      if (has(this.kb.whatisimpulso)) return 'whatisimpulso';
+      if (has(this.kb.onboarding))    return 'onboarding';
+      if (has(this.kb.difference))    return 'difference';
+      if (has(this.kb.agent))         return 'agent';
+      if (has(this.kb.system))        return 'system';
+      if (has(this.kb.marketing))     return 'marketing';
+      if (has(this.kb.leads))         return 'leads';
+      if (has(this.kb.pricing))       return 'pricing';
+      if (has(this.kb.services))      return 'services';
+      if (has(this.kb.results))       return 'results';
+      if (has(this.kb.contract))      return 'contract';
+      if (has(this.kb.guarantee))     return 'guarantee';
+      if (has(this.kb.start))         return 'start';
+      if (has(this.kb.phone))         return 'phone';
+      if (has(this.kb.email))         return 'email';
+      if (has(this.kb.contact))       return 'contact';
+      if (has(this.kb.payment))       return 'payment';
+      if (has(this.kb.niches))        return 'niches';
+      if (has(this.kb.login))         return 'login';
       return 'fallback';
     },
 
