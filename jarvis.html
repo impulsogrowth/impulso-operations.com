@@ -554,12 +554,10 @@
       </div>
     </div>
 
-    <!-- VOICE SELECT -->
+    <!-- ELEVENLABS BADGE -->
     <div class="voice-select-wrap">
-      <span class="voice-label">Voice</span>
-      <select class="voice-select" id="voiceSelect" onchange="setVoice(this.value)">
-        <option value="">Default</option>
-      </select>
+      <span class="voice-label">Voice by</span>
+      <span style="font-size:.72rem;font-weight:700;color:#38bdf8;letter-spacing:.04em;">ElevenLabs ✦ Adam</span>
     </div>
 
   </div>
@@ -681,9 +679,13 @@ function getResponse(intent) {
 const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition = null;
 let isListening = false;
-let selectedVoice = null;
-let voices = [];
+let currentAudio = null;
 let speechSupported = !!SpeechRec;
+
+// ===== ELEVENLABS CONFIG =====
+const EL_KEY    = 'sk_bf72860357197960813364b31d93624e3ac38358fa47f0eb';
+const EL_VOICE  = 'pNInz6obpgDQGcFmaJgB'; // Adam — change to any ElevenLabs voice ID
+const EL_MODEL  = 'eleven_turbo_v2_5';     // fastest + high quality
 
 if (speechSupported) {
   recognition = new SpeechRec();
@@ -727,7 +729,8 @@ if (speechSupported) {
 
 function toggleListen() {
   if (!speechSupported) return;
-  if (window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); setState('ready'); return; }
+  // If Alan is speaking, stop him and allow new input
+  if (currentAudio) { stopSpeech(); return; }
   if (isListening) {
     recognition.stop();
     setState('ready');
@@ -737,48 +740,61 @@ function toggleListen() {
   }
 }
 
-// ===== TTS =====
-function speak(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.rate = 1.0;
-  utt.pitch = 0.95;
-  utt.volume = 1;
-  if (selectedVoice) utt.voice = selectedVoice;
-  utt.onstart = () => setState('speaking');
-  utt.onend = () => setState('ready');
-  utt.onerror = () => setState('ready');
-  window.speechSynthesis.speak(utt);
-}
+// ===== TTS — ELEVENLABS =====
+async function speak(text) {
+  stopSpeech(); // cancel any in-progress audio
+  setState('speaking');
 
-function loadVoices() {
-  voices = window.speechSynthesis.getVoices();
-  const sel = document.getElementById('voiceSelect');
-  sel.innerHTML = '<option value="">Auto</option>';
-  const priority = ['Google US English','Microsoft David','Alex','Samantha','Daniel','en-US','en-GB'];
-  voices.forEach((v, i) => {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = v.name + (v.lang ? ` (${v.lang})` : '');
-    sel.appendChild(opt);
-  });
-  // Auto-select a good voice
-  const best = voices.find(v => priority.some(p => v.name.includes(p) || v.lang.includes(p)));
-  if (best) {
-    selectedVoice = best;
-    const idx = voices.indexOf(best);
-    sel.value = idx;
+  try {
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${EL_VOICE}`, {
+      method: 'POST',
+      headers: {
+        'xi-api-key': EL_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'audio/mpeg'
+      },
+      body: JSON.stringify({
+        text,
+        model_id: EL_MODEL,
+        voice_settings: {
+          stability: 0.45,
+          similarity_boost: 0.80,
+          style: 0.0,
+          use_speaker_boost: true
+        }
+      })
+    });
+
+    if (!res.ok) throw new Error(`ElevenLabs ${res.status}`);
+
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    currentAudio = new Audio(url);
+    currentAudio.onended = () => { URL.revokeObjectURL(url); currentAudio = null; setState('ready'); };
+    currentAudio.onerror = () => { currentAudio = null; setState('ready'); };
+    await currentAudio.play();
+
+  } catch(err) {
+    console.warn('ElevenLabs error — falling back to browser TTS:', err);
+    speakFallback(text);
   }
 }
 
-if (window.speechSynthesis.onvoiceschanged !== undefined) {
-  window.speechSynthesis.onvoiceschanged = loadVoices;
+function stopSpeech() {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  setState('ready');
 }
-loadVoices();
 
-function setVoice(val) {
-  selectedVoice = val !== '' ? voices[parseInt(val)] : null;
+// Browser TTS fallback (if ElevenLabs fails / offline)
+function speakFallback(text) {
+  if (!window.speechSynthesis) { setState('ready'); return; }
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate = 1.0; utt.pitch = 0.95; utt.volume = 1;
+  utt.onstart = () => setState('speaking');
+  utt.onend   = () => setState('ready');
+  utt.onerror = () => setState('ready');
+  window.speechSynthesis.speak(utt);
 }
 
 // ===== STATE MANAGEMENT =====
@@ -888,7 +904,7 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'Escape') {
     if (isListening) { recognition && recognition.stop(); setState('ready'); }
-    if (window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); setState('ready'); }
+    if (currentAudio) stopSpeech();
   }
 });
 
