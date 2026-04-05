@@ -9,22 +9,23 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #02040a; --surface: #080d1a; --card: #0c1220;
-      --border: rgba(255,255,255,0.07); --purple: #0ea5e9;
+      --bg: #f8fafc; --surface: #ffffff; --card: #ffffff;
+      --border: rgba(0,0,0,0.07); --purple: #0ea5e9;
       --purple-light: #38bdf8; --gold: #f59e0b;
-      --white: #ffffff; --gray: #64748b; --light: #e2e8f0;
+      --white: #0f172a; --gray: #64748b; --light: #334155;
       --cyan: #06b6d4; --blue-dark: #0369a1; --emerald: #10b981;
+      --card-shadow: 0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
       --red: #ef4444; --green: #10b981;
     }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; } a { color: inherit; }
 
     /* CURSOR */
     .cursor { width:10px;height:10px;background:var(--purple-light);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform .1s;mix-blend-mode:screen; }
     .cursor-ring { width:36px;height:36px;border:1.5px solid rgba(56,189,248,.5);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:width .2s,height .2s; }
 
     /* NAV */
-    nav { width:100%;padding:0 6%;display:flex;align-items:center;justify-content:space-between;height:72px;background:rgba(5,5,8,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100; }
+    nav { width:100%;padding:0 6%;display:flex;align-items:center;justify-content:space-between;height:72px;background:rgba(248,250,252,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100; }
     .logo { font-size:1.25rem;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--white); }
     .logo .dot { color:var(--gold); }
     .nav-back { color:var(--gray);text-decoration:none;font-size:.875rem;font-weight:500;display:flex;align-items:center;gap:.4rem;transition:color .2s; }
@@ -39,12 +40,12 @@
     .auth-sub a { color:var(--purple-light);text-decoration:none; }
     .auth-sub a:hover { text-decoration:underline; }
 
-    .auth-card { background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;position:relative;overflow:hidden; }
+    .auth-card { background:var(--card);border:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.08);border-radius:20px;padding:2rem;position:relative;overflow:hidden; }
     .auth-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple-light),var(--gold)); }
 
     .form-group { margin-bottom:1rem; }
     .form-group label { display:block;font-size:.8rem;font-weight:600;color:var(--light);margin-bottom:.45rem;letter-spacing:.02em; }
-    .form-group input { width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--white);font-size:.9rem;font-family:inherit;outline:none;transition:all .2s; }
+    .form-group input { width:100%;background:#f8fafc;border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:.75rem 1rem;color:var(--white);font-size:.9rem;font-family:inherit;outline:none;transition:all .2s; }
     .form-group input::placeholder { color:var(--gray); }
     .form-group input:focus { border-color:rgba(56,189,248,.5);background:rgba(168,85,247,.05); }
     .form-group input.error { border-color:rgba(239,68,68,.5); }
@@ -77,7 +78,7 @@
     @keyframes spin { to { transform:rotate(360deg); } }
 
     /* FOOTER */
-    footer { text-align:center;padding:1.5rem;color:var(--gray);font-size:.8rem;border-top:1px solid var(--border); }
+    footer { text-align:center;padding:1.5rem;color:#64748b;font-size:.8rem;border-top:1px solid rgba(0,0,0,.07);background:#f1f5f9; }
     footer a { color:var(--purple-light);text-decoration:none; }
 
     /* TOAST */

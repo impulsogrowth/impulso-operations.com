@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purchase Confirmed — Impulso Operations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8fafc; --surface: #ffffff; --card: #ffffff;
+      --border: rgba(0,0,0,0.07); --purple: #0ea5e9;
+      --purple-light: #38bdf8; --gold: #f59e0b;
+      --white: #0f172a; --gray: #64748b; --light: #334155;
+      --cyan: #06b6d4; --blue-dark: #0369a1; --emerald: #10b981;
+      --card-shadow: 0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+      --red: #ef4444; --green: #10b981;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; }
+    a { color: inherit; }
+
+    .cursor { width:10px;height:10px;background:var(--purple-light);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform .1s;mix-blend-mode:multiply; }
+    .cursor-ring { width:36px;height:36px;border:1.5px solid rgba(14,165,233,.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:width .2s,height .2s; }
+
+    nav { width:100%;padding:0 6%;display:flex;align-items:center;justify-content:space-between;height:72px;background:rgba(248,250,252,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100; }
+    .logo { font-size:1.25rem;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--white); }
+    .logo .dot { color:var(--gold); }
+    .nav-right { display:flex;align-items:center;gap:1.2rem; }
+    .nav-link { color:var(--gray);text-decoration:none;font-size:.875rem;font-weight:500;transition:color .2s; }
+    .nav-link:hover { color:var(--white); }
+
+    main { flex:1;display:flex;align-items:flex-start;justify-content:center;padding:3rem 1.5rem 5rem; }
+    .wrap { width:100%;max-width:640px; }
+
+    /* HEADER */
+    .confirm-header { text-align:center;margin-bottom:3rem; }
+    .confirm-badge { display:inline-flex;align-items:center;gap:.5rem;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#059669;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.45rem 1.1rem;border-radius:20px;margin-bottom:1.2rem; }
+    .confirm-icon { width:80px;height:80px;background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(14,165,233,.1));border:2px solid rgba(16,185,129,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto 1.4rem; }
+    .confirm-title { font-size:2.4rem;font-weight:900;letter-spacing:-1.5px;margin-bottom:.6rem;line-height:1.1; }
+    .confirm-sub { color:var(--gray);font-size:1rem;line-height:1.6;max-width:480px;margin:0 auto; }
+
+    /* STEPS */
+    .steps-card { background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;box-shadow:var(--card-shadow);position:relative;overflow:hidden;margin-bottom:1.5rem; }
+    .steps-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--purple),var(--purple-light),var(--gold)); }
+    .steps-title { font-size:1rem;font-weight:800;margin-bottom:1.5rem;letter-spacing:-.3px; }
+
+    .step { display:flex;gap:1.2rem;align-items:flex-start;padding:.9rem 0;position:relative; }
+    .step:not(:last-child)::after { content:'';position:absolute;left:17px;top:52px;bottom:-4px;width:2px;background:var(--border);z-index:0; }
+    .step-num { width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;flex-shrink:0;position:relative;z-index:1; }
+    .step-num.done { background:rgba(16,185,129,.15);border:2px solid rgba(16,185,129,.4);color:var(--green); }
+    .step-num.active { background:linear-gradient(135deg,var(--blue-dark),var(--purple));border:none;color:white;box-shadow:0 4px 12px rgba(14,165,233,.3); }
+    .step-num.upcoming { background:var(--bg);border:2px solid var(--border);color:var(--gray); }
+    .step-body { flex:1; }
+    .step-label { font-size:.875rem;font-weight:700;margin-bottom:.2rem; }
+    .step-desc { font-size:.82rem;color:var(--gray);line-height:1.5;margin-bottom:.7rem; }
+    .step-desc:last-child { margin-bottom:0; }
+
+    /* BUTTONS */
+    .btn-primary { display:inline-flex;align-items:center;gap:.4rem;padding:.75rem 1.4rem;background:linear-gradient(135deg,var(--blue-dark),var(--purple),var(--purple-light));border:none;border-radius:10px;color:white;font-weight:700;font-size:.875rem;text-decoration:none;cursor:pointer;transition:all .3s;font-family:inherit; }
+    .btn-primary:hover { box-shadow:0 6px 20px rgba(14,165,233,.35);transform:translateY(-1px); }
+    .btn-secondary { display:inline-flex;align-items:center;gap:.4rem;padding:.7rem 1.3rem;background:transparent;border:1.5px solid rgba(14,165,233,.3);border-radius:10px;color:var(--purple);font-weight:600;font-size:.875rem;text-decoration:none;cursor:pointer;transition:all .2s;font-family:inherit; }
+    .btn-secondary:hover { border-color:var(--purple);background:rgba(14,165,233,.05); }
+    .step-actions { display:flex;gap:.75rem;flex-wrap:wrap; }
+
+    /* CONTACT CARD */
+    .contact-card { background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.4rem;box-shadow:var(--card-shadow);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap; }
+    .contact-card-left h3 { font-size:.9rem;font-weight:700;margin-bottom:.2rem; }
+    .contact-card-left p { font-size:.82rem;color:var(--gray); }
+    .contact-links { display:flex;gap:.6rem;flex-wrap:wrap; }
+    .contact-link { display:inline-flex;align-items:center;gap:.35rem;padding:.5rem .9rem;border:1px solid var(--border);border-radius:8px;color:var(--light);text-decoration:none;font-size:.8rem;font-weight:500;transition:all .2s;background:var(--bg); }
+    .contact-link:hover { border-color:rgba(14,165,233,.3);color:var(--purple); }
+
+    /* INFO BANNER */
+    .info-banner { display:flex;gap:.75rem;align-items:flex-start;background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem; }
+    .info-banner .icon { font-size:1.1rem;flex-shrink:0;margin-top:.1rem; }
+    .info-banner p { font-size:.85rem;color:var(--light);line-height:1.6; }
+    .info-banner strong { color:var(--white); }
+
+    footer { text-align:center;padding:1.5rem;color:var(--gray);font-size:.8rem;border-top:1px solid var(--border);background:#f1f5f9; }
+    footer a { color:var(--purple-light);text-decoration:none; }
+
+    @media(max-width:600px) {
+      .confirm-title { font-size:1.8rem; }
+      .contact-card { flex-direction:column; }
+      .steps-card { padding:1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="logo">IMPULSO<span class="dot">.</span></a>
+  <div class="nav-right">
+    <a href="login.html" class="nav-link">Log In →</a>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <div class="confirm-header">
+      <span class="confirm-badge">✓ Payment Confirmed</span>
+      <div class="confirm-icon">🎉</div>
+      <h1 class="confirm-title">You're in. Welcome to Impulso.</h1>
+      <p class="confirm-sub">Your plan is confirmed and your journey starts now. Follow the steps below to get your system live within 24 hours.</p>
+    </div>
+
+    <!-- INFO -->
+    <div class="info-banner">
+      <span class="icon">ℹ️</span>
+      <p><strong>Important:</strong> Complete steps 2 and 3 so Impulso can activate your account. Your CRM access will be enabled once your intake form is reviewed and your account is confirmed by the team.</p>
+    </div>
+
+    <!-- STEPS -->
+    <div class="steps-card">
+      <p class="steps-title">🚀 Your Onboarding Checklist</p>
+
+      <!-- STEP 1 -->
+      <div class="step">
+        <div class="step-num done">✓</div>
+        <div class="step-body">
+          <p class="step-label">Plan Selected & Payment Confirmed</p>
+          <p class="step-desc">Your payment was processed. A receipt has been sent to your email from Stripe.</p>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step">
+        <div class="step-num active">2</div>
+        <div class="step-body">
+          <p class="step-label">Fill Out Your Intake Form</p>
+          <p class="step-desc">Help us understand your business, goals, and current setup so we can build your system the right way from day one.</p>
+          <div class="step-actions">
+            <a href="intake.html" class="btn-primary">Fill Out Intake Form →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step">
+        <div class="step-num upcoming">3</div>
+        <div class="step-body">
+          <p class="step-label">Create Your Client Account</p>
+          <p class="step-desc">Set up your secure login. Your dashboard, CRM pipeline, and system access are all tied to this account.</p>
+          <div class="step-actions">
+            <a href="signup.html" class="btn-secondary">Create Account →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step">
+        <div class="step-num upcoming">4</div>
+        <div class="step-body">
+          <p class="step-label">Account Activation by Impulso (within 24 hrs)</p>
+          <p class="step-desc">Our team reviews your intake form, activates your account, and begins setting up your system. You'll receive an email when access is live.</p>
+        </div>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step">
+        <div class="step-num upcoming">5</div>
+        <div class="step-body">
+          <p class="step-label">First Leads in Your Pipeline</p>
+          <p class="step-desc">Your dashboard goes fully live. Log in to view your CRM, track leads, and watch your system work — first class, day one.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="contact-card">
+      <div class="contact-card-left">
+        <h3>Questions? We're here.</h3>
+        <p>Your dedicated account manager responds within 24 hours.</p>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:nes@impulso-operations.com" class="contact-link">📧 Email us</a>
+        <a href="tel:7865677337" class="contact-link">📱 786-567-7337</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>© 2026 Impulso Operations · <a href="index.html">Back to site</a> · <a href="login.html">Log In</a></p>
+</footer>
+
+<script>
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX - 5 + 'px';
+  cursor.style.top = e.clientY - 5 + 'px';
+  ring.style.left = e.clientX - 18 + 'px';
+  ring.style.top = e.clientY - 18 + 'px';
+});
+if (window.innerWidth < 768) { cursor.style.display='none'; ring.style.display='none'; }
+</script>
+<script src="alan.js"></script>
+</body>
+</html>

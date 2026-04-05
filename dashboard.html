@@ -203,6 +203,36 @@
     .load-fill { height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));animation:load 1s ease forwards; }
     @keyframes load { from{width:0} to{width:100%} }
 
+    /* PENDING SCREEN */
+    #pendingScreen { position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;z-index:500;padding:2rem; }
+    #pendingScreen.show { display:flex; }
+    .pending-wrap { max-width:520px;width:100%;text-align:center; }
+    .pending-badge { display:inline-flex;align-items:center;gap:.4rem;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#d97706;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.4rem 1rem;border-radius:20px;margin-bottom:1.4rem; }
+    .pending-icon-lg { font-size:4rem;margin-bottom:1.2rem; }
+    .pending-title { font-size:2rem;font-weight:900;letter-spacing:-1px;margin-bottom:.6rem; }
+    .pending-sub { color:var(--gray);font-size:.9rem;line-height:1.7;margin-bottom:1.6rem; }
+    .pending-card { background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.4rem;margin-bottom:1.4rem;text-align:left; }
+    .pending-card-title { font-size:.82rem;font-weight:700;margin-bottom:.8rem;color:var(--light); }
+    .pstep { display:flex;align-items:center;gap:.75rem;padding:.45rem 0;font-size:.85rem; }
+    .pstep-dot { width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0; }
+    .pstep-dot.done { background:rgba(16,185,129,.2);color:var(--green); }
+    .pstep-dot.active { background:rgba(14,165,233,.2);color:var(--purple-light); }
+    .pstep-dot.next { background:var(--border);color:var(--gray); }
+    .pending-actions { display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap; }
+    .pend-btn { padding:.75rem 1.4rem;border-radius:10px;font-weight:700;font-size:.875rem;text-decoration:none;cursor:pointer;font-family:inherit;transition:all .3s; }
+    .pend-btn.primary { background:linear-gradient(135deg,var(--blue-dark),var(--purple),var(--purple-light));border:none;color:white; }
+    .pend-btn.primary:hover { box-shadow:0 4px 16px rgba(14,165,233,.4); }
+    .pend-btn.secondary { background:transparent;border:1.5px solid var(--border);color:var(--gray); }
+    .pend-btn.secondary:hover { border-color:rgba(56,189,248,.3);color:var(--purple-light); }
+
+    /* ADMIN TABLE */
+    .admin-user-row { background:rgba(255,255,255,.02);border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s; }
+    .admin-user-row:hover { background:rgba(255,255,255,.04); }
+    .approve-btn { padding:.3rem .75rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);border-radius:6px;color:#6ee7b7;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap; }
+    .approve-btn:hover { background:rgba(16,185,129,.25); }
+    .revoke-btn { padding:.3rem .75rem;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:6px;color:#fca5a5;font-size:.72rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap; }
+    .revoke-btn:hover { background:rgba(239,68,68,.18); }
+
     /* TOAST */
     .toast { position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.4rem;font-size:.875rem;font-weight:500;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:9999;max-width:320px; }
     .toast.show { transform:translateY(0);opacity:1; }
@@ -234,6 +264,28 @@
 <div id="loadingScreen">
   <p class="load-logo">IMPULSO<span class="dot">.</span></p>
   <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<!-- PENDING ACTIVATION SCREEN -->
+<div id="pendingScreen">
+  <div class="pending-wrap">
+    <span class="pending-badge">⏳ Pending Activation</span>
+    <div class="pending-icon-lg">🔐</div>
+    <h1 class="pending-title">Your account is being activated</h1>
+    <p class="pending-sub">The Impulso team is reviewing your intake form and setting up your system. You'll receive an email confirmation within 24 hours once your access is live.</p>
+    <div class="pending-card">
+      <p class="pending-card-title">YOUR ONBOARDING STATUS</p>
+      <div class="pstep"><div class="pstep-dot done">✓</div><span>Account created</span></div>
+      <div class="pstep"><div class="pstep-dot active">→</div><span id="pendIntake">Fill out intake form — <a href="intake.html" style="color:var(--purple-light);">complete now</a></span></div>
+      <div class="pstep"><div class="pstep-dot next">3</div><span>Impulso activates your account (within 24 hrs)</span></div>
+      <div class="pstep"><div class="pstep-dot next">4</div><span>Dashboard goes live — full CRM access</span></div>
+    </div>
+    <div class="pending-actions">
+      <a href="intake.html" class="pend-btn primary">Fill Out Intake Form →</a>
+      <button class="pend-btn secondary" onclick="handleLogout()">Sign Out</button>
+    </div>
+    <p style="margin-top:1.2rem;font-size:.8rem;color:var(--gray);">Questions? <a href="mailto:nes@impulso-operations.com" style="color:var(--purple-light);">nes@impulso-operations.com</a> · 786-567-7337</p>
+  </div>
 </div>
 
 <div class="cursor" id="cursor"></div>
@@ -300,6 +352,11 @@
     <button class="nav-item" onclick="showSection('billing')"><i class="icon">💳</i> Billing</button>
     <button class="nav-item" onclick="showSection('profile')"><i class="icon">👤</i> Profile</button>
     <button class="nav-item" onclick="showSection('support')"><i class="icon">📞</i> Support</button>
+
+    <div id="adminNavSection" style="display:none;">
+      <p class="nav-section" style="color:var(--gold);">Admin</p>
+      <button class="nav-item" onclick="showSection('admin')" style="color:var(--gold);"><i class="icon">🛡️</i> Client Manager</button>
+    </div>
   </nav>
   <div class="sidebar-footer">
     <div class="user-mini">
@@ -613,6 +670,52 @@
       </div>
     </div>
 
+    <!-- ===== ADMIN: CLIENT MANAGER ===== -->
+    <div class="section" id="section-admin">
+      <div class="page-head" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h1>Client <span class="gradient-text">Manager</span> <span style="background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:#fcd34d;font-size:.7rem;font-weight:700;letter-spacing:.08em;padding:.2rem .6rem;border-radius:10px;vertical-align:middle;">ADMIN</span></h1>
+          <p>Approve, manage, and monitor all client accounts.</p>
+        </div>
+        <button onclick="loadAllClients()" style="padding:.65rem 1.2rem;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3);border-radius:10px;color:var(--purple-light);font-weight:700;font-size:.82rem;cursor:pointer;font-family:inherit;">↺ Refresh</button>
+      </div>
+
+      <!-- ADMIN STATS -->
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.5rem;">
+        <div class="stat-card s1"><div class="stat-label">Total Clients</div><div class="stat-val" id="adminTotal">—</div><div class="stat-sub">All accounts</div></div>
+        <div class="stat-card s2"><div class="stat-label">Pending</div><div class="stat-val" id="adminPending">—</div><div class="stat-sub">Awaiting activation</div></div>
+        <div class="stat-card s3"><div class="stat-label">Active</div><div class="stat-val" id="adminActive">—</div><div class="stat-sub">Live accounts</div></div>
+      </div>
+
+      <div class="pipeline-wrap">
+        <div class="pipeline-header">
+          <span class="pipeline-title">All Client Accounts</span>
+          <div class="pipeline-filters">
+            <button class="filter-btn active" onclick="filterClients('all', this)">All</button>
+            <button class="filter-btn" onclick="filterClients('pending', this)">Pending</button>
+            <button class="filter-btn" onclick="filterClients('active', this)">Active</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Business</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminClientsTable">
+              <tr><td colspan="6"><div class="empty-table"><div class="ei">🛡️</div>Loading clients...</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -635,6 +738,11 @@ const firebaseConfig = {
 let auth, db, currentUID;
 let leads = [];
 let activeFilter = 'all';
+let allClients = [];
+let clientFilter = 'all';
+
+// Admin emails — only these addresses get admin access
+const ADMIN_EMAILS = ['nes@impulso-operations.com', 'impulsoogrowth@gmail.com'];
 
 try {
   firebase.initializeApp(firebaseConfig);
@@ -647,10 +755,33 @@ if (auth) {
     if (!user) { window.location.href = 'login.html'; return; }
     currentUID = user.uid;
 
+    const isAdmin = ADMIN_EMAILS.includes(user.email);
+
+    // Load Firestore profile to check activation status
+    let userStatus = 'pending';
+    if (db) {
+      try {
+        const doc = await db.collection('users').doc(user.uid).get();
+        if (doc.exists) userStatus = doc.data().status || 'pending';
+      } catch(e) { console.warn('Status check error', e); }
+    }
+
+    // Hide loading screen
     document.getElementById('loadingScreen').style.opacity = '0';
     setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 400);
 
-    if (!user.emailVerified) document.getElementById('verifyBanner').style.display = 'flex';
+    // Non-admin + not active → show pending screen
+    if (!isAdmin && userStatus !== 'active') {
+      document.getElementById('pendingScreen').classList.add('show');
+      return;
+    }
+
+    // Admin: show admin nav
+    if (isAdmin) {
+      document.getElementById('adminNavSection').style.display = 'block';
+      document.getElementById('sidebarPlan').textContent = 'Admin';
+      loadAllClients();
+    }
 
     const name = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
     document.getElementById('welcomeName').textContent = name;
@@ -666,9 +797,9 @@ if (auth) {
         const doc = await db.collection('users').doc(user.uid).get();
         if (doc.exists) {
           const d = doc.data();
-          const planLabel = d.plan === 'marketing' ? 'Marketing Only' : d.plan === 'system' ? 'System Install' : d.plan === 'agent' ? 'System + Agent' : 'Pending Activation';
-          const isActive = d.plan && d.plan !== 'pending';
-          document.getElementById('sidebarPlan').textContent = planLabel;
+          const planLabel = d.plan === 'marketing' ? 'Premium Marketing' : d.plan === 'system' ? 'System Install' : d.plan === 'agent' ? 'System + Agent' : 'Pending Activation';
+          const isActive = d.status === 'active';
+          if (!isAdmin) document.getElementById('sidebarPlan').textContent = planLabel;
           document.getElementById('profileBiz').textContent = d.businessName || '—';
           document.getElementById('overviewPlanName').textContent = planLabel;
           document.getElementById('billingPlanName').textContent = planLabel;
@@ -692,6 +823,69 @@ if (auth) {
   });
 } else {
   document.getElementById('loadingScreen').style.display = 'none';
+}
+
+// ========== ADMIN FUNCTIONS ==========
+async function loadAllClients() {
+  if (!db) return;
+  const tbody = document.getElementById('adminClientsTable');
+  tbody.innerHTML = `<tr><td colspan="6"><div class="empty-table"><div class="ei">⏳</div>Loading...</div></td></tr>`;
+  try {
+    const snap = await db.collection('users').get();
+    allClients = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    document.getElementById('adminTotal').textContent = allClients.length;
+    document.getElementById('adminPending').textContent = allClients.filter(c => c.status !== 'active').length;
+    document.getElementById('adminActive').textContent = allClients.filter(c => c.status === 'active').length;
+    renderClients();
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-table"><div class="ei">⚠️</div>Could not load clients. Check Firestore rules — admin email must be allowed.</div></td></tr>`;
+    showToast('Update Firestore rules to allow admin access.', 'error');
+  }
+}
+
+function filterClients(status, btn) {
+  clientFilter = status;
+  document.querySelectorAll('#section-admin .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderClients();
+}
+
+function renderClients() {
+  const tbody = document.getElementById('adminClientsTable');
+  let list = clientFilter === 'all' ? allClients : allClients.filter(c => (c.status || 'pending') === clientFilter);
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-table"><div class="ei">👥</div>No clients found.</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(c => {
+    const status = c.status || 'pending';
+    const planLabel = c.plan === 'marketing' ? 'Premium Marketing' : c.plan === 'system' ? 'System Install' : c.plan === 'agent' ? 'System + Agent' : 'Pending';
+    const joined = c.createdAt ? new Date(c.createdAt.seconds * 1000).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
+    return `<tr class="admin-user-row">
+      <td><div class="td-name">${c.firstName || ''} ${c.lastName || ''}</div><div class="td-sub">${c.email || ''}</div></td>
+      <td><div class="td-name">${c.businessName || '—'}</div></td>
+      <td style="font-size:.82rem;color:var(--gray);">${planLabel}</td>
+      <td><span class="status-badge ${status}">${status}</span></td>
+      <td style="color:var(--gray);font-size:.8rem;">${joined}</td>
+      <td><div class="td-actions">
+        ${status !== 'active' ? `<button class="approve-btn" onclick="setClientStatus('${c.uid}', 'active')">✓ Activate</button>` : `<button class="revoke-btn" onclick="setClientStatus('${c.uid}', 'pending')">✕ Revoke</button>`}
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function setClientStatus(uid, status) {
+  if (!db) return;
+  try {
+    await db.collection('users').doc(uid).update({ status });
+    const client = allClients.find(c => c.uid === uid);
+    if (client) client.status = status;
+    document.getElementById('adminTotal').textContent = allClients.length;
+    document.getElementById('adminPending').textContent = allClients.filter(c => c.status !== 'active').length;
+    document.getElementById('adminActive').textContent = allClients.filter(c => c.status === 'active').length;
+    renderClients();
+    showToast(status === 'active' ? 'Client activated!' : 'Access revoked.', status === 'active' ? 'success' : '');
+  } catch(e) { showToast('Could not update status.', 'error'); }
 }
 
 // ========== LEADS ==========
@@ -810,7 +1004,7 @@ function closeModal() { document.getElementById('addLeadModal').classList.remove
 document.getElementById('addLeadModal').addEventListener('click', e => { if (e.target === document.getElementById('addLeadModal')) closeModal(); });
 
 // ========== NAV ==========
-const sectionIds = ['overview','pipeline','reports','outreach','content','booking','billing','profile','support'];
+const sectionIds = ['overview','pipeline','reports','outreach','content','booking','billing','profile','support','admin'];
 function showSection(id) {
   sectionIds.forEach(s => document.getElementById('section-'+s).classList.toggle('active', s === id));
   document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));

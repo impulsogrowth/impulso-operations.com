@@ -9,17 +9,18 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #02040a; --surface: #080d1a; --card: #0c1220;
-      --border: rgba(255,255,255,0.07); --purple: #0ea5e9;
+      --bg: #f8fafc; --surface: #ffffff; --card: #ffffff;
+      --border: rgba(0,0,0,0.07); --purple: #0ea5e9;
       --purple-light: #38bdf8; --gold: #f59e0b;
-      --white: #ffffff; --gray: #64748b; --light: #e2e8f0;
+      --white: #0f172a; --gray: #64748b; --light: #334155;
       --cyan: #06b6d4; --blue-dark: #0369a1; --emerald: #10b981;
+      --card-shadow: 0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
     }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; display: flex; flex-direction: column; } a { color: inherit; }
     .cursor { width:10px;height:10px;background:var(--purple-light);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:screen; }
     .cursor-ring { width:36px;height:36px;border:1.5px solid rgba(56,189,248,.5);border-radius:50%;position:fixed;pointer-events:none;z-index:9998; }
 
-    nav { width:100%;padding:0 6%;display:flex;align-items:center;justify-content:space-between;height:72px;background:rgba(5,5,8,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100; }
+    nav { width:100%;padding:0 6%;display:flex;align-items:center;justify-content:space-between;height:72px;background:rgba(248,250,252,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100; }
     .logo { font-size:1.25rem;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--white); }
     .logo .dot { color:var(--gold); }
     .nav-back { color:var(--gray);text-decoration:none;font-size:.875rem;font-weight:500;transition:color .2s; }
@@ -33,7 +34,7 @@
     .page-sub { color:var(--gray);font-size:1rem;max-width:520px;margin:0 auto; }
 
     .plans { display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1100px;margin:0 auto 3rem; }
-    .plan-card { background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;display:flex;flex-direction:column;position:relative;transition:all .3s; }
+    .plan-card { background:var(--card);border:1px solid rgba(0,0,0,.07);box-shadow:0 2px 12px rgba(0,0,0,.06);border-radius:20px;padding:2rem;display:flex;flex-direction:column;position:relative;transition:all .3s; }
     .plan-card:hover { border-color:rgba(56,189,248,.3);transform:translateY(-4px); }
     .plan-card.featured { border-color:rgba(56,189,248,.4);background:linear-gradient(160deg,rgba(14,165,233,.08),rgba(17,17,24,1)); }
     .plan-card.featured::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple-light),var(--gold));border-radius:20px 20px 0 0; }
@@ -78,7 +79,7 @@
     .faq-item h4 { font-size:.85rem;font-weight:700;margin-bottom:.4rem; }
     .faq-item p { font-size:.8rem;color:var(--gray);line-height:1.5; }
 
-    footer { text-align:center;padding:1.5rem;color:var(--gray);font-size:.8rem;border-top:1px solid var(--border); }
+    footer { text-align:center;padding:1.5rem;color:#64748b;font-size:.8rem;border-top:1px solid rgba(0,0,0,.07);background:#f1f5f9; }
     footer a { color:var(--purple-light);text-decoration:none; }
 
     .toast { position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid rgba(56,189,248,.3);border-radius:12px;padding:1rem 1.4rem;font-size:.875rem;font-weight:500;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:9999;color:#7dd3fc; }
@@ -102,6 +103,14 @@
     <span class="page-tag">Pricing</span>
     <h1 class="page-title">Choose Your <span class="gradient-text">Plan</span></h1>
     <p class="page-sub">90-day commitment. First-class priority service — we go all in from day one.</p>
+  </div>
+
+  <div style="max-width:640px;margin:0 auto 2.5rem;display:flex;gap:.75rem;align-items:flex-start;background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.2);border-radius:12px;padding:1rem 1.2rem;">
+    <span style="font-size:1.1rem;flex-shrink:0;margin-top:.1rem;">ℹ️</span>
+    <div>
+      <p style="font-size:.875rem;color:var(--light);line-height:1.6;font-weight:600;">After your payment is confirmed:</p>
+      <p style="font-size:.82rem;color:var(--gray);line-height:1.6;margin-top:.2rem;">You'll be redirected to your onboarding page → fill out the intake form → create your client account → Impulso activates your access within 24 hours.</p>
+    </div>
   </div>
 
   <div class="plans">
