@@ -43,8 +43,8 @@
       results: `Most clients see results fast:\n\n🎯 **48 hours** — Leads appear in your pipeline\n📨 **Day 3–5** — Outreach campaigns running\n📅 **Week 1–2** — First booked discovery calls\n💰 **Month 1** — Revenue tracked from pipeline\n\nWe back this with our **zero-risk guarantee** — if you don't see results in 48 hours, we keep working for free until you do.`,
       contract: `Zero contracts, zero commitment. Here's our policy:\n\n✓ Month-to-month only\n✓ Cancel anytime with 30 days notice\n✓ No cancellation fees, ever\n✓ No hidden charges\n✓ Zero-risk 48-hour results guarantee\n\nWe earn your business every single month. That's how we operate.`,
       start: `Getting started is easy:\n\n1️⃣ Fill out our **intake form** (3 min) so we understand your business\n2️⃣ Choose your plan on the **checkout page**\n3️⃣ We activate your system within **24 hours**\n4️⃣ First leads hit your pipeline\n\nReady? [Fill intake form →](intake.html) or [View plans →](checkout.html)`,
-      contact: `You can reach us directly:\n\n📧 **impulsoogrowth@gmail.com**\n📱 **786-567-7337**\n\nWe respond within 24 hours, Mon–Fri. Or I can help you right here — what do you need?`,
-      payment: `We accept payments through **Stripe** (coming live shortly) and currently via email invoice.\n\nOnce Stripe is live, you'll be able to pay directly on the checkout page with any card. For now, just [choose your plan](checkout.html) and we'll send an invoice.\n\nAny billing questions? Email impulsoogrowth@gmail.com`,
+      contact: `You can reach us directly:\n\n📧 **hello@impulso-operations.com**\n📱 **786-567-7337**\n\nWe respond within 24 hours, Mon–Fri. Or I can help you right here — what do you need?`,
+      payment: `We accept payments through **Stripe** (coming live shortly) and currently via email invoice.\n\nOnce Stripe is live, you'll be able to pay directly on the checkout page with any card. For now, just [choose your plan](checkout.html) and we'll send an invoice.\n\nAny billing questions? Email hello@impulso-operations.com`,
       niches: `We work with all local service businesses:\n\n🏠 Real Estate • 💆 Med Spas • 💪 Gyms\n⚖️ Law Firms • 🏦 Mortgage • 🦷 Dental\n🔨 Contractors • 🍽️ Restaurants • 🚗 Auto\n💼 Coaches & Consultants • and more\n\nEvery system is built specifically for your niche. What industry are you in?`,
       login: `You can access your client portal here:\n\n🔐 [Log In →](login.html)\n📝 [Create Account →](signup.html)\n\nOnce logged in, you'll see your lead pipeline, reports, billing, and support — all in one place.`,
       thanks: [
@@ -55,12 +55,12 @@
       bye: [
         "Talk soon! Feel free to come back anytime 👋",
         "See you! Don't hesitate to reach out if you have more questions.",
-        "Take care! You can always email us at impulsoogrowth@gmail.com 🚀"
+        "Take care! You can always email us at hello@impulso-operations.com 🚀"
       ],
       fallback: [
-        "Great question! I might not have that exact answer, but I can connect you with our team. Email us at impulsoogrowth@gmail.com or call 786-567-7337.",
-        "I'm not sure about that one — but our team definitely can help. Reach out at impulsoogrowth@gmail.com and we'll get back to you within 24 hours.",
-        "That's a bit outside my knowledge! For anything complex, our team is the best resource. Email impulsoogrowth@gmail.com or fill out the [intake form](intake.html) and we'll take it from there."
+        "Great question! I might not have that exact answer, but I can connect you with our team. Email us at hello@impulso-operations.com or call 786-567-7337.",
+        "I'm not sure about that one — but our team definitely can help. Reach out at hello@impulso-operations.com and we'll get back to you within 24 hours.",
+        "That's a bit outside my knowledge! For anything complex, our team is the best resource. Email hello@impulso-operations.com or fill out the [intake form](intake.html) and we'll take it from there."
       ]
     },
 
