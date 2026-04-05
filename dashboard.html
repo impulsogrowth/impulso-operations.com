@@ -13,13 +13,10 @@
       --border: rgba(255,255,255,0.06); --purple: #7c3aed;
       --purple-light: #a855f7; --gold: #f59e0b;
       --white: #ffffff; --gray: #6b7280; --light: #e5e7eb;
-      --green: #10b981; --red: #ef4444; --blue: #3b82f6;
+      --green: #10b981; --red: #ef4444; --blue: #3b82f6; --orange: #f97316;
     }
-    html { scroll-behavior: smooth; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); min-height: 100vh; }
-
-    /* CURSOR */
-    .cursor { width:10px;height:10px;background:var(--purple-light);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform .1s;mix-blend-mode:screen; }
+    .cursor { width:10px;height:10px;background:var(--purple-light);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;mix-blend-mode:screen; }
     .cursor-ring { width:36px;height:36px;border:1.5px solid rgba(168,85,247,.5);border-radius:50%;position:fixed;pointer-events:none;z-index:9998; }
 
     /* SIDEBAR */
@@ -27,12 +24,12 @@
     .sidebar-logo { padding:1.5rem;border-bottom:1px solid var(--border); }
     .sidebar-logo a { font-size:1.15rem;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--white); }
     .sidebar-logo .dot { color:var(--gold); }
-    .sidebar-nav { flex:1;padding:1.2rem 0;overflow-y:auto; }
+    .sidebar-nav { flex:1;padding:1rem 0;overflow-y:auto; }
     .nav-section { padding:.5rem 1.2rem .2rem;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-top:.5rem; }
-    .nav-item { display:flex;align-items:center;gap:.75rem;padding:.7rem 1.2rem;color:var(--gray);text-decoration:none;font-size:.875rem;font-weight:500;transition:all .2s;border-radius:0;cursor:pointer;border:none;background:none;width:100%;font-family:inherit; }
+    .nav-item { display:flex;align-items:center;gap:.75rem;padding:.7rem 1.2rem;color:var(--gray);font-size:.875rem;font-weight:500;transition:all .2s;cursor:pointer;border:none;background:none;width:100%;font-family:inherit;text-align:left; }
     .nav-item:hover, .nav-item.active { color:var(--white);background:rgba(124,58,237,.1); }
     .nav-item.active { border-right:2px solid var(--purple-light); }
-    .nav-item .icon { width:18px;text-align:center;font-style:normal; }
+    .nav-item .icon { width:18px;text-align:center;font-style:normal;flex-shrink:0; }
     .sidebar-footer { padding:1.2rem;border-top:1px solid var(--border); }
     .user-mini { display:flex;align-items:center;gap:.75rem;margin-bottom:.8rem; }
     .avatar { width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple-light));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0; }
@@ -44,72 +41,166 @@
 
     /* MAIN */
     .main { margin-left:240px;min-height:100vh;display:flex;flex-direction:column; }
-    .topbar { padding:1.2rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,8,.7);backdrop-filter:blur(20px);position:sticky;top:0;z-index:40; }
-    .topbar-title { font-size:1.1rem;font-weight:700;letter-spacing:-.3px; }
+    .topbar { padding:1rem 2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,8,.8);backdrop-filter:blur(20px);position:sticky;top:0;z-index:40; }
+    .topbar-left { display:flex;align-items:center;gap:1rem; }
+    .topbar-title { font-size:1.05rem;font-weight:700;letter-spacing:-.3px; }
     .topbar-right { display:flex;align-items:center;gap:1rem; }
-    .status-dot { width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(16,185,129,.6); }
-    .status-label { font-size:.8rem;color:var(--gray); }
-    .menu-toggle { display:none;background:none;border:none;color:var(--white);font-size:1.4rem;cursor:pointer;padding:.25rem; }
+    .status-pill { display:flex;align-items:center;gap:.4rem;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:20px;padding:.3rem .8rem; }
+    .status-dot { width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.8); }
+    .status-label { font-size:.75rem;color:#6ee7b7;font-weight:600; }
+    .menu-toggle { display:none;background:none;border:none;color:var(--white);font-size:1.4rem;cursor:pointer; }
 
-    .content { flex:1;padding:2rem; }
-
-    /* VERIFY BANNER */
-    .verify-banner { background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem; }
-    .verify-banner p { font-size:.875rem;color:#fcd34d;flex:1; }
-    .verify-banner button { background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.4);border-radius:6px;color:#fcd34d;padding:.4rem .8rem;font-size:.8rem;cursor:pointer;font-family:inherit;white-space:nowrap; }
-
-    /* WELCOME */
-    .welcome { margin-bottom:2rem; }
-    .welcome h1 { font-size:1.8rem;font-weight:800;letter-spacing:-1px;margin-bottom:.3rem; }
-    .welcome p { color:var(--gray);font-size:.9rem; }
+    .content { flex:1;padding:1.5rem 2rem; }
     .gradient-text { background:linear-gradient(135deg,var(--purple-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
 
-    /* STATS */
-    .stats-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem; }
-    .stat-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;transition:all .3s; }
-    .stat-card:hover { border-color:rgba(168,85,247,.2);transform:translateY(-2px); }
-    .stat-label { font-size:.75rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem; }
-    .stat-val { font-size:1.8rem;font-weight:800;letter-spacing:-1px; }
-    .stat-sub { font-size:.75rem;color:var(--gray);margin-top:.25rem; }
-    .stat-badge { display:inline-block;background:rgba(16,185,129,.15);color:#6ee7b7;font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:20px;margin-top:.3rem; }
-    .stat-badge.pending { background:rgba(245,158,11,.15);color:#fcd34d; }
-
     /* SECTIONS */
-    .section-title { font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem; }
+    .section { display:none; }
+    .section.active { display:block; }
 
-    /* FEATURE CARDS */
-    .feature-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem; }
-    .feature-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;transition:all .3s;cursor:pointer; }
-    .feature-card:hover { border-color:rgba(168,85,247,.3);background:rgba(124,58,237,.05);transform:translateY(-2px); }
-    .fc-icon { font-size:1.6rem;margin-bottom:.8rem; }
-    .fc-title { font-size:.95rem;font-weight:700;margin-bottom:.35rem; }
-    .fc-desc { font-size:.8rem;color:var(--gray);line-height:1.5; }
-    .fc-badge { display:inline-block;font-size:.7rem;font-weight:600;padding:.2rem .6rem;border-radius:20px;margin-top:.6rem; }
-    .fc-badge.live { background:rgba(16,185,129,.15);color:#6ee7b7; }
-    .fc-badge.soon { background:rgba(107,114,128,.15);color:var(--gray); }
-    .fc-badge.pending { background:rgba(245,158,11,.15);color:#fcd34d; }
+    /* PAGE HEADER */
+    .page-head { margin-bottom:1.5rem; }
+    .page-head h1 { font-size:1.6rem;font-weight:800;letter-spacing:-1px;margin-bottom:.2rem; }
+    .page-head p { color:var(--gray);font-size:.875rem; }
 
-    /* ACTIVITY */
-    .activity-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:2rem; }
-    .activity-empty { text-align:center;padding:2rem;color:var(--gray);font-size:.875rem; }
-    .activity-empty .ae-icon { font-size:2.5rem;margin-bottom:.75rem; }
+    /* STATS */
+    .stats-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem; }
+    .stat-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;transition:all .3s;position:relative;overflow:hidden; }
+    .stat-card:hover { border-color:rgba(168,85,247,.2);transform:translateY(-2px); }
+    .stat-card::after { content:'';position:absolute;top:0;left:0;right:0;height:2px; }
+    .stat-card.s1::after { background:var(--purple); }
+    .stat-card.s2::after { background:var(--blue); }
+    .stat-card.s3::after { background:var(--green); }
+    .stat-card.s4::after { background:var(--gold); }
+    .stat-label { font-size:.72rem;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem; }
+    .stat-val { font-size:1.9rem;font-weight:900;letter-spacing:-1.5px;margin-bottom:.2rem; }
+    .stat-sub { font-size:.72rem;color:var(--gray); }
+    .stat-change { font-size:.72rem;font-weight:600;margin-top:.3rem; }
+    .stat-change.up { color:var(--green); }
+    .stat-change.pending { color:#fcd34d; }
 
-    /* PLAN CARD */
-    .plan-card { background:var(--card);border:1px solid rgba(168,85,247,.3);border-radius:14px;padding:1.4rem;position:relative;overflow:hidden;margin-bottom:2rem; }
-    .plan-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple-light),var(--gold)); }
-    .plan-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem; }
-    .plan-name { font-size:1rem;font-weight:700; }
-    .plan-status { font-size:.75rem;font-weight:600;padding:.25rem .7rem;border-radius:20px;background:rgba(245,158,11,.15);color:#fcd34d; }
-    .plan-status.active { background:rgba(16,185,129,.15);color:#6ee7b7; }
-    .plan-cta { display:inline-block;margin-top:1rem;padding:.7rem 1.4rem;background:linear-gradient(135deg,var(--purple),var(--purple-light));border-radius:8px;color:white;font-size:.85rem;font-weight:700;text-decoration:none;transition:all .3s; }
-    .plan-cta:hover { box-shadow:0 4px 16px rgba(124,58,237,.4);transform:translateY(-1px); }
+    /* QUICK ACTIONS */
+    .quick-actions { display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem; }
+    .qa-btn { background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;text-decoration:none;color:var(--white); }
+    .qa-btn:hover { border-color:rgba(168,85,247,.3);background:rgba(124,58,237,.06);transform:translateY(-2px); }
+    .qa-icon { font-size:1.4rem;margin-bottom:.4rem; }
+    .qa-label { font-size:.78rem;font-weight:600;color:var(--light); }
+
+    /* TWO COL */
+    .two-col { display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem; }
+    .three-col { display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem; }
+
+    /* CARD */
+    .card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem; }
+    .card-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem; }
+    .card-title { font-size:.875rem;font-weight:700; }
+    .card-action { font-size:.78rem;color:var(--purple-light);cursor:pointer;background:none;border:none;font-family:inherit;padding:0; }
+    .card-action:hover { text-decoration:underline; }
+
+    /* PIPELINE TABLE */
+    .pipeline-wrap { background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem; }
+    .pipeline-header { padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap; }
+    .pipeline-title { font-size:.875rem;font-weight:700; }
+    .pipeline-filters { display:flex;gap:.5rem;flex-wrap:wrap; }
+    .filter-btn { padding:.35rem .75rem;border-radius:20px;font-size:.75rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--gray);font-family:inherit;transition:all .2s; }
+    .filter-btn.active { background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.4);color:var(--purple-light); }
+    .pipeline-search { padding:.4rem .8rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--white);font-size:.8rem;font-family:inherit;outline:none;width:180px; }
+    .pipeline-search::placeholder { color:var(--gray); }
+    .pipeline-search:focus { border-color:rgba(168,85,247,.4); }
+
+    table { width:100%;border-collapse:collapse; }
+    thead tr { border-bottom:1px solid var(--border); }
+    th { padding:.75rem 1rem;font-size:.72rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;text-align:left; }
+    tbody tr { border-bottom:1px solid rgba(255,255,255,.03);transition:background .2s; }
+    tbody tr:hover { background:rgba(255,255,255,.02); }
+    tbody tr:last-child { border-bottom:none; }
+    td { padding:.85rem 1rem;font-size:.85rem; }
+    .td-name { font-weight:600;color:var(--white); }
+    .td-sub { font-size:.75rem;color:var(--gray);margin-top:.1rem; }
+    .td-email { color:var(--gray);font-size:.82rem; }
+
+    .status-badge { display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .65rem;border-radius:20px;font-size:.72rem;font-weight:600; }
+    .status-badge.new { background:rgba(59,130,246,.15);color:#93c5fd; }
+    .status-badge.contacted { background:rgba(245,158,11,.15);color:#fcd34d; }
+    .status-badge.qualified { background:rgba(168,85,247,.15);color:#c4b5fd; }
+    .status-badge.booked { background:rgba(16,185,129,.15);color:#6ee7b7; }
+    .status-badge.closed { background:rgba(16,185,129,.25);color:#34d399; }
+    .status-badge.lost { background:rgba(239,68,68,.12);color:#fca5a5; }
+    .status-badge.active { background:rgba(16,185,129,.15);color:#6ee7b7; }
+    .status-badge.pending { background:rgba(245,158,11,.15);color:#fcd34d; }
+
+    .score-bar { display:flex;align-items:center;gap:.5rem; }
+    .score-track { width:50px;height:4px;background:var(--border);border-radius:2px;overflow:hidden; }
+    .score-fill { height:100%;border-radius:2px; }
+    .score-num { font-size:.78rem;font-weight:600; }
+
+    .td-actions { display:flex;gap:.4rem; }
+    .act-btn { padding:.3rem .6rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;font-size:.72rem;color:var(--gray);cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap; }
+    .act-btn:hover { border-color:rgba(168,85,247,.4);color:var(--purple-light); }
+
+    .empty-table { text-align:center;padding:3rem;color:var(--gray); }
+    .empty-table .ei { font-size:2.5rem;margin-bottom:.75rem; }
+
+    /* ADD LEAD MODAL */
+    .modal-overlay { position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2rem;width:100%;max-width:480px;position:relative; }
+    .modal::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:20px 20px 0 0; }
+    .modal-title { font-size:1.1rem;font-weight:800;margin-bottom:1.2rem; }
+    .modal-close { position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--gray);font-size:1.2rem;cursor:pointer; }
+    .mform-group { margin-bottom:.9rem; }
+    .mform-group label { display:block;font-size:.78rem;font-weight:600;color:var(--light);margin-bottom:.35rem; }
+    .mform-group input, .mform-group select { width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;color:var(--white);font-size:.875rem;font-family:inherit;outline:none;transition:all .2s; }
+    .mform-group input:focus, .mform-group select:focus { border-color:rgba(168,85,247,.5); }
+    .mform-group select option { background:var(--card); }
+    .mform-row { display:grid;grid-template-columns:1fr 1fr;gap:.75rem; }
+    .modal-actions { display:flex;gap:.75rem;margin-top:1.2rem; }
+    .modal-submit { flex:1;padding:.8rem;background:linear-gradient(135deg,var(--purple),var(--purple-light));border:none;border-radius:8px;color:white;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;transition:all .3s; }
+    .modal-submit:hover { box-shadow:0 4px 16px rgba(124,58,237,.4); }
+    .modal-cancel { padding:.8rem 1.2rem;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--gray);font-weight:600;font-size:.875rem;cursor:pointer;font-family:inherit;transition:all .2s; }
+    .modal-cancel:hover { border-color:rgba(168,85,247,.3);color:var(--white); }
+
+    /* ACTIVITY FEED */
+    .activity-list { display:flex;flex-direction:column;gap:.6rem; }
+    .activity-item { display:flex;align-items:flex-start;gap:.8rem;padding:.75rem;background:rgba(255,255,255,.02);border-radius:10px; }
+    .act-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:.35rem; }
+    .act-dot.purple { background:var(--purple-light); }
+    .act-dot.green { background:var(--green); }
+    .act-dot.blue { background:var(--blue); }
+    .act-dot.gold { background:var(--gold); }
+    .act-text { font-size:.82rem;color:var(--light);flex:1; }
+    .act-time { font-size:.72rem;color:var(--gray);flex-shrink:0; }
+
+    /* ONBOARDING CHECKLIST */
+    .checklist { display:flex;flex-direction:column;gap:.5rem; }
+    .cl-item { display:flex;align-items:center;gap:.8rem;padding:.7rem .9rem;background:rgba(255,255,255,.02);border-radius:10px;transition:all .2s; }
+    .cl-check { width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;transition:all .2s; }
+    .cl-check.done { background:rgba(16,185,129,.2);border-color:var(--green);color:var(--green); }
+    .cl-check.pending { border-color:var(--purple-light); }
+    .cl-text { font-size:.85rem;flex:1; }
+    .cl-text.done { color:var(--gray);text-decoration:line-through; }
+    .cl-action { font-size:.75rem;color:var(--purple-light);text-decoration:none;font-weight:600; }
+    .cl-action:hover { text-decoration:underline; }
+
+    /* PLAN UPGRADE */
+    .upgrade-card { background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(245,158,11,.06));border:1px solid rgba(168,85,247,.25);border-radius:14px;padding:1.4rem;position:relative;overflow:hidden; }
+    .upgrade-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--purple-light),var(--gold)); }
+    .upgrade-card h3 { font-size:.95rem;font-weight:800;margin-bottom:.4rem; }
+    .upgrade-card p { color:var(--gray);font-size:.82rem;line-height:1.5;margin-bottom:1rem; }
+    .upgrade-btn { display:inline-block;padding:.65rem 1.3rem;background:linear-gradient(135deg,var(--purple),var(--purple-light));border-radius:8px;color:white;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .3s; }
+    .upgrade-btn:hover { box-shadow:0 4px 16px rgba(124,58,237,.4);transform:translateY(-1px); }
 
     /* SUPPORT */
-    .support-card { background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem; }
-    .support-card p { color:var(--gray);font-size:.875rem;line-height:1.6;margin-bottom:1rem; }
-    .support-links { display:flex;gap:.75rem;flex-wrap:wrap; }
-    .support-link { display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1rem;border:1px solid var(--border);border-radius:8px;color:var(--light);text-decoration:none;font-size:.82rem;font-weight:500;transition:all .2s; }
+    .support-links { display:flex;gap:.6rem;flex-wrap:wrap; }
+    .support-link { display:inline-flex;align-items:center;gap:.4rem;padding:.55rem .9rem;border:1px solid var(--border);border-radius:8px;color:var(--light);text-decoration:none;font-size:.8rem;font-weight:500;transition:all .2s; }
     .support-link:hover { border-color:rgba(168,85,247,.4);color:var(--purple-light); }
+
+    /* LOADING */
+    #loadingScreen { position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:1rem;transition:opacity .4s; }
+    .load-logo { font-size:1.4rem;font-weight:800;letter-spacing:-.5px; }
+    .load-logo .dot { color:var(--gold); }
+    .load-bar { width:120px;height:2px;background:var(--border);border-radius:2px;overflow:hidden; }
+    .load-fill { height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));animation:load 1s ease forwards; }
+    @keyframes load { from{width:0} to{width:100%} }
 
     /* TOAST */
     .toast { position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.4rem;font-size:.875rem;font-weight:500;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:9999;max-width:320px; }
@@ -117,27 +208,23 @@
     .toast.success { border-color:rgba(16,185,129,.3);color:#6ee7b7; }
     .toast.error { border-color:rgba(239,68,68,.3);color:#fca5a5; }
 
-    /* LOADING */
-    #loadingScreen { position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:1rem; }
-    .load-logo { font-size:1.4rem;font-weight:800;letter-spacing:-.5px; }
-    .load-logo .dot { color:var(--gold); }
-    .load-bar { width:120px;height:2px;background:var(--border);border-radius:2px;overflow:hidden; }
-    .load-fill { height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:2px;animation:load 1.2s ease forwards; }
-    @keyframes load { from { width:0 } to { width:100% } }
+    /* VERIFY BANNER */
+    .verify-banner { background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:.8rem 1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.75rem; }
+    .verify-banner p { font-size:.82rem;color:#fcd34d;flex:1; }
+    .verify-banner button { background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.3);border-radius:6px;color:#fcd34d;padding:.3rem .7rem;font-size:.75rem;cursor:pointer;font-family:inherit;white-space:nowrap; }
 
-    /* RESPONSIVE */
-    @media(max-width:900px) {
-      .stats-grid { grid-template-columns:repeat(2,1fr); }
-      .feature-grid { grid-template-columns:repeat(2,1fr); }
-    }
+    @media(max-width:1100px) { .stats-grid { grid-template-columns:repeat(2,1fr); } .quick-actions { grid-template-columns:repeat(2,1fr); } .three-col { grid-template-columns:1fr 1fr; } }
+    @media(max-width:800px) { .two-col { grid-template-columns:1fr; } .three-col { grid-template-columns:1fr; } }
     @media(max-width:640px) {
       .sidebar { transform:translateX(-100%); }
-      .sidebar.open { transform:translateX(0); }
+      .sidebar.open { transform:translateX(0); box-shadow:4px 0 24px rgba(0,0,0,.5); }
       .main { margin-left:0; }
       .menu-toggle { display:block; }
       .stats-grid { grid-template-columns:1fr 1fr; }
-      .feature-grid { grid-template-columns:1fr; }
-      .content { padding:1.2rem; }
+      .quick-actions { grid-template-columns:1fr 1fr; }
+      .content { padding:1rem; }
+      th:nth-child(n+4) { display:none; }
+      td:nth-child(n+4) { display:none; }
     }
   </style>
 </head>
@@ -151,6 +238,47 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
+<!-- ADD LEAD MODAL -->
+<div class="modal-overlay" id="addLeadModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <p class="modal-title">Add Lead</p>
+    <div class="mform-row">
+      <div class="mform-group"><label>First Name</label><input type="text" id="ml-fname" placeholder="Alex" /></div>
+      <div class="mform-group"><label>Last Name</label><input type="text" id="ml-lname" placeholder="Rivera" /></div>
+    </div>
+    <div class="mform-group"><label>Business Name</label><input type="text" id="ml-biz" placeholder="Rivera Realty" /></div>
+    <div class="mform-group"><label>Email</label><input type="email" id="ml-email" placeholder="alex@business.com" /></div>
+    <div class="mform-group"><label>Phone</label><input type="tel" id="ml-phone" placeholder="(786) 000-0000" /></div>
+    <div class="mform-row">
+      <div class="mform-group">
+        <label>Niche</label>
+        <select id="ml-niche">
+          <option value="">Select...</option>
+          <option>Real Estate</option><option>Med Spa</option><option>Gym / Fitness</option>
+          <option>Law Firm</option><option>Mortgage</option><option>Dental</option>
+          <option>Home Services</option><option>Restaurant</option><option>Coaching</option><option>Other</option>
+        </select>
+      </div>
+      <div class="mform-group">
+        <label>Status</label>
+        <select id="ml-status">
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="qualified">Qualified</option>
+          <option value="booked">Booked</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+    </div>
+    <div class="mform-group"><label>Notes</label><input type="text" id="ml-notes" placeholder="Any notes..." /></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-submit" onclick="saveLead()">Add Lead →</button>
+    </div>
+  </div>
+</div>
+
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
@@ -163,8 +291,9 @@
     <button class="nav-item" onclick="showSection('reports')"><i class="icon">📈</i> Reports</button>
 
     <p class="nav-section">Tools</p>
-    <button class="nav-item" onclick="showSection('ai')"><i class="icon">🤖</i> AI Command Center</button>
-    <button class="nav-item" onclick="showSection('content')"><i class="icon">✍️</i> Content Generator</button>
+    <button class="nav-item" onclick="showSection('outreach')"><i class="icon">📨</i> Outreach</button>
+    <button class="nav-item" onclick="showSection('content')"><i class="icon">✍️</i> Content</button>
+    <button class="nav-item" onclick="showSection('booking')"><i class="icon">📅</i> Book a Call</button>
 
     <p class="nav-section">Account</p>
     <button class="nav-item" onclick="showSection('billing')"><i class="icon">💳</i> Billing</button>
@@ -183,198 +312,302 @@
   </div>
 </aside>
 
-<!-- MAIN -->
+<!-- MAIN CONTENT -->
 <div class="main">
   <header class="topbar">
-    <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="topbar-left">
       <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
       <span class="topbar-title" id="topbarTitle">Dashboard</span>
     </div>
     <div class="topbar-right">
-      <div class="status-dot"></div>
-      <span class="status-label">System Online</span>
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        <span class="status-label">System Online</span>
+      </div>
     </div>
   </header>
 
   <div class="content">
-
-    <!-- VERIFY EMAIL BANNER -->
     <div class="verify-banner" id="verifyBanner" style="display:none;">
       <span>⚠️</span>
-      <p>Please verify your email address to unlock full access. Check your inbox for the verification link.</p>
-      <button onclick="resendVerify()">Resend email</button>
+      <p>Verify your email to unlock full access.</p>
+      <button onclick="resendVerify()">Resend</button>
     </div>
 
-    <!-- OVERVIEW SECTION -->
-    <div id="section-overview">
-      <div class="welcome">
+    <!-- ===== OVERVIEW ===== -->
+    <div class="section active" id="section-overview">
+      <div class="page-head">
         <h1>Welcome back, <span class="gradient-text" id="welcomeName">there</span> 👋</h1>
-        <p id="welcomeSub">Here's a live snapshot of your Impulso system.</p>
+        <p id="welcomeSub">Here's your Impulso system snapshot.</p>
       </div>
 
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Leads Generated</div>
-          <div class="stat-val" id="statLeads">—</div>
-          <div class="stat-sub">All-time pipeline entries</div>
-          <span class="stat-badge pending">Activating</span>
+        <div class="stat-card s1">
+          <div class="stat-label">Total Leads</div>
+          <div class="stat-val" id="statLeads">0</div>
+          <div class="stat-sub">In your pipeline</div>
+          <div class="stat-change pending" id="statLeadsChange">Activating soon</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card s2">
           <div class="stat-label">Outreach Sent</div>
-          <div class="stat-val" id="statOutreach">—</div>
-          <div class="stat-sub">Emails + SMS combined</div>
-          <span class="stat-badge pending">Activating</span>
+          <div class="stat-val" id="statOutreach">0</div>
+          <div class="stat-sub">Emails + SMS</div>
+          <div class="stat-change pending">This month</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card s3">
           <div class="stat-label">Calls Booked</div>
-          <div class="stat-val" id="statCalls">—</div>
-          <div class="stat-sub">Discovery calls scheduled</div>
-          <span class="stat-badge pending">Activating</span>
+          <div class="stat-val" id="statCalls">0</div>
+          <div class="stat-sub">Discovery calls</div>
+          <div class="stat-change pending">This month</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Revenue Automated</div>
-          <div class="stat-val" id="statRev">—</div>
-          <div class="stat-sub">Tracked from your pipeline</div>
-          <span class="stat-badge pending">Activating</span>
-        </div>
-      </div>
-
-      <!-- PLAN -->
-      <div class="plan-card" id="planCard">
-        <div class="plan-header">
-          <span class="plan-name" id="planName">Plan</span>
-          <span class="plan-status" id="planStatus">Pending</span>
-        </div>
-        <p style="color:var(--gray);font-size:.875rem;line-height:1.6;">Your account is set up. Our team will activate your plan within 24 hours of your payment confirmation. Once active, your live data will appear here.</p>
-        <a href="index.html#packages" class="plan-cta">View Plans →</a>
-      </div>
-
-      <!-- FEATURES -->
-      <p class="section-title">🛠 Your Tools</p>
-      <div class="feature-grid">
-        <div class="feature-card" onclick="showSection('pipeline')">
-          <div class="fc-icon">🎯</div>
-          <div class="fc-title">Lead Pipeline</div>
-          <div class="fc-desc">View, score, and manage every lead your AI system has found for your business.</div>
-          <span class="fc-badge pending">Activating soon</span>
-        </div>
-        <div class="feature-card" onclick="showSection('ai')">
-          <div class="fc-icon">🤖</div>
-          <div class="fc-title">AI Command Center</div>
-          <div class="fc-desc">Access 52 AI-powered commands: lead hunt, outreach, content, reports, and more.</div>
-          <span class="fc-badge pending">Activating soon</span>
-        </div>
-        <div class="feature-card" onclick="showSection('reports')">
-          <div class="fc-icon">📈</div>
-          <div class="fc-title">Monthly Reports</div>
-          <div class="fc-desc">Full breakdown of leads generated, emails sent, calls booked, and revenue tracked.</div>
-          <span class="fc-badge pending">Activating soon</span>
-        </div>
-        <div class="feature-card" onclick="showSection('content')">
-          <div class="fc-icon">✍️</div>
-          <div class="fc-title">Content Generator</div>
-          <div class="fc-desc">AI-written posts, emails, and ads tailored to your business and niche.</div>
-          <span class="fc-badge soon">Coming soon</span>
-        </div>
-        <div class="feature-card" onclick="showSection('billing')">
-          <div class="fc-icon">💳</div>
-          <div class="fc-title">Billing & Invoices</div>
-          <div class="fc-desc">Manage your subscription, view invoices, and update payment methods.</div>
-          <span class="fc-badge live">Available</span>
-        </div>
-        <div class="feature-card" onclick="showSection('support')">
-          <div class="fc-icon">📞</div>
-          <div class="fc-title">Direct Support</div>
-          <div class="fc-desc">Reach your dedicated account manager. Response guaranteed within 24 hours.</div>
-          <span class="fc-badge live">Available</span>
+        <div class="stat-card s4">
+          <div class="stat-label">Revenue Tracked</div>
+          <div class="stat-val" id="statRev">$0</div>
+          <div class="stat-sub">From pipeline</div>
+          <div class="stat-change pending">Activating soon</div>
         </div>
       </div>
 
-      <!-- RECENT ACTIVITY -->
-      <p class="section-title">🕐 Recent Activity</p>
-      <div class="activity-card">
-        <div class="activity-empty">
-          <div class="ae-icon">🚀</div>
-          <p>Your activity will appear here once your system is activated.<br>Our team will be in touch within 24 hours.</p>
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <div class="qa-btn" onclick="showSection('pipeline')">
+          <div class="qa-icon">🎯</div>
+          <div class="qa-label">View Pipeline</div>
+        </div>
+        <div class="qa-btn" onclick="openModal()">
+          <div class="qa-icon">➕</div>
+          <div class="qa-label">Add Lead</div>
+        </div>
+        <div class="qa-btn" onclick="showSection('booking')">
+          <div class="qa-icon">📅</div>
+          <div class="qa-label">Book a Call</div>
+        </div>
+        <div class="qa-btn" onclick="showSection('support')">
+          <div class="qa-icon">💬</div>
+          <div class="qa-label">Get Support</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- ONBOARDING -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🚀 Getting Started</span>
+          </div>
+          <div class="checklist">
+            <div class="cl-item">
+              <div class="cl-check done">✓</div>
+              <span class="cl-text done">Create your account</span>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check" id="cl-intake" style="border-color:var(--gold);">2</div>
+              <span class="cl-text" id="clt-intake">Fill out intake form</span>
+              <a href="intake.html" class="cl-action">Do it →</a>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check" style="border-color:var(--gray);">3</div>
+              <span class="cl-text">Choose a plan</span>
+              <a href="checkout.html" class="cl-action">View plans →</a>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check" style="border-color:var(--gray);">4</div>
+              <span class="cl-text">System activation (24hr)</span>
+            </div>
+            <div class="cl-item">
+              <div class="cl-check" style="border-color:var(--gray);">5</div>
+              <span class="cl-text">First leads in your pipeline</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVITY -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🕐 Recent Activity</span>
+          </div>
+          <div class="activity-list" id="activityFeed">
+            <div style="text-align:center;padding:1.5rem;color:var(--gray);font-size:.85rem;">
+              <div style="font-size:2rem;margin-bottom:.5rem;">📭</div>
+              Activity will appear here once your system is live.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLAN + UPGRADE -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📋 Your Plan</span>
+            <span class="status-badge" id="overviewPlanBadge" style="background:rgba(245,158,11,.15);color:#fcd34d;">Pending</span>
+          </div>
+          <p style="font-size:.875rem;font-weight:700;margin-bottom:.3rem;" id="overviewPlanName">No Active Plan</p>
+          <p style="font-size:.82rem;color:var(--gray);line-height:1.5;margin-bottom:1rem;">Complete the intake form and choose a plan to get your system live within 24 hours.</p>
+          <a href="checkout.html" style="display:inline-block;padding:.65rem 1.2rem;background:linear-gradient(135deg,var(--purple),var(--purple-light));border-radius:8px;color:white;font-size:.82rem;font-weight:700;text-decoration:none;">View Plans →</a>
+        </div>
+        <div class="upgrade-card">
+          <h3>⚡ Unlock System + Agent</h3>
+          <p>Get a custom AI agent built for your exact niche. Handles intake, responds to leads 24/7, and qualifies prospects automatically.</p>
+          <a href="checkout.html" class="upgrade-btn">Upgrade to $1,200/mo →</a>
         </div>
       </div>
     </div>
 
-    <!-- PIPELINE -->
-    <div id="section-pipeline" style="display:none;">
-      <div class="welcome"><h1>Lead <span class="gradient-text">Pipeline</span></h1><p>Your live lead tracking system.</p></div>
-      <div class="activity-card"><div class="activity-empty"><div class="ae-icon">🎯</div><p>Your lead pipeline will appear here once your account is activated.<br>Leads are generated 24/7 by your AI system.</p></div></div>
-    </div>
-
-    <!-- REPORTS -->
-    <div id="section-reports" style="display:none;">
-      <div class="welcome"><h1>Monthly <span class="gradient-text">Reports</span></h1><p>Full performance breakdowns.</p></div>
-      <div class="activity-card"><div class="activity-empty"><div class="ae-icon">📈</div><p>Reports generate automatically at the end of each month.<br>Your first report will appear after your system goes live.</p></div></div>
-    </div>
-
-    <!-- AI COMMANDS -->
-    <div id="section-ai" style="display:none;">
-      <div class="welcome"><h1>AI <span class="gradient-text">Command Center</span></h1><p>52 AI-powered commands at your fingertips.</p></div>
-      <div class="activity-card"><div class="activity-empty"><div class="ae-icon">🤖</div><p>Your AI command center is being configured.<br>You'll have access to all 52 commands once your account is activated.</p></div></div>
-    </div>
-
-    <!-- CONTENT -->
-    <div id="section-content" style="display:none;">
-      <div class="welcome"><h1>Content <span class="gradient-text">Generator</span></h1><p>AI-written content for your business.</p></div>
-      <div class="activity-card"><div class="activity-empty"><div class="ae-icon">✍️</div><p>Content generation tools are coming soon.<br>This feature will be available in Q2 2026.</p></div></div>
-    </div>
-
-    <!-- BILLING -->
-    <div id="section-billing" style="display:none;">
-      <div class="welcome"><h1>Billing & <span class="gradient-text">Invoices</span></h1><p>Manage your subscription.</p></div>
-      <div class="plan-card">
-        <div class="plan-header">
-          <span class="plan-name">Current Plan</span>
-          <span class="plan-status" id="billingPlanStatus">Pending Activation</span>
+    <!-- ===== LEAD PIPELINE ===== -->
+    <div class="section" id="section-pipeline">
+      <div class="page-head" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <h1>Lead <span class="gradient-text">Pipeline</span></h1>
+          <p>Track and manage every lead in your system.</p>
         </div>
-        <p style="color:var(--gray);font-size:.875rem;line-height:1.6;margin-bottom:1rem;">Once your plan is active, billing details and invoice history will appear here. For immediate billing questions, contact us directly.</p>
+        <button onclick="openModal()" style="padding:.75rem 1.4rem;background:linear-gradient(135deg,var(--purple),var(--purple-light));border:none;border-radius:10px;color:white;font-weight:700;font-size:.875rem;cursor:pointer;font-family:inherit;white-space:nowrap;">+ Add Lead</button>
+      </div>
+
+      <!-- KANBAN STATS -->
+      <div class="stats-grid" style="grid-template-columns:repeat(6,1fr);">
+        <div class="stat-card" style="padding:.9rem;"><div class="stat-label">New</div><div class="stat-val" style="font-size:1.4rem;" id="kNew">0</div></div>
+        <div class="stat-card" style="padding:.9rem;"><div class="stat-label">Contacted</div><div class="stat-val" style="font-size:1.4rem;" id="kContacted">0</div></div>
+        <div class="stat-card" style="padding:.9rem;"><div class="stat-label">Qualified</div><div class="stat-val" style="font-size:1.4rem;" id="kQualified">0</div></div>
+        <div class="stat-card" style="padding:.9rem;"><div class="stat-label">Booked</div><div class="stat-val" style="font-size:1.4rem;" id="kBooked">0</div></div>
+        <div class="stat-card" style="padding:.9rem;"><div class="stat-label">Closed</div><div class="stat-val" style="font-size:1.4rem;" id="kClosed">0</div></div>
+        <div class="stat-card" style="padding:.9rem;"><div class="stat-label">Lost</div><div class="stat-val" style="font-size:1.4rem;" id="kLost">0</div></div>
+      </div>
+
+      <div class="pipeline-wrap">
+        <div class="pipeline-header">
+          <span class="pipeline-title">All Leads</span>
+          <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+            <input class="pipeline-search" type="text" placeholder="Search leads..." oninput="filterLeads(this.value)" />
+            <div class="pipeline-filters">
+              <button class="filter-btn active" onclick="filterByStatus('all', this)">All</button>
+              <button class="filter-btn" onclick="filterByStatus('new', this)">New</button>
+              <button class="filter-btn" onclick="filterByStatus('contacted', this)">Contacted</button>
+              <button class="filter-btn" onclick="filterByStatus('qualified', this)">Qualified</button>
+              <button class="filter-btn" onclick="filterByStatus('booked', this)">Booked</button>
+              <button class="filter-btn" onclick="filterByStatus('closed', this)">Closed</button>
+            </div>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Lead</th>
+                <th>Business</th>
+                <th>Status</th>
+                <th>Score</th>
+                <th>Added</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="leadsTable">
+              <tr><td colspan="6"><div class="empty-table"><div class="ei">🎯</div>No leads yet. Click "+ Add Lead" to get started.</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== REPORTS ===== -->
+    <div class="section" id="section-reports">
+      <div class="page-head"><h1>Monthly <span class="gradient-text">Reports</span></h1><p>Full performance breakdowns.</p></div>
+      <div class="card" style="text-align:center;padding:3rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">📈</div>
+        <p style="font-weight:700;margin-bottom:.5rem;">Reports generate automatically</p>
+        <p style="color:var(--gray);font-size:.875rem;">Your first report will appear at the end of your first active month.</p>
+      </div>
+    </div>
+
+    <!-- ===== OUTREACH ===== -->
+    <div class="section" id="section-outreach">
+      <div class="page-head"><h1>Outreach <span class="gradient-text">Center</span></h1><p>Emails and SMS sent on your behalf.</p></div>
+      <div class="card" style="text-align:center;padding:3rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">📨</div>
+        <p style="font-weight:700;margin-bottom:.5rem;">Outreach runs automatically</p>
+        <p style="color:var(--gray);font-size:.875rem;">Once your system is active, outreach logs will appear here. Every email and SMS sent on your behalf is tracked.</p>
+      </div>
+    </div>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="section" id="section-content">
+      <div class="page-head"><h1>Content <span class="gradient-text">Generator</span></h1><p>AI-written content for your business.</p></div>
+      <div class="card" style="text-align:center;padding:3rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">✍️</div>
+        <p style="font-weight:700;margin-bottom:.5rem;">Coming soon</p>
+        <p style="color:var(--gray);font-size:.875rem;">AI-generated posts, emails, and ads tailored to your business. Launching Q2 2026.</p>
+      </div>
+    </div>
+
+    <!-- ===== BOOKING ===== -->
+    <div class="section" id="section-booking">
+      <div class="page-head"><h1>Book a <span class="gradient-text">Call</span></h1><p>Schedule time with your account manager.</p></div>
+      <div class="card">
+        <p style="color:var(--gray);font-size:.875rem;line-height:1.6;margin-bottom:1.2rem;">Schedule a free strategy call or onboarding session. We'll walk through your system, answer questions, and plan your next steps.</p>
         <div class="support-links">
-          <a href="mailto:impulsoogrowth@gmail.com" class="support-link">📧 Email billing support</a>
-          <a href="index.html#packages" class="support-link">💳 View payment options</a>
+          <a href="mailto:impulsoogrowth@gmail.com?subject=Book a Call" class="support-link">📧 Email to book</a>
+          <a href="tel:7865677337" class="support-link">📱 786-567-7337</a>
+        </div>
+        <div style="margin-top:1.5rem;background:rgba(124,58,237,.06);border:1px solid rgba(168,85,247,.15);border-radius:12px;padding:1.5rem;text-align:center;">
+          <p style="font-size:.875rem;color:var(--gray);">Calendly booking coming soon — email us to schedule for now.</p>
         </div>
       </div>
     </div>
 
-    <!-- PROFILE -->
-    <div id="section-profile" style="display:none;">
-      <div class="welcome"><h1>Your <span class="gradient-text">Profile</span></h1><p>Account details and settings.</p></div>
-      <div class="plan-card">
-        <p class="section-title" style="margin-bottom:1.2rem;">Account Info</p>
-        <div style="display:grid;gap:.8rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem;background:rgba(255,255,255,.02);border-radius:8px;">
-            <span style="color:var(--gray);font-size:.85rem;">Name</span>
+    <!-- ===== BILLING ===== -->
+    <div class="section" id="section-billing">
+      <div class="page-head"><h1>Billing & <span class="gradient-text">Invoices</span></h1><p>Manage your subscription.</p></div>
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-header">
+          <span class="card-title">Current Plan</span>
+          <span class="status-badge pending" id="billingStatus">Pending</span>
+        </div>
+        <p style="font-size:1rem;font-weight:700;margin-bottom:.4rem;" id="billingPlanName">No Active Plan</p>
+        <p style="font-size:.82rem;color:var(--gray);line-height:1.5;margin-bottom:1rem;">Complete your intake form and choose a plan to activate your system.</p>
+        <div class="support-links">
+          <a href="checkout.html" class="support-link">💳 Choose a plan</a>
+          <a href="mailto:impulsoogrowth@gmail.com?subject=Billing Question" class="support-link">📧 Billing support</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PROFILE ===== -->
+    <div class="section" id="section-profile">
+      <div class="page-head"><h1>Your <span class="gradient-text">Profile</span></h1><p>Account details.</p></div>
+      <div class="card">
+        <div style="display:flex;flex-direction:column;gap:.75rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.82rem;">Name</span>
             <span style="font-size:.875rem;font-weight:600;" id="profileName">—</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem;background:rgba(255,255,255,.02);border-radius:8px;">
-            <span style="color:var(--gray);font-size:.85rem;">Email</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.82rem;">Email</span>
             <span style="font-size:.875rem;font-weight:600;" id="profileEmail">—</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem;background:rgba(255,255,255,.02);border-radius:8px;">
-            <span style="color:var(--gray);font-size:.85rem;">Business</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.82rem;">Business</span>
             <span style="font-size:.875rem;font-weight:600;" id="profileBiz">—</span>
           </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:.8rem;background:rgba(255,255,255,.02);border-radius:8px;">
-            <span style="color:var(--gray);font-size:.85rem;">Member since</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.82rem;">Member since</span>
             <span style="font-size:.875rem;font-weight:600;" id="profileJoined">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="color:var(--gray);font-size:.82rem;">Plan</span>
+            <span class="status-badge pending" id="profilePlan">Pending</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SUPPORT -->
-    <div id="section-support" style="display:none;">
-      <div class="welcome"><h1>Direct <span class="gradient-text">Support</span></h1><p>We're here to help — fast.</p></div>
-      <div class="support-card">
-        <p>Your dedicated account manager is available Monday–Friday, 9am–6pm ET. All messages are responded to within 24 hours, guaranteed.</p>
+    <!-- ===== SUPPORT ===== -->
+    <div class="section" id="section-support">
+      <div class="page-head"><h1>Direct <span class="gradient-text">Support</span></h1><p>We respond within 24 hours, guaranteed.</p></div>
+      <div class="card">
+        <p style="color:var(--gray);font-size:.875rem;line-height:1.6;margin-bottom:1.2rem;">Your dedicated account manager is available Monday–Friday, 9am–6pm ET.</p>
         <div class="support-links">
-          <a href="mailto:impulsoogrowth@gmail.com" class="support-link">📧 Email support</a>
+          <a href="mailto:impulsoogrowth@gmail.com" class="support-link">📧 impulsoogrowth@gmail.com</a>
           <a href="tel:7865677337" class="support-link">📱 786-567-7337</a>
-          <a href="https://calendly.com/impulsoogrowth" target="_blank" class="support-link">📅 Book a call</a>
+          <a href="mailto:impulsoogrowth@gmail.com?subject=Book a Call" class="support-link">📅 Book a call</a>
         </div>
       </div>
     </div>
@@ -389,10 +622,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
 
 <script>
-// ============================================================
-// FIREBASE CONFIG — Replace with your Firebase project values
-// Get from: console.firebase.google.com → Project Settings → Your apps
-// ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDzlsfhbMYuYBmvVfvpamBI2R-Kj9eu_Nw",
   authDomain: "impulso-f1914.firebaseapp.com",
@@ -402,123 +631,207 @@ const firebaseConfig = {
   appId: "1:650206259070:web:577c88ea6fb35be022b52f"
 };
 
-let auth, db;
+let auth, db, currentUID;
+let leads = [];
+let activeFilter = 'all';
+
 try {
   firebase.initializeApp(firebaseConfig);
   auth = firebase.auth();
   db = firebase.firestore();
-} catch(e) {
-  console.warn('Firebase not configured');
-}
+} catch(e) { console.warn('Firebase error', e); }
 
-// Auth guard
 if (auth) {
   auth.onAuthStateChanged(async user => {
-    if (!user) {
-      window.location.href = 'login.html';
-      return;
-    }
-    // Allow unverified users in — show banner instead of blocking
+    if (!user) { window.location.href = 'login.html'; return; }
+    currentUID = user.uid;
 
     document.getElementById('loadingScreen').style.opacity = '0';
     setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 400);
 
-    // Show unverified banner if needed
-    if (!user.emailVerified) {
-      document.getElementById('verifyBanner').style.display = 'flex';
-    }
+    if (!user.emailVerified) document.getElementById('verifyBanner').style.display = 'flex';
 
-    // Set name
     const name = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
     document.getElementById('welcomeName').textContent = name;
     document.getElementById('sidebarName').textContent = user.displayName || user.email;
     document.getElementById('avatarInitials').textContent = name.charAt(0).toUpperCase();
     document.getElementById('profileName').textContent = user.displayName || '—';
     document.getElementById('profileEmail').textContent = user.email;
-    document.getElementById('profileJoined').textContent = user.metadata.creationTime
-      ? new Date(user.metadata.creationTime).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-      : '—';
+    document.getElementById('profileJoined').textContent = new Date(user.metadata.creationTime).toLocaleDateString('en-US', { month:'long', year:'numeric' });
 
-    // Load Firestore profile
     if (db) {
+      // Load profile
       try {
         const doc = await db.collection('users').doc(user.uid).get();
         if (doc.exists) {
-          const data = doc.data();
-          const plan = data.plan || 'pending';
-          const biz = data.businessName || '—';
-          document.getElementById('profileBiz').textContent = biz;
-          document.getElementById('sidebarPlan').textContent =
-            plan === 'pending' ? 'Pending activation' :
-            plan === 'coaching' ? 'Coaching Plan' :
-            plan === 'dwy' ? 'Done-With-You' :
-            plan === 'dfy' ? 'Done-For-You' : plan;
-          document.getElementById('planName').textContent =
-            plan === 'pending' ? 'No Active Plan' :
-            plan === 'coaching' ? 'Coaching' :
-            plan === 'dwy' ? 'Done-With-You' :
-            plan === 'dfy' ? 'Done-For-You' : plan;
-          const isActive = plan !== 'pending';
-          document.getElementById('planStatus').textContent = isActive ? 'Active' : 'Pending Activation';
-          document.getElementById('planStatus').className = 'plan-status' + (isActive ? ' active' : '');
-          document.getElementById('billingPlanStatus').textContent = isActive ? 'Active' : 'Pending Activation';
-          document.getElementById('billingPlanStatus').className = 'plan-status' + (isActive ? ' active' : '');
-          if (isActive) {
-            document.getElementById('statLeads').textContent = data.leads || '0';
-            document.getElementById('statOutreach').textContent = data.outreach || '0';
-            document.getElementById('statCalls').textContent = data.calls || '0';
-            document.getElementById('statRev').textContent = data.revenue ? '$' + data.revenue : '$0';
-          }
-          document.getElementById('welcomeSub').textContent = biz !== '—'
-            ? `Here's a live snapshot of your Impulso system for ${biz}.`
-            : `Here's a live snapshot of your Impulso system.`;
+          const d = doc.data();
+          const planLabel = d.plan === 'marketing' ? 'Marketing Only' : d.plan === 'system' ? 'System Install' : d.plan === 'agent' ? 'System + Agent' : 'Pending Activation';
+          const isActive = d.plan && d.plan !== 'pending';
+          document.getElementById('sidebarPlan').textContent = planLabel;
+          document.getElementById('profileBiz').textContent = d.businessName || '—';
+          document.getElementById('overviewPlanName').textContent = planLabel;
+          document.getElementById('billingPlanName').textContent = planLabel;
+          document.getElementById('welcomeSub').textContent = d.businessName ? `Managing Impulso for ${d.businessName}.` : `Here's your Impulso system snapshot.`;
+          ['overviewPlanBadge','billingStatus','profilePlan'].forEach(id => {
+            const el = document.getElementById(id);
+            el.textContent = isActive ? 'Active' : 'Pending';
+            el.className = 'status-badge ' + (isActive ? 'active' : 'pending');
+          });
         }
-      } catch(e) { console.warn('Could not load profile', e); }
+      } catch(e) { console.warn('Profile load error', e); }
+
+      // Load leads
+      try {
+        const snap = await db.collection('users').doc(user.uid).collection('leads').orderBy('createdAt', 'desc').get();
+        leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderLeads();
+        updateStats();
+      } catch(e) { console.warn('Leads load error', e); }
     }
   });
 } else {
-  // Firebase not configured — show demo mode
   document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('welcomeName').textContent = 'there';
-  showToast('Firebase not configured. Running in demo mode.', '');
 }
 
+// ========== LEADS ==========
+function renderLeads(filter = activeFilter, search = '') {
+  const tbody = document.getElementById('leadsTable');
+  let filtered = leads.filter(l => {
+    const matchFilter = filter === 'all' || l.status === filter;
+    const matchSearch = !search || `${l.firstName} ${l.lastName} ${l.bizName} ${l.email}`.toLowerCase().includes(search.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-table"><div class="ei">🎯</div>${leads.length ? 'No leads match that filter.' : 'No leads yet. Click "+ Add Lead" to get started.'}</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(l => {
+    const score = l.score || Math.floor(Math.random() * 40 + 60);
+    const scoreColor = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#ef4444';
+    const date = l.createdAt ? new Date(l.createdAt.seconds * 1000).toLocaleDateString('en-US', { month:'short', day:'numeric' }) : '—';
+    return `<tr>
+      <td><div class="td-name">${l.firstName || ''} ${l.lastName || ''}</div><div class="td-sub">${l.email || ''}</div></td>
+      <td><div class="td-name">${l.bizName || '—'}</div><div class="td-sub">${l.niche || ''}</div></td>
+      <td><span class="status-badge ${l.status}">${l.status}</span></td>
+      <td><div class="score-bar"><div class="score-track"><div class="score-fill" style="width:${score}%;background:${scoreColor};"></div></div><span class="score-num" style="color:${scoreColor};">${score}</span></div></td>
+      <td style="color:var(--gray);font-size:.8rem;">${date}</td>
+      <td><div class="td-actions">
+        <select class="act-btn" onchange="updateLeadStatus('${l.id}', this.value)" style="cursor:pointer;">
+          <option value="">Update</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="qualified">Qualified</option>
+          <option value="booked">Booked</option>
+          <option value="closed">Closed</option>
+          <option value="lost">Lost</option>
+        </select>
+        <button class="act-btn" onclick="deleteLead('${l.id}')">✕</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function updateStats() {
+  document.getElementById('statLeads').textContent = leads.length;
+  document.getElementById('kNew').textContent = leads.filter(l => l.status === 'new').length;
+  document.getElementById('kContacted').textContent = leads.filter(l => l.status === 'contacted').length;
+  document.getElementById('kQualified').textContent = leads.filter(l => l.status === 'qualified').length;
+  document.getElementById('kBooked').textContent = leads.filter(l => l.status === 'booked').length;
+  document.getElementById('kClosed').textContent = leads.filter(l => l.status === 'closed').length;
+  document.getElementById('kLost').textContent = leads.filter(l => l.status === 'lost').length;
+  if (leads.length > 0) document.getElementById('statLeadsChange').textContent = `↑ ${leads.length} total`;
+}
+
+function filterByStatus(status, btn) {
+  activeFilter = status;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLeads(status);
+}
+
+function filterLeads(search) {
+  renderLeads(activeFilter, search);
+}
+
+async function saveLead() {
+  if (!db || !currentUID) return showToast('Not connected to database.', 'error');
+  const data = {
+    firstName: document.getElementById('ml-fname').value.trim(),
+    lastName: document.getElementById('ml-lname').value.trim(),
+    bizName: document.getElementById('ml-biz').value.trim(),
+    email: document.getElementById('ml-email').value.trim(),
+    phone: document.getElementById('ml-phone').value.trim(),
+    niche: document.getElementById('ml-niche').value,
+    status: document.getElementById('ml-status').value,
+    notes: document.getElementById('ml-notes').value.trim(),
+    score: Math.floor(Math.random() * 30 + 65),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  if (!data.firstName && !data.email) { showToast('Add a name or email.', 'error'); return; }
+  try {
+    const ref = await db.collection('users').doc(currentUID).collection('leads').add(data);
+    leads.unshift({ id: ref.id, ...data, createdAt: { seconds: Date.now()/1000 } });
+    renderLeads();
+    updateStats();
+    closeModal();
+    showToast('Lead added!', 'success');
+  } catch(e) { showToast('Could not save. Try again.', 'error'); }
+}
+
+async function updateLeadStatus(id, status) {
+  if (!status || !db) return;
+  try {
+    await db.collection('users').doc(currentUID).collection('leads').doc(id).update({ status });
+    const lead = leads.find(l => l.id === id);
+    if (lead) lead.status = status;
+    renderLeads();
+    updateStats();
+    showToast('Status updated!', 'success');
+  } catch(e) { showToast('Could not update.', 'error'); }
+}
+
+async function deleteLead(id) {
+  if (!db) return;
+  try {
+    await db.collection('users').doc(currentUID).collection('leads').doc(id).delete();
+    leads = leads.filter(l => l.id !== id);
+    renderLeads();
+    updateStats();
+    showToast('Lead removed.', '');
+  } catch(e) { showToast('Could not delete.', 'error'); }
+}
+
+// ========== MODAL ==========
+function openModal() { document.getElementById('addLeadModal').classList.add('open'); }
+function closeModal() { document.getElementById('addLeadModal').classList.remove('open'); }
+document.getElementById('addLeadModal').addEventListener('click', e => { if (e.target === document.getElementById('addLeadModal')) closeModal(); });
+
+// ========== NAV ==========
+const sectionIds = ['overview','pipeline','reports','outreach','content','booking','billing','profile','support'];
+function showSection(id) {
+  sectionIds.forEach(s => document.getElementById('section-'+s).classList.toggle('active', s === id));
+  document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+  const titles = { overview:'Dashboard', pipeline:'Lead Pipeline', reports:'Reports', outreach:'Outreach', content:'Content', booking:'Book a Call', billing:'Billing', profile:'Profile', support:'Support' };
+  document.getElementById('topbarTitle').textContent = titles[id] || 'Dashboard';
+  event && document.querySelectorAll('.nav-item').forEach(btn => { if (btn.textContent.trim().toLowerCase().includes(id === 'overview' ? 'dashboard' : id)) btn.classList.add('active'); });
+  if (window.innerWidth < 640) document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
 async function handleLogout() {
-  if (auth) { await auth.signOut(); }
+  if (auth) await auth.signOut();
   window.location.href = 'login.html';
 }
 
 async function resendVerify() {
-  if (auth && auth.currentUser) {
-    try {
-      await auth.currentUser.sendEmailVerification();
-      showToast('Verification email resent!', 'success');
-    } catch(e) { showToast('Could not resend. Try again in a minute.', 'error'); }
+  if (auth?.currentUser) {
+    try { await auth.currentUser.sendEmailVerification(); showToast('Verification email sent!', 'success'); }
+    catch(e) { showToast('Try again in a minute.', 'error'); }
   }
-}
-
-// Section nav
-const sections = ['overview','pipeline','reports','ai','content','billing','profile','support'];
-const navItems = document.querySelectorAll('.nav-item');
-function showSection(id) {
-  sections.forEach(s => {
-    const el = document.getElementById('section-' + s);
-    if (el) el.style.display = s === id ? 'block' : 'none';
-  });
-  navItems.forEach(btn => {
-    btn.classList.toggle('active', btn.textContent.trim().toLowerCase().includes(
-      id === 'overview' ? 'dashboard' : id === 'ai' ? 'ai command' : id
-    ));
-  });
-  const titles = { overview:'Dashboard', pipeline:'Lead Pipeline', reports:'Reports',
-    ai:'AI Command Center', content:'Content Generator', billing:'Billing', profile:'Profile', support:'Support' };
-  document.getElementById('topbarTitle').textContent = titles[id] || 'Dashboard';
-  // Close sidebar on mobile
-  if (window.innerWidth < 640) document.getElementById('sidebar').classList.remove('open');
-}
-
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
 }
 
 function showToast(msg, type='') {
@@ -526,21 +839,17 @@ function showToast(msg, type='') {
   t.textContent = msg;
   t.className = 'toast ' + type;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// Custom cursor
+// Cursor
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursorRing');
-let rx = 0, ry = 0;
 document.addEventListener('mousemove', e => {
   cursor.style.left = e.clientX - 5 + 'px';
   cursor.style.top = e.clientY - 5 + 'px';
-  rx += (e.clientX - 18 - rx) * 0.12;
-  ry += (e.clientY - 18 - ry) * 0.12;
-  ring.style.left = rx + 'px';
-  ring.style.top = ry + 'px';
-  requestAnimationFrame(() => {});
+  ring.style.left = e.clientX - 18 + 'px';
+  ring.style.top = e.clientY - 18 + 'px';
 });
 if (window.innerWidth < 768) { cursor.style.display='none'; ring.style.display='none'; }
 </script>
