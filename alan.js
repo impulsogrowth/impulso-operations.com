@@ -28,6 +28,11 @@
       login: ['login', 'log in', 'sign in', 'account', 'dashboard', 'portal', 'access'],
       thanks: ['thank', 'thanks', 'appreciate', 'perfect', 'great', 'awesome', 'amazing', 'good'],
       bye: ['bye', 'goodbye', 'see you', 'later', 'talk later', 'done'],
+      whatisimpulso: ['what is impulso', 'what do you do', 'what does impulso do', 'tell me about', 'who are you', 'what is this', 'explain'],
+      difference: ['difference', 'different', 'compare', 'vs', 'versus', 'better', 'which plan', 'which one', 'recommend'],
+      guarantee: ['guarantee', 'risk', 'free trial', 'refund', 'money back', 'safe'],
+      onboarding: ['onboard', 'setup', 'how does it work', 'process', 'steps', 'what happens', 'after i sign'],
+      general: ['can you', 'do you', 'are you', 'is there', 'question', 'help me', 'i need', 'i want', 'looking for'],
     },
 
     responses: {
@@ -36,8 +41,8 @@
         "Hi there! I'm Alan T from Impulso Operations. Whether you want to learn about our plans, see how it all works, or just have questions — I'm here. What can I help with?",
         "Hello! Alan T here 👋 I know everything about Impulso — pricing, what we do, how it works. Ask me anything!"
       ],
-      pricing: `Here's our pricing breakdown:\n\n💜 **Marketing Only — $250/mo**\nLeads, outreach, content, video editing & ads.\n\n⭐ **System Install — $600/mo** *(Most Popular)*\nFull AI system built into your business — CRM, automation, booking, follow-up.\n\n⚡ **System + Agent — $1,200/mo**\nEverything + a custom AI agent built for your exact niche.\n\nNo contracts. Cancel anytime. Which one sounds closest to what you need?`,
-      marketing: `The **Marketing Only plan ($250/mo)** covers:\n\n✓ Daily lead hunting (50–100 leads/week)\n✓ AI outreach emails + SMS\n✓ Social media content + captions\n✓ Video editing, recording & ad creation\n✓ Weekly performance reports\n✓ Direct support channel\n\nWant to get started or do you have more questions?`,
+      pricing: `Here's our pricing breakdown:\n\n💜 **Premium Marketing — $500/mo**\nProfessional video production, recording, editing, ads, content & lead generation.\n\n⭐ **System Install — $600/mo** *(Most Popular)*\nFull AI system built into your business — CRM, automation, booking, follow-up.\n\n⚡ **System + Agent — $1,200/mo**\nEverything + a custom AI agent built for your exact niche.\n\nNo contracts. Cancel anytime. Which one sounds closest to what you need?`,
+      marketing: `The **Premium Marketing plan ($500/mo)** is a full-service, high-end marketing operation:\n\n✓ Professional video recording & editing\n✓ Ad creation (Meta, Google, TikTok)\n✓ Daily lead hunting (50–100 leads/week)\n✓ AI outreach emails + SMS\n✓ Social media content + captions\n✓ Weekly performance reports\n✓ Direct support channel\n\nThis is premium — not just posting, but full production. Want to get started?`,
       system: `The **System Install ($600/mo)** is our most popular plan. We build and install a full AI growth system into your business:\n\n✓ Everything in Marketing Only\n✓ CRM + pipeline setup\n✓ Automated follow-up sequences\n✓ Booking & intake automation\n✓ Monthly strategy call\n✓ Priority support\n\nMost clients are fully live within 24 hours. Want to see if it's the right fit?`,
       agent: `The **System + Agent ($1,200/mo)** is our premium plan. You get everything in System Install PLUS a custom AI agent built specifically for your niche:\n\n✓ Custom agent trained on your business\n✓ Handles client intake automatically\n✓ Responds to leads 24/7\n✓ Qualifies prospects automatically\n✓ Dedicated account manager\n✓ Weekly reports + strategy calls\n\nEvery agent is 100% unique to your business. Want to learn more?`,
       results: `Most clients see results fast:\n\n🎯 **48 hours** — Leads appear in your pipeline\n📨 **Day 3–5** — Outreach campaigns running\n📅 **Week 1–2** — First booked discovery calls\n💰 **Month 1** — Revenue tracked from pipeline\n\nWe back this with our **zero-risk guarantee** — if you don't see results in 48 hours, we keep working for free until you do.`,
@@ -47,6 +52,15 @@
       payment: `We accept payments through **Stripe** (coming live shortly) and currently via email invoice.\n\nOnce Stripe is live, you'll be able to pay directly on the checkout page with any card. For now, just [choose your plan](checkout.html) and we'll send an invoice.\n\nAny billing questions? Email nes@impulso-operations.com`,
       niches: `We work with all local service businesses:\n\n🏠 Real Estate • 💆 Med Spas • 💪 Gyms\n⚖️ Law Firms • 🏦 Mortgage • 🦷 Dental\n🔨 Contractors • 🍽️ Restaurants • 🚗 Auto\n💼 Coaches & Consultants • and more\n\nEvery system is built specifically for your niche. What industry are you in?`,
       login: `You can access your client portal here:\n\n🔐 [Log In →](login.html)\n📝 [Create Account →](signup.html)\n\nOnce logged in, you'll see your lead pipeline, reports, billing, and support — all in one place.`,
+      whatisimpulso: `Impulso Operations is an AI-powered growth agency for local businesses 🚀\n\nWe build fully automated systems that:\n✓ Hunt leads 24/7\n✓ Send outreach automatically\n✓ Book calls on your behalf\n✓ Create content & run ads\n✓ Install a custom AI agent for your business\n\nEssentially — we plug an AI system into your business so you can focus on closing, not chasing. Want to see our plans?`,
+      difference: `Great question! Here's how the plans compare:\n\n💜 **Premium Marketing ($500/mo)** — Best if you need high-quality content, video production, and lead generation but already have your systems in place.\n\n⭐ **System Install ($600/mo)** — Best if you want a full AI system built into your business — CRM, automation, follow-up, booking.\n\n⚡ **System + Agent ($1,200/mo)** — Best if you want everything PLUS a custom AI agent that works 24/7 specifically for your niche.\n\nNot sure? Fill out the [intake form](intake.html) and we'll recommend the exact right fit.`,
+      guarantee: `We back everything with a **zero-risk guarantee** 🛡️\n\n✓ Results in 48 hours or we work free until you see them\n✓ No contracts — month-to-month only\n✓ Cancel anytime with 30 days notice\n✓ No cancellation fees, ever\n✓ No hidden charges\n\nWe earn your business every single month. Simple as that.`,
+      onboarding: `Here's exactly what happens after you sign up:\n\n1️⃣ **Fill intake form** — tells us about your business, goals & niche (3 min)\n2️⃣ **Onboarding call** — we map out your custom system\n3️⃣ **System built** — we set everything up within 24 hours\n4️⃣ **Go live** — leads start hitting your pipeline\n5️⃣ **Weekly updates** — reports, calls, and continuous optimization\n\nMost clients are fully live within 24–48 hours. Ready? [Start here →](intake.html)`,
+      general: [
+        "I'm here to help! I can tell you about our plans, pricing, how it works, or get you connected to our team. What specifically are you looking for?",
+        "Good question! Ask me anything — pricing, how it works, what plan fits you, or anything about Impulso. I'm here 24/7.",
+        "I've got you! Whether it's about our services, pricing, or getting started — just ask and I'll point you in the right direction."
+      ],
       thanks: [
         "Of course! Anything else I can help with? 😊",
         "Happy to help! Got more questions?",
@@ -99,8 +113,13 @@
       if (this.kb.payment.some(w => text.includes(w))) return 'payment';
       if (this.kb.niches.some(w => text.includes(w))) return 'niches';
       if (this.kb.login.some(w => text.includes(w))) return 'login';
+      if (this.kb.whatisimpulso.some(w => text.includes(w))) return 'whatisimpulso';
+      if (this.kb.difference.some(w => text.includes(w))) return 'difference';
+      if (this.kb.guarantee.some(w => text.includes(w))) return 'guarantee';
+      if (this.kb.onboarding.some(w => text.includes(w))) return 'onboarding';
       if (this.kb.thanks.some(w => text.includes(w))) return 'thanks';
       if (this.kb.bye.some(w => text.includes(w))) return 'bye';
+      if (this.kb.general.some(w => text.includes(w))) return 'general';
       return 'fallback';
     },
 
