@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alan T — Voice Mode | Impulso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #0ea5e9;
+      --blue-light: #38bdf8;
+      --blue-dark: #0369a1;
+      --gold: #f59e0b;
+      --bg: #02040a;
+      --surface: #060b16;
+      --border: rgba(14,165,233,.15);
+      --text: #e2e8f0;
+      --gray: #64748b;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* ===== BACKGROUND GRID ===== */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(14,165,233,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(14,165,233,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: 0;
+    }
+    .bg-radial {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(14,165,233,.06) 0%, transparent 70%);
+      z-index: 0;
+    }
+    .corner-tl, .corner-tr, .corner-bl, .corner-br {
+      position: fixed;
+      width: 120px;
+      height: 120px;
+      z-index: 1;
+      opacity: .4;
+    }
+    .corner-tl { top: 24px; left: 24px; border-top: 1px solid var(--blue); border-left: 1px solid var(--blue); }
+    .corner-tr { top: 24px; right: 24px; border-top: 1px solid var(--blue); border-right: 1px solid var(--blue); }
+    .corner-bl { bottom: 24px; left: 24px; border-bottom: 1px solid var(--blue); border-left: 1px solid var(--blue); }
+    .corner-br { bottom: 24px; right: 24px; border-bottom: 1px solid var(--blue); border-right: 1px solid var(--blue); }
+
+    /* ===== LAYOUT ===== */
+    .ui { position: relative; z-index: 2; height: 100vh; display: grid; grid-template-columns: 1fr 360px; }
+
+    /* ===== LEFT: ORB + CONTROLS ===== */
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      position: absolute;
+      top: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+    .logo-text { font-size: .75rem; font-weight: 700; letter-spacing: .25em; text-transform: uppercase; color: var(--gray); }
+    .logo-text span { color: var(--blue-light); }
+    .status-row { display: flex; align-items: center; gap: .5rem; margin-top: .4rem; justify-content: center; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 8px var(--blue); animation: blink 2s ease-in-out infinite; }
+    .status-text { font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--blue-light); }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
+    /* Exit */
+    .exit-btn {
+      position: absolute;
+      top: 1.8rem;
+      right: 2rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      padding: .45rem .9rem;
+      color: var(--gray);
+      font-size: .75rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .2s;
+      letter-spacing: .04em;
+    }
+    .exit-btn:hover { color: var(--text); border-color: rgba(255,255,255,.15); background: rgba(255,255,255,.06); }
+
+    /* ===== ORB ===== */
+    .orb-wrap {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Scanning rings */
+    .scan-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(14,165,233,.2);
+      animation: scanPulse 3s ease-in-out infinite;
+    }
+    .scan-ring:nth-child(1) { width: 260px; height: 260px; animation-delay: 0s; }
+    .scan-ring:nth-child(2) { width: 220px; height: 220px; animation-delay: .5s; }
+    .scan-ring:nth-child(3) { width: 180px; height: 180px; animation-delay: 1s; }
+    @keyframes scanPulse {
+      0%, 100% { opacity: .15; transform: scale(1); }
+      50% { opacity: .5; transform: scale(1.04); }
+    }
+
+    /* Orbit ring */
+    .orbit {
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      border: 1px solid rgba(14,165,233,.12);
+      animation: orbit 12s linear infinite;
+    }
+    .orbit::before {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--blue-light);
+      border-radius: 50%;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px var(--blue-light);
+    }
+    .orbit-2 {
+      width: 210px;
+      height: 210px;
+      animation: orbit 8s linear infinite reverse;
+      border-color: rgba(245,158,11,.1);
+    }
+    .orbit-2::before { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+    @keyframes orbit { to { transform: rotate(360deg); } }
+
+    /* Core orb */
+    .orb-core {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #7dd3fc, #0ea5e9, #0369a1, #0c4a6e);
+      box-shadow:
+        0 0 30px rgba(14,165,233,.6),
+        0 0 60px rgba(14,165,233,.25),
+        0 0 100px rgba(14,165,233,.1),
+        inset 0 0 30px rgba(255,255,255,.1);
+      animation: orbPulse 3s ease-in-out infinite;
+      position: relative;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+    .orb-core::after {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 20%;
+      width: 35%;
+      height: 25%;
+      background: radial-gradient(ellipse, rgba(255,255,255,.35), transparent);
+      border-radius: 50%;
+    }
+    .orb-core:hover { transform: scale(1.05); }
+    @keyframes orbPulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(14,165,233,.6), 0 0 60px rgba(14,165,233,.25), 0 0 100px rgba(14,165,233,.1), inset 0 0 30px rgba(255,255,255,.1); }
+      50% { box-shadow: 0 0 40px rgba(14,165,233,.9), 0 0 80px rgba(14,165,233,.4), 0 0 120px rgba(14,165,233,.15), inset 0 0 40px rgba(255,255,255,.15); }
+    }
+
+    /* Listening state */
+    body.listening .orb-core {
+      animation: orbListen .8s ease-in-out infinite;
+      background: radial-gradient(circle at 35% 30%, #67e8f9, #06b6d4, #0891b2, #164e63);
+    }
+    body.listening .scan-ring { animation-duration: .8s; border-color: rgba(6,182,212,.4); }
+    @keyframes orbListen {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(6,182,212,.8), 0 0 80px rgba(6,182,212,.4); }
+      50% { transform: scale(1.06); box-shadow: 0 0 60px rgba(6,182,212,1), 0 0 120px rgba(6,182,212,.5); }
+    }
+
+    /* Speaking state */
+    body.speaking .orb-core {
+      animation: orbSpeak .4s ease-in-out infinite;
+    }
+    @keyframes orbSpeak {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.04) scaleX(1.02); }
+      75% { transform: scale(0.98) scaleX(0.99); }
+    }
+
+    /* Audio bars */
+    .audio-bars {
+      position: absolute;
+      bottom: -44px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 3px;
+      align-items: flex-end;
+      height: 36px;
+    }
+    .bar {
+      width: 4px;
+      border-radius: 2px;
+      background: var(--blue);
+      height: 4px;
+      transition: height .1s;
+      opacity: .6;
+    }
+    body.speaking .bar { animation: barDance .4s ease-in-out infinite; }
+    body.listening .bar { animation: barDance .3s ease-in-out infinite; background: #06b6d4; }
+    .bar:nth-child(1) { animation-delay: 0s; }
+    .bar:nth-child(2) { animation-delay: .05s; }
+    .bar:nth-child(3) { animation-delay: .1s; }
+    .bar:nth-child(4) { animation-delay: .15s; }
+    .bar:nth-child(5) { animation-delay: .2s; }
+    .bar:nth-child(6) { animation-delay: .25s; }
+    .bar:nth-child(7) { animation-delay: .3s; }
+    .bar:nth-child(8) { animation-delay: .35s; }
+    .bar:nth-child(9) { animation-delay: .05s; }
+    .bar:nth-child(10) { animation-delay: .1s; }
+    .bar:nth-child(11) { animation-delay: .15s; }
+    .bar:nth-child(12) { animation-delay: .2s; }
+    @keyframes barDance {
+      0%, 100% { height: 4px; opacity: .4; }
+      50% { height: var(--h, 20px); opacity: 1; }
+    }
+
+    /* ===== STATE LABEL ===== */
+    .state-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--blue-light);
+      text-align: center;
+      min-height: 1.2rem;
+      transition: all .3s;
+    }
+    body.listening .state-label { color: #67e8f9; }
+    body.speaking .state-label { color: var(--gold); }
+
+    /* Transcript display */
+    .transcript-box {
+      min-height: 36px;
+      text-align: center;
+      font-size: .875rem;
+      color: var(--gray);
+      font-style: italic;
+      max-width: 320px;
+      transition: all .3s;
+    }
+    .transcript-box.active { color: #7dd3fc; font-style: normal; font-weight: 500; }
+
+    /* ===== MIC BUTTON ===== */
+    .controls { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+
+    .mic-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(14,165,233,.1);
+      border: 1.5px solid rgba(14,165,233,.4);
+      color: var(--blue-light);
+      font-size: 1.6rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      position: relative;
+      outline: none;
+    }
+    .mic-btn::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(14,165,233,.15);
+      animation: micRing 2s ease-in-out infinite;
+    }
+    @keyframes micRing {
+      0%, 100% { transform: scale(1); opacity: .5; }
+      50% { transform: scale(1.1); opacity: .1; }
+    }
+    .mic-btn:hover { background: rgba(14,165,233,.2); border-color: rgba(14,165,233,.7); transform: scale(1.05); }
+    .mic-btn:active, body.listening .mic-btn { background: rgba(6,182,212,.2); border-color: #06b6d4; color: #67e8f9; box-shadow: 0 0 20px rgba(6,182,212,.4); }
+    body.speaking .mic-btn { background: rgba(245,158,11,.1); border-color: rgba(245,158,11,.4); color: var(--gold); }
+
+    .mic-hint { font-size: .72rem; color: var(--gray); letter-spacing: .06em; text-align: center; }
+    .shortcut { display: inline-block; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 4px; padding: .15rem .4rem; font-size: .65rem; font-weight: 600; }
+
+    /* ===== RIGHT: CONVERSATION ===== */
+    .convo-panel {
+      border-left: 1px solid var(--border);
+      background: rgba(6,11,22,.6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .convo-header {
+      padding: 1.4rem 1.4rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .convo-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: .3rem; }
+    .convo-title { font-size: .75rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--blue-light); }
+    .convo-clear { background: none; border: none; color: var(--gray); font-size: .72rem; cursor: pointer; font-family: inherit; padding: .2rem .5rem; border-radius: 4px; transition: all .2s; }
+    .convo-clear:hover { color: var(--text); background: rgba(255,255,255,.05); }
+    .convo-sub { font-size: .72rem; color: var(--gray); }
+
+    .convo-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(14,165,233,.2) transparent;
+    }
+    .convo-feed::-webkit-scrollbar { width: 4px; }
+    .convo-feed::-webkit-scrollbar-track { background: transparent; }
+    .convo-feed::-webkit-scrollbar-thumb { background: rgba(14,165,233,.2); border-radius: 2px; }
+
+    .msg { display: flex; gap: .6rem; animation: msgIn .3s ease; }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .msg.user { flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+    }
+    .msg.alan .msg-avatar { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); color: white; }
+    .msg.user .msg-avatar { background: rgba(255,255,255,.08); color: var(--gray); font-size: .65rem; }
+
+    .msg-bubble {
+      max-width: 240px;
+      padding: .65rem .9rem;
+      border-radius: 14px;
+      font-size: .82rem;
+      line-height: 1.6;
+    }
+    .msg.alan .msg-bubble {
+      background: rgba(14,165,233,.08);
+      border: 1px solid rgba(14,165,233,.15);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+    }
+    .msg.user .msg-bubble {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #94a3b8;
+      border-bottom-right-radius: 4px;
+      text-align: right;
+    }
+
+    .typing-row { display: flex; gap: .6rem; align-items: center; }
+    .typing-dots { display: flex; gap: 3px; padding: .5rem .7rem; background: rgba(14,165,233,.06); border: 1px solid rgba(14,165,233,.1); border-radius: 10px; }
+    .typing-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--blue-light); animation: dot .9s ease-in-out infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: .2s; }
+    .typing-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes dot { 0%,80%,100% { transform: scale(.6); opacity: .3; } 40% { transform: scale(1); opacity: 1; } }
+
+    /* Text input */
+    .convo-input-wrap {
+      padding: 1rem 1.2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: .5rem;
+    }
+    .convo-input {
+      flex: 1;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .6rem .9rem;
+      color: var(--text);
+      font-size: .82rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .convo-input::placeholder { color: var(--gray); }
+    .convo-input:focus { border-color: rgba(14,165,233,.4); }
+    .send-btn {
+      width: 36px; height: 36px;
+      background: rgba(14,165,233,.15);
+      border: 1px solid rgba(14,165,233,.3);
+      border-radius: 8px;
+      color: var(--blue-light);
+      font-size: .9rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+    .send-btn:hover { background: rgba(14,165,233,.3); }
+
+    /* ===== VOICE SELECT ===== */
+    .voice-select-wrap {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .voice-label { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gray); }
+    .voice-select {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 6px;
+      color: var(--gray);
+      font-size: .72rem;
+      font-family: inherit;
+      padding: .3rem .6rem;
+      outline: none;
+      cursor: pointer;
+      max-width: 180px;
+    }
+    .voice-select:focus { border-color: var(--border); }
+    .voice-select option { background: #060b16; }
+
+    /* ===== NO SPEECH SUPPORT ===== */
+    .no-speech {
+      display: none;
+      text-align: center;
+      padding: 1rem;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: 10px;
+      color: #fca5a5;
+      font-size: .8rem;
+      line-height: 1.6;
+      max-width: 280px;
+    }
+
+    /* ===== MOBILE ===== */
+    @media(max-width: 700px) {
+      .ui { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+      .convo-panel { border-left: none; border-top: 1px solid var(--border); max-height: 35vh; }
+      .corner-tl, .corner-tr, .corner-bl, .corner-br { width: 60px; height: 60px; }
+      .orb-wrap { width: 200px; height: 200px; }
+      .orb-core { width: 90px; height: 90px; }
+      .scan-ring:nth-child(1) { width: 200px; height: 200px; }
+      .scan-ring:nth-child(2) { width: 166px; height: 166px; }
+      .scan-ring:nth-child(3) { width: 136px; height: 136px; }
+      .orbit { width: 184px; height: 184px; }
+      .orbit-2 { width: 158px; height: 158px; }
+      .voice-select-wrap { bottom: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-radial"></div>
+<div class="corner-tl"></div>
+<div class="corner-tr"></div>
+<div class="corner-bl"></div>
+<div class="corner-br"></div>
+
+<div class="ui">
+
+  <!-- ===== LEFT: ORB ===== -->
+  <div class="main-panel">
+
+    <div class="header">
+      <p class="logo-text">IMPULSO<span>.</span> ALAN T</p>
+      <div class="status-row">
+        <div class="status-dot"></div>
+        <span class="status-text" id="statusText">System Online</span>
+      </div>
+    </div>
+
+    <a href="javascript:history.back()" class="exit-btn">✕ Exit</a>
+
+    <!-- ORB -->
+    <div class="orb-wrap">
+      <div class="scan-ring"></div>
+      <div class="scan-ring"></div>
+      <div class="scan-ring"></div>
+      <div class="orbit"></div>
+      <div class="orbit orbit-2"></div>
+      <div class="orb-core" id="orbCore" onclick="toggleListen()" title="Click to speak"></div>
+      <div class="audio-bars">
+        <div class="bar" style="--h:8px"></div>
+        <div class="bar" style="--h:18px"></div>
+        <div class="bar" style="--h:26px"></div>
+        <div class="bar" style="--h:32px"></div>
+        <div class="bar" style="--h:24px"></div>
+        <div class="bar" style="--h:20px"></div>
+        <div class="bar" style="--h:30px"></div>
+        <div class="bar" style="--h:14px"></div>
+        <div class="bar" style="--h:22px"></div>
+        <div class="bar" style="--h:28px"></div>
+        <div class="bar" style="--h:16px"></div>
+        <div class="bar" style="--h:10px"></div>
+      </div>
+    </div>
+
+    <!-- STATE + TRANSCRIPT -->
+    <div style="text-align:center;display:flex;flex-direction:column;gap:.6rem;align-items:center;">
+      <p class="state-label" id="stateLabel">Ready</p>
+      <p class="transcript-box" id="transcriptBox">Click the orb or press Space to speak</p>
+    </div>
+
+    <!-- MIC BUTTON -->
+    <div class="controls">
+      <button class="mic-btn" id="micBtn" onclick="toggleListen()" title="Hold Space or click to speak">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+      <p class="mic-hint">Click orb or press <span class="shortcut">Space</span></p>
+      <div class="no-speech" id="noSpeech">
+        Voice not supported in this browser.<br>Use the text input on the right instead.<br>
+        <span style="font-size:.7rem;opacity:.7;">Best on Chrome or Edge desktop.</span>
+      </div>
+    </div>
+
+    <!-- VOICE SELECT -->
+    <div class="voice-select-wrap">
+      <span class="voice-label">Voice</span>
+      <select class="voice-select" id="voiceSelect" onchange="setVoice(this.value)">
+        <option value="">Default</option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- ===== RIGHT: CONVERSATION ===== -->
+  <div class="convo-panel">
+    <div class="convo-header">
+      <div class="convo-header-top">
+        <span class="convo-title">Conversation</span>
+        <button class="convo-clear" onclick="clearConvo()">Clear</button>
+      </div>
+      <p class="convo-sub">Live transcript · Alan T · Impulso Operations</p>
+    </div>
+    <div class="convo-feed" id="convoFeed">
+      <!-- Initial message -->
+    </div>
+    <div class="convo-input-wrap">
+      <input type="text" class="convo-input" id="textInput" placeholder="Type if mic isn't working..." onkeydown="handleTextKey(event)" />
+      <button class="send-btn" onclick="sendText()">↑</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// ALAN T — JARVIS VOICE MODE
+// ============================================================
+
+// ===== KNOWLEDGE BASE (voice-optimized) =====
+const KB = {
+  greetings:    ['hi','hello','hey','hola','sup','good morning','good afternoon','what\'s up','yo'],
+  pricing:      ['price','pricing','cost','how much','plans','plan','packages','package','fee','fees','rate','rates','monthly','subscription'],
+  marketing:    ['marketing','marketing only','lead gen','outreach','content','social media','video','ads','email','sms'],
+  system:       ['system','system install','crm','automation','pipeline','follow up','follow-up','booking','install'],
+  agent:        ['agent','custom agent','ai agent','bot','chatbot','alan','build','niche'],
+  results:      ['results','how fast','when','timeline','how long','work','does it work','proof'],
+  contract:     ['contract','cancel','cancellation','lock in','locked','commitment','refund'],
+  start:        ['get started','start','sign up','signup','begin','how do i','onboard','intake'],
+  contact:      ['contact','email','call','talk','speak','human','person','team','reach','phone'],
+  payment:      ['pay','payment','stripe','checkout','invoice','billing','charge'],
+  niches:       ['niche','industry','realtor','real estate','med spa','gym','dentist','contractor','lawyer','restaurant','fitness','mortgage'],
+  login:        ['login','log in','sign in','account','dashboard','portal','access'],
+  whatisimpulso:['what is impulso','what do you do','what does impulso','tell me about','who are you','explain'],
+  difference:   ['difference','different','compare','vs','versus','better','which plan','which one','recommend'],
+  guarantee:    ['guarantee','risk','free trial','refund','money back','safe'],
+  onboarding:   ['onboard','setup','how does it work','process','steps','what happens','after i sign'],
+  thanks:       ['thank','thanks','appreciate','perfect','great','awesome','amazing','good'],
+  bye:          ['bye','goodbye','see you','later','talk later','done','talk soon'],
+  general:      ['can you','do you','are you','is there','question','help me','i need','i want','looking for'],
+};
+
+const RESPONSES = {
+  greeting: [
+    "Hey. I'm Alan T, your AI from Impulso Operations. What can I help you grow today?",
+    "Hey, Alan T here. Whether it's pricing, how the system works, or getting started — I've got you. What do you need?",
+    "Hello. I'm Alan T from Impulso. Ask me anything about our plans, results, or how to get started."
+  ],
+  pricing: "We have three plans. Premium Marketing at 500 a month — that's professional video production, editing, ads, and lead generation. System Install at 600 a month builds a full AI automation system into your business — CRM, follow-up, booking, the whole thing. And System plus Agent at 1200 a month is the complete package: the full system plus a custom AI agent built specifically for your niche. All plans run on a 90-day commitment with first-class priority service from day one. Which one sounds right for you?",
+  marketing: "The Premium Marketing plan is 500 a month. It's a full-service, high-end marketing operation. You get professional video recording and editing, ad creation across Meta, Google, and TikTok, daily lead hunting — 50 to 100 leads per week — AI outreach emails and SMS, social media content, weekly performance reports, and a direct support channel. This is premium production, not just posting. Want to get started?",
+  system: "The System Install plan is 600 a month and it's our most popular. We build and install a complete AI growth system into your business. That includes everything in the marketing plan, plus a full CRM and pipeline setup, automated follow-up sequences, booking and intake automation, a monthly strategy call, and priority support. Most clients are fully live within 24 hours. Want to see if it's the right fit?",
+  agent: "The System plus Agent plan is 1200 a month — our premium tier. You get everything in the System Install, plus a fully custom AI agent built specifically for your niche. That agent handles client intake automatically, responds to leads around the clock, and qualifies prospects without you lifting a finger. You also get a dedicated account manager and weekly strategy calls. Every agent is 100% unique to your business. Want to learn more?",
+  results: "Most clients see results fast. Leads appear in your pipeline within 48 hours. Outreach campaigns are running by days 3 to 5. First booked discovery calls come in during week one or two. And by month one, you're tracking real revenue from the pipeline. We back this with our commitment — if you don't see progress, we keep working until you do.",
+  contract: "We run on a 90-day commitment, and here's why that's actually better for you. Real growth requires real dedication. We go all in from day one — first-class priority service, high-priority access to your account manager every single day, and your full system built, optimized, and scaling within 90 days. We don't do month-to-month because we're not here to dip our toes in. We're here to build something serious with you. Ready to commit?",
+  start: "Getting started is easy. Step one: fill out our intake form — takes about 3 minutes and tells us everything about your business. Step two: choose your plan on the checkout page. Step three: we activate your system within 24 hours. Step four: first leads hit your pipeline. That's it. Want me to walk you through the intake form?",
+  contact: "You can reach the team directly at nes at impulso-operations.com, or call 786-567-7337. We respond within 24 hours, Monday through Friday. Or you can just keep talking to me — what do you need?",
+  payment: "We process payments securely through Stripe. Once you choose your plan on the checkout page, you'll be directed to a secure Stripe payment link. After that, you'll get a confirmation and your onboarding starts immediately. Any billing questions, email nes at impulso-operations.com.",
+  niches: "We work with all local service businesses. Real estate, med spas, gyms and fitness studios, law firms, mortgage brokers, dental offices, contractors, restaurants, auto services, coaches and consultants — pretty much any business that needs more clients. Every system is built specifically for your niche. What industry are you in?",
+  login: "You can access your client dashboard at the login page. If you haven't created an account yet, you can sign up and our team will activate your access within 24 hours of purchase. Want the link?",
+  whatisimpulso: "Impulso Operations is an AI-powered growth agency for local businesses. We build fully automated systems that hunt leads around the clock, send outreach automatically, book calls on your behalf, create content and run ads, and for our top-tier clients, we install a custom AI agent built for your exact business. Essentially, we plug a complete AI growth system into your business so you can focus on closing deals instead of chasing people. Want to see the plans?",
+  difference: "Great question. Here's the quick breakdown. Premium Marketing at 500 a month is best if you need high-quality content, video production, and lead generation but your systems are already in place. System Install at 600 a month is best if you want a full AI system built into your business — CRM, automation, follow-up, booking. And System plus Agent at 1200 a month is best if you want everything, plus a custom AI agent working for your business 24/7. Not sure? Fill out the intake form and we'll tell you exactly which one fits.",
+  guarantee: "We take our commitment seriously, which is why we operate on a 90-day contract. You get first-class, high-priority service every single day. A dedicated account manager on your business daily. Your full system built and scaling within 90 days. Weekly reports and strategy calls included. We go all in — no shortcuts, no excuses. This isn't a trial. This is a partnership.",
+  onboarding: "Here's exactly what happens after you sign up. First, you fill out the intake form — that tells us about your business, goals, and niche, takes about 3 minutes. Then we do an onboarding call to map out your custom system. Then we build and install everything within 24 hours. You go live — leads start hitting your pipeline. And from there, you get weekly updates, reports, calls, and continuous optimization. Most clients are fully live within 24 to 48 hours.",
+  thanks: ["Of course. Anything else you need?", "Happy to help. Got more questions?", "Absolutely. What else can I do for you?"],
+  bye: ["Talk soon. Feel free to come back anytime.", "Take care. You can always reach us at nes at impulso-operations.com.", "Sounds good. Don't hesitate to reach out if anything comes up."],
+  general: [
+    "I'm here to help. I can tell you about our plans, pricing, how it works, or connect you with the team. What are you looking for?",
+    "Good question. Ask me anything — pricing, results, which plan fits you, or anything about Impulso. I'm here.",
+    "I've got you. Whether it's about our services, pricing, or getting started — just ask."
+  ],
+  fallback: [
+    "That's a bit outside my knowledge, but our team can definitely help. Email nes at impulso-operations.com or call 786-567-7337.",
+    "I'm not sure on that one. For anything specific, our team is the best resource — reach out at nes at impulso-operations.com.",
+    "Good question, but I want to make sure you get the right answer. Email us at nes at impulso-operations.com and we'll get back to you within 24 hours."
+  ]
+};
+
+// ===== INTENT MATCHING =====
+function match(input) {
+  const t = input.toLowerCase().trim();
+  if (KB.greetings.some(w => t.includes(w))) return 'greeting';
+  if (KB.pricing.some(w => t.includes(w))) return 'pricing';
+  if (KB.agent.some(w => t.includes(w))) return 'agent';
+  if (KB.system.some(w => t.includes(w))) return 'system';
+  if (KB.marketing.some(w => t.includes(w))) return 'marketing';
+  if (KB.results.some(w => t.includes(w))) return 'results';
+  if (KB.contract.some(w => t.includes(w))) return 'contract';
+  if (KB.start.some(w => t.includes(w))) return 'start';
+  if (KB.contact.some(w => t.includes(w))) return 'contact';
+  if (KB.payment.some(w => t.includes(w))) return 'payment';
+  if (KB.niches.some(w => t.includes(w))) return 'niches';
+  if (KB.login.some(w => t.includes(w))) return 'login';
+  if (KB.whatisimpulso.some(w => t.includes(w))) return 'whatisimpulso';
+  if (KB.difference.some(w => t.includes(w))) return 'difference';
+  if (KB.guarantee.some(w => t.includes(w))) return 'guarantee';
+  if (KB.onboarding.some(w => t.includes(w))) return 'onboarding';
+  if (KB.thanks.some(w => t.includes(w))) return 'thanks';
+  if (KB.bye.some(w => t.includes(w))) return 'bye';
+  if (KB.general.some(w => t.includes(w))) return 'general';
+  return 'fallback';
+}
+
+function getResponse(intent) {
+  const r = RESPONSES[intent];
+  return Array.isArray(r) ? r[Math.floor(Math.random() * r.length)] : r;
+}
+
+// ===== SPEECH =====
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isListening = false;
+let selectedVoice = null;
+let voices = [];
+let speechSupported = !!SpeechRec;
+
+if (speechSupported) {
+  recognition = new SpeechRec();
+  recognition.lang = 'en-US';
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+  recognition.continuous = false;
+
+  recognition.onstart = () => {
+    isListening = true;
+    setState('listening');
+  };
+
+  recognition.onresult = (e) => {
+    const interim = Array.from(e.results).map(r => r[0].transcript).join('');
+    const isFinal = e.results[e.results.length - 1].isFinal;
+    document.getElementById('transcriptBox').textContent = interim;
+    document.getElementById('transcriptBox').classList.add('active');
+    if (isFinal) handleInput(interim);
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    if (document.getElementById('transcriptBox').textContent === document.getElementById('transcriptBox').dataset.last) return;
+    setState('ready');
+  };
+
+  recognition.onerror = (e) => {
+    isListening = false;
+    if (e.error === 'no-speech') { setState('ready'); return; }
+    if (e.error === 'not-allowed') {
+      setState('ready');
+      addMessage('alan', "Microphone access was denied. Please allow mic access or use the text box below to chat with me.");
+    } else {
+      setState('ready');
+    }
+  };
+} else {
+  document.getElementById('noSpeech').style.display = 'block';
+}
+
+function toggleListen() {
+  if (!speechSupported) return;
+  if (window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); setState('ready'); return; }
+  if (isListening) {
+    recognition.stop();
+    setState('ready');
+  } else {
+    try { recognition.start(); }
+    catch(e) { console.warn('Recognition error', e); }
+  }
+}
+
+// ===== TTS =====
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.rate = 1.0;
+  utt.pitch = 0.95;
+  utt.volume = 1;
+  if (selectedVoice) utt.voice = selectedVoice;
+  utt.onstart = () => setState('speaking');
+  utt.onend = () => setState('ready');
+  utt.onerror = () => setState('ready');
+  window.speechSynthesis.speak(utt);
+}
+
+function loadVoices() {
+  voices = window.speechSynthesis.getVoices();
+  const sel = document.getElementById('voiceSelect');
+  sel.innerHTML = '<option value="">Auto</option>';
+  const priority = ['Google US English','Microsoft David','Alex','Samantha','Daniel','en-US','en-GB'];
+  voices.forEach((v, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = v.name + (v.lang ? ` (${v.lang})` : '');
+    sel.appendChild(opt);
+  });
+  // Auto-select a good voice
+  const best = voices.find(v => priority.some(p => v.name.includes(p) || v.lang.includes(p)));
+  if (best) {
+    selectedVoice = best;
+    const idx = voices.indexOf(best);
+    sel.value = idx;
+  }
+}
+
+if (window.speechSynthesis.onvoiceschanged !== undefined) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+}
+loadVoices();
+
+function setVoice(val) {
+  selectedVoice = val !== '' ? voices[parseInt(val)] : null;
+}
+
+// ===== STATE MANAGEMENT =====
+function setState(state) {
+  document.body.classList.remove('listening', 'speaking');
+  const label = document.getElementById('stateLabel');
+  const tx = document.getElementById('transcriptBox');
+  const status = document.getElementById('statusText');
+
+  if (state === 'listening') {
+    document.body.classList.add('listening');
+    label.textContent = 'Listening...';
+    status.textContent = 'Recording';
+    tx.textContent = '';
+    tx.classList.add('active');
+  } else if (state === 'speaking') {
+    document.body.classList.add('speaking');
+    label.textContent = 'Alan is speaking...';
+    status.textContent = 'Speaking';
+  } else if (state === 'thinking') {
+    label.textContent = 'Processing...';
+    status.textContent = 'Thinking';
+  } else {
+    label.textContent = 'Ready';
+    status.textContent = 'System Online';
+    tx.textContent = speechSupported ? 'Click the orb or press Space to speak' : 'Use the text input →';
+    tx.classList.remove('active');
+  }
+}
+
+// ===== CONVERSATION =====
+function addMessage(who, text) {
+  const feed = document.getElementById('convoFeed');
+  const div = document.createElement('div');
+  div.className = 'msg ' + who;
+  const av = document.createElement('div');
+  av.className = 'msg-avatar';
+  av.textContent = who === 'alan' ? 'AT' : 'YOU';
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.textContent = text;
+  div.appendChild(av);
+  div.appendChild(bubble);
+  feed.appendChild(div);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function showTyping() {
+  const feed = document.getElementById('convoFeed');
+  const div = document.createElement('div');
+  div.className = 'typing-row';
+  div.id = 'typingIndicator';
+  const av = document.createElement('div');
+  av.className = 'msg-avatar';
+  av.style.cssText = 'width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#0369a1,#0ea5e9);color:white;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0;';
+  av.textContent = 'AT';
+  const dots = document.createElement('div');
+  dots.className = 'typing-dots';
+  dots.innerHTML = '<span></span><span></span><span></span>';
+  div.appendChild(av);
+  div.appendChild(dots);
+  feed.appendChild(div);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function handleInput(input) {
+  if (!input.trim()) return;
+  addMessage('user', input);
+  document.getElementById('transcriptBox').dataset.last = input;
+
+  setState('thinking');
+  showTyping();
+
+  const delay = 600 + Math.random() * 400;
+  setTimeout(() => {
+    removeTyping();
+    const intent = match(input);
+    const response = getResponse(intent);
+    addMessage('alan', response);
+    speak(response);
+  }, delay);
+}
+
+// ===== TEXT INPUT =====
+function handleTextKey(e) {
+  if (e.key === 'Enter') sendText();
+}
+
+function sendText() {
+  const inp = document.getElementById('textInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  inp.value = '';
+  handleInput(val);
+}
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && e.target === document.body) {
+    e.preventDefault();
+    if (!isListening) toggleListen();
+  }
+  if (e.key === 'Escape') {
+    if (isListening) { recognition && recognition.stop(); setState('ready'); }
+    if (window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); setState('ready'); }
+  }
+});
+
+// ===== CLEAR =====
+function clearConvo() {
+  document.getElementById('convoFeed').innerHTML = '';
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  setState('ready');
+  setTimeout(() => addMessage('alan', "Conversation cleared. I'm still here — what can I help you with?"), 300);
+}
+
+// ===== INIT =====
+(function init() {
+  // Intro message after a moment
+  setTimeout(() => {
+    const msg = "Hey. I'm Alan T, your AI from Impulso Operations. Click the orb, press Space, or type your question. What can I help you with?";
+    addMessage('alan', msg);
+    setTimeout(() => speak(msg), 400);
+  }, 800);
+})();
+</script>
+</body>
+</html>

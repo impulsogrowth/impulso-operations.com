@@ -284,6 +284,8 @@
         #alan-info strong { font-size:.9rem;font-weight:800;color:#fff;display:block; }
         #alan-info span { font-size:.72rem;color:#10b981;font-weight:600; }
         #alan-close-btn { background:none;border:none;color:#6b7280;font-size:1.1rem;cursor:pointer;padding:.2rem; }
+        #alan-jarvis-btn { display:flex;align-items:center;gap:.3rem;background:rgba(14,165,233,.12);border:1px solid rgba(56,189,248,.3);border-radius:6px;color:#7dd3fc;font-size:.7rem;font-weight:700;cursor:pointer;padding:.3rem .6rem;font-family:inherit;text-decoration:none;transition:all .2s;white-space:nowrap; }
+        #alan-jarvis-btn:hover { background:rgba(14,165,233,.25);border-color:rgba(56,189,248,.6); }
         #alan-feed { flex:1;overflow-y:auto;padding:.9rem;display:flex;flex-direction:column;gap:.6rem; }
         #alan-feed::-webkit-scrollbar { width:3px; }
         #alan-feed::-webkit-scrollbar-track { background:transparent; }
@@ -331,6 +333,7 @@
             <strong>Alan T</strong>
             <span>● Online · Impulso Assistant</span>
           </div>
+          <a id="alan-jarvis-btn" href="jarvis.html" title="Switch to Voice Mode">🎙️ Voice</a>
           <button id="alan-close-btn" onclick="ALAN.close()">✕</button>
         </div>
         <div id="alan-feed"></div>
