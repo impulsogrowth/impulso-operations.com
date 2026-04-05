@@ -8,8 +8,8 @@
     name: 'Alan T',
     title: 'Impulso AI Assistant',
     avatar: '🤖',
-    color: '#7c3aed',
-    colorLight: '#a855f7',
+    color: '#0ea5e9',
+    colorLight: '#38bdf8',
     gold: '#f59e0b',
 
     // ---- KNOWLEDGE BASE ----
@@ -139,7 +139,7 @@
       // Parse markdown-ish links and bold
       let html = text
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" style="color:#a855f7;text-decoration:underline;">$1</a>')
+        .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" style="color:#38bdf8;text-decoration:underline;">$1</a>')
         .replace(/\n/g, '<br>');
 
       div.innerHTML = html;
@@ -274,12 +274,12 @@
       const style = document.createElement('style');
       style.textContent = `
         #alan-fab { position:fixed;bottom:1.5rem;right:1.5rem;z-index:9000;display:flex;flex-direction:column;align-items:flex-end;gap:.5rem; }
-        #alan-bubble { background:var(--card,#111118);border:1px solid rgba(168,85,247,.3);border-radius:12px 12px 0 12px;padding:.65rem 1rem;font-size:.82rem;font-weight:600;color:#e5e7eb;white-space:nowrap;opacity:0;transform:translateY(8px) scale(.96);transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.3); }
-        #alan-btn { width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 20px rgba(124,58,237,.5);transition:all .3s; }
+        #alan-bubble { background:var(--card,#111118);border:1px solid rgba(56,189,248,.3);border-radius:12px 12px 0 12px;padding:.65rem 1rem;font-size:.82rem;font-weight:600;color:#e5e7eb;white-space:nowrap;opacity:0;transform:translateY(8px) scale(.96);transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,.3); }
+        #alan-btn { width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#0369a1,#0ea5e9,#38bdf8);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 20px rgba(14,165,233,.5);transition:all .3s; }
         #alan-btn:hover { transform:scale(1.08);box-shadow:0 6px 28px rgba(124,58,237,.7); }
-        #alan-window { position:fixed;bottom:5.5rem;right:1.5rem;z-index:8999;width:340px;max-width:calc(100vw - 2rem);height:480px;max-height:calc(100vh - 8rem);background:#0d0d14;border:1px solid rgba(168,85,247,.25);border-radius:16px;display:none;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6);opacity:0;transform:translateY(16px) scale(.97);transition:all .3s cubic-bezier(.34,1.56,.64,1);overflow:hidden; }
-        #alan-header { padding:.9rem 1rem;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(168,85,247,.1));border-bottom:1px solid rgba(168,85,247,.15);display:flex;align-items:center;gap:.7rem; }
-        #alan-avatar { width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0; }
+        #alan-window { position:fixed;bottom:5.5rem;right:1.5rem;z-index:8999;width:340px;max-width:calc(100vw - 2rem);height:480px;max-height:calc(100vh - 8rem);background:#0d0d14;border:1px solid rgba(56,189,248,.25);border-radius:16px;display:none;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6);opacity:0;transform:translateY(16px) scale(.97);transition:all .3s cubic-bezier(.34,1.56,.64,1);overflow:hidden; }
+        #alan-header { padding:.9rem 1rem;background:linear-gradient(135deg,rgba(14,165,233,.2),rgba(56,189,248,.1));border-bottom:1px solid rgba(56,189,248,.15);display:flex;align-items:center;gap:.7rem; }
+        #alan-avatar { width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0369a1,#0ea5e9,#38bdf8);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0; }
         #alan-info { flex:1; }
         #alan-info strong { font-size:.9rem;font-weight:800;color:#fff;display:block; }
         #alan-info span { font-size:.72rem;color:#10b981;font-weight:600; }
@@ -287,23 +287,23 @@
         #alan-feed { flex:1;overflow-y:auto;padding:.9rem;display:flex;flex-direction:column;gap:.6rem; }
         #alan-feed::-webkit-scrollbar { width:3px; }
         #alan-feed::-webkit-scrollbar-track { background:transparent; }
-        #alan-feed::-webkit-scrollbar-thumb { background:rgba(168,85,247,.3);border-radius:2px; }
+        #alan-feed::-webkit-scrollbar-thumb { background:rgba(56,189,248,.3);border-radius:2px; }
         .alan-msg { max-width:85%;padding:.65rem .9rem;border-radius:12px;font-size:.84rem;line-height:1.55;word-break:break-word; }
         .alan-bot { background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);color:#e5e7eb;align-self:flex-start;border-radius:4px 12px 12px 12px; }
-        .alan-user { background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px; }
+        .alan-user { background:linear-gradient(135deg,#0369a1,#0ea5e9,#38bdf8);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px; }
         .alan-typing-wrap { display:flex;gap:4px;align-items:center;padding:.6rem .9rem; }
         .alan-typing-dot { width:6px;height:6px;border-radius:50%;background:#a855f7;animation:alanDot .9s ease-in-out infinite; }
         .alan-typing-dot:nth-child(2) { animation-delay:.15s; }
         .alan-typing-dot:nth-child(3) { animation-delay:.3s; }
         @keyframes alanDot { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-5px);opacity:1} }
         .alan-qr { display:flex;flex-wrap:wrap;gap:.4rem;padding:.2rem 0; }
-        .alan-qr-btn { padding:.35rem .75rem;background:rgba(124,58,237,.12);border:1px solid rgba(168,85,247,.3);border-radius:20px;color:#c4b5fd;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s; }
-        .alan-qr-btn:hover { background:rgba(124,58,237,.25);border-color:rgba(168,85,247,.6); }
+        .alan-qr-btn { padding:.35rem .75rem;background:rgba(14,165,233,.12);border:1px solid rgba(56,189,248,.3);border-radius:20px;color:#7dd3fc;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s; }
+        .alan-qr-btn:hover { background:rgba(14,165,233,.25);border-color:rgba(56,189,248,.6); }
         #alan-footer { padding:.65rem .8rem;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:.5rem;align-items:center; }
         #alan-input { flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.6rem .85rem;color:#fff;font-size:.84rem;font-family:inherit;outline:none;transition:border .2s; }
         #alan-input::placeholder { color:#6b7280; }
-        #alan-input:focus { border-color:rgba(168,85,247,.5); }
-        #alan-send { width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:all .2s; }
+        #alan-input:focus { border-color:rgba(56,189,248,.5); }
+        #alan-send { width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0369a1,#0ea5e9,#38bdf8);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;transition:all .2s; }
         #alan-send:hover { transform:scale(1.1); }
         @media(max-width:480px) { #alan-window { width:calc(100vw - 1rem);right:.5rem;bottom:5rem; } #alan-fab { right:.75rem;bottom:.75rem; } }
       `;
