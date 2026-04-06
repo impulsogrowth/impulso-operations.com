@@ -6,6 +6,7 @@
   <title>Business Intake Form — Impulso Operations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -472,79 +473,121 @@ function selectRating(groupId, btn, val) {
   if (input) input.value = val;
 }
 
+// ── EMAILJS CONFIG ─────────────────────────────────────────────
+// 1. Sign up free at emailjs.com (use nes22gfx@gmail.com)
+// 2. Add Email Service → Gmail → copy Service ID below
+// 3. Create Email Template → copy Template ID below
+// 4. Account → API Keys → copy Public Key below
+const EJ_SERVICE  = 'service_impulso';   // ← replace with your Service ID
+const EJ_TEMPLATE = 'template_intake';   // ← replace with your Template ID
+const EJ_KEY      = 'YOUR_PUBLIC_KEY';   // ← replace with your Public Key
+
+emailjs.init({ publicKey: EJ_KEY });
+
 async function submitForm() {
   const plan = document.querySelector('input[name=plan]:checked');
   if (!plan) { showToast('Please select a plan.'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
 
-  // Collect all data
+  // Collect all form data
+  const helpAreas  = ['c1','c2','c3','c4','c5','c6','c7','c8'].filter(id => document.getElementById(id)?.checked).map(id => document.querySelector('label[for='+id+']')?.textContent || '').filter(Boolean);
+  const currentTools = ['t1','t2','t3','t4','t5','t6','t7','t8'].filter(id => document.getElementById(id)?.checked).map(id => document.querySelector('label[for='+id+']')?.textContent || '').filter(Boolean);
+
   const data = {
-    firstName: document.getElementById('firstName').value,
-    lastName: document.getElementById('lastName').value,
-    bizName: document.getElementById('bizName').value,
-    email: document.getElementById('email').value,
-    phone: document.getElementById('phone').value,
-    niche: document.getElementById('niche').value,
-    location: document.getElementById('location').value,
-    challenge: document.getElementById('challenge').value,
-    goal90: document.getElementById('goal90').value,
-    revenueGoal: document.getElementById('revenueGoal').value,
-    helpAreas: ['c1','c2','c3','c4','c5','c6','c7','c8'].filter(id => document.getElementById(id).checked).map(id => document.querySelector('label[for='+id+']').textContent),
-    currentTools: ['t1','t2','t3','t4','t5','t6','t7','t8'].filter(id => document.getElementById(id).checked).map(id => document.querySelector('label[for='+id+']').textContent),
-    currentLeads: document.getElementById('currentLeads').value,
-    marketingScore: document.getElementById('marketingScore').value,
-    teamSize: document.getElementById('teamSize').value,
-    selectedPlan: plan.value,
-    notes: document.getElementById('notes').value,
-    referral: document.getElementById('referral').value,
-    submittedAt: new Date().toISOString()
+    firstName:     document.getElementById('firstName').value.trim(),
+    lastName:      document.getElementById('lastName').value.trim(),
+    bizName:       document.getElementById('bizName').value.trim(),
+    email:         document.getElementById('email').value.trim(),
+    phone:         document.getElementById('phone').value.trim(),
+    niche:         document.getElementById('niche').value,
+    location:      document.getElementById('location').value.trim(),
+    challenge:     document.getElementById('challenge').value.trim(),
+    goal90:        document.getElementById('goal90').value.trim(),
+    revenueGoal:   document.getElementById('revenueGoal').value,
+    helpAreas:     helpAreas.join(', ') || 'None selected',
+    currentTools:  currentTools.join(', ') || 'None selected',
+    currentLeads:  document.getElementById('currentLeads').value.trim(),
+    marketingScore:document.getElementById('marketingScore').value,
+    teamSize:      document.getElementById('teamSize').value,
+    selectedPlan:  plan.value,
+    notes:         document.getElementById('notes').value.trim(),
+    referral:      document.getElementById('referral').value.trim(),
+    submittedAt:   new Date().toLocaleString('en-US', { dateStyle:'full', timeStyle:'short' })
   };
 
-  // Send via email using mailto as fallback (works without backend)
-  const subject = encodeURIComponent(`New Intake: ${data.firstName} ${data.lastName} — ${data.bizName}`);
-  const body = encodeURIComponent(
-    `NEW CLIENT INTAKE FORM\n\n` +
-    `Name: ${data.firstName} ${data.lastName}\n` +
-    `Business: ${data.bizName}\n` +
-    `Email: ${data.email}\n` +
-    `Phone: ${data.phone}\n` +
-    `Niche: ${data.niche}\n` +
-    `Location: ${data.location}\n\n` +
-    `GOALS\n` +
-    `Challenge: ${data.challenge}\n` +
-    `90-Day Goal: ${data.goal90}\n` +
-    `Revenue Goal: ${data.revenueGoal}\n` +
-    `Help Needed: ${data.helpAreas.join(', ')}\n\n` +
-    `CURRENT SETUP\n` +
-    `Tools: ${data.currentTools.join(', ')}\n` +
-    `Current Leads: ${data.currentLeads}\n` +
-    `Marketing Score: ${data.marketingScore}/5\n` +
-    `Team Size: ${data.teamSize}\n\n` +
-    `PLAN\n` +
-    `Selected Plan: ${data.selectedPlan}\n` +
-    `Notes: ${data.notes}\n` +
-    `Referral: ${data.referral}\n` +
-    `Submitted: ${data.submittedAt}`
-  );
+  // Full formatted message for the email body
+  const message =
+`━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NEW CLIENT INTAKE — IMPULSO OPERATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  // Open email client
-  window.location.href = `mailto:nes@impulso-operations.com?subject=${subject}&body=${body}`;
+👤 CLIENT INFO
+Name:       ${data.firstName} ${data.lastName}
+Business:   ${data.bizName}
+Email:      ${data.email}
+Phone:      ${data.phone}
+Niche:      ${data.niche}
+Location:   ${data.location}
 
-  // Show success after short delay
-  setTimeout(() => {
-    document.getElementById('step4').classList.remove('active');
-    document.getElementById('successState').classList.add('active');
-    // Update all dots to done
-    for (let i = 1; i <= 4; i++) {
-      const dot = document.getElementById('dot' + i);
-      dot.className = 'step-dot done';
-      dot.textContent = '✓';
-      if (i < 4) document.getElementById('line' + i).className = 'progress-line done';
-    }
-  }, 800);
+🎯 GOALS
+Challenge:     ${data.challenge}
+90-Day Goal:   ${data.goal90}
+Revenue Goal:  ${data.revenueGoal}
+Help Needed:   ${data.helpAreas}
+
+⚙️ CURRENT SETUP
+Tools:            ${data.currentTools}
+Current Leads:    ${data.currentLeads}
+Marketing Score:  ${data.marketingScore}/5
+Team Size:        ${data.teamSize}
+
+💳 PLAN SELECTED
+${data.selectedPlan}
+
+📝 NOTES
+${data.notes || '—'}
+
+📣 HOW THEY HEARD ABOUT US
+${data.referral || '—'}
+
+Submitted: ${data.submittedAt}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+
+  const templateParams = {
+    to_email:    'nes@impulso-operations.com',
+    from_name:   `${data.firstName} ${data.lastName}`,
+    biz_name:    data.bizName,
+    client_email:data.email,
+    client_phone:data.phone,
+    plan:        data.selectedPlan,
+    message:     message
+  };
+
+  try {
+    await emailjs.send(EJ_SERVICE, EJ_TEMPLATE, templateParams);
+    showSuccess();
+  } catch(err) {
+    console.warn('EmailJS error:', err);
+    // Graceful fallback — still show success and open mailto as backup
+    showSuccess();
+    const subject = encodeURIComponent(`New Intake: ${data.firstName} ${data.lastName} — ${data.bizName}`);
+    const body = encodeURIComponent(message);
+    window.open(`mailto:nes@impulso-operations.com?subject=${subject}&body=${body}`, '_blank');
+  }
+}
+
+function showSuccess() {
+  document.getElementById('step4').classList.remove('active');
+  document.getElementById('successState').classList.add('active');
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dot' + i);
+    dot.className = 'step-dot done';
+    dot.textContent = '✓';
+    if (i < 4) document.getElementById('line' + i).className = 'progress-line done';
+  }
 }
 
 function showToast(msg) {
