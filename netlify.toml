@@ -7,9 +7,16 @@
 [functions."discord-setup"]
   node_bundler = "nft"
 
+# www → apex redirect
+[[redirects]]
+  from    = "https://www.impulso-operations.com/*"
+  to      = "https://impulso-operations.com/:splat"
+  status  = 301
+  force   = true
+
 [[headers]]
   for = "/*"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Origin  = "*"
     Access-Control-Allow-Headers = "Content-Type"
     Access-Control-Allow-Methods = "POST, OPTIONS, GET"

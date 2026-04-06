@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Admin check — only Impulso team emails get full access
+    function isAdmin() {
+      return request.auth != null &&
+             request.auth.token.email in [
+               'nes@impulso-operations.com',
+               'impulsoogrowth@gmail.com'
+             ];
+    }
+
+    // Authenticated user accessing their own doc
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // ── User profiles ──────────────────────────────────────────────────────
+    match /users/{userId} {
+      // User can read/write their own doc; admin can read/write all
+      allow read, write: if isOwner(userId) || isAdmin();
+
+      // ── Leads subcollection ─────────────────────────────────────────────
+      match /leads/{leadId} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // ── Admin-only: list ALL users (for Client Manager panel) ─────────────
+    // Firestore doesn't support collection-group queries without explicit rules.
+    // The admin panel queries /users directly — allow only admins.
+    match /users/{userId} {
+      allow list: if isAdmin();
+    }
+
+  }
+}
