@@ -224,6 +224,30 @@ try {
   console.warn('Firebase not configured yet');
 }
 
+// ── DISCORD WEBHOOKS ───────────────────────────────────────────
+const WH_CLIENTS = 'https://discord.com/api/webhooks/1490548344605380608/f011PE9Jct9lB6daKagvwsdl_uKEMKBq8zLsEL0IqcBKOr1StrNYSfxB7oYYsfseTvvV';
+
+function notifyDiscordNewClient(name, email, biz) {
+  fetch(WH_CLIENTS, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      embeds: [{
+        title: '✅ New Client Account Created',
+        color: 0x10b981,
+        fields: [
+          { name: '👤 Name',     value: name  || '—', inline: true },
+          { name: '📧 Email',    value: email || '—', inline: true },
+          { name: '🏢 Business', value: biz   || '—', inline: true },
+          { name: '🔐 Status',   value: 'Pending activation', inline: true },
+        ],
+        footer: { text: 'Activate in the Admin panel → dashboard.html' },
+        timestamp: new Date().toISOString()
+      }]
+    })
+  }).catch(() => {});
+}
+
 // No auto-redirect — pending users see the activation screen
 
 async function handleSignup() {
@@ -287,6 +311,7 @@ async function handleSignup() {
     document.getElementById('signupForm').style.display = 'none';
     document.getElementById('pendingState').classList.add('active');
     showToast('Account created! Pending activation.', 'success');
+    notifyDiscordNewClient(`${firstName} ${lastName}`, email, biz);
 
   } catch(err) {
     btn.disabled = false;
@@ -317,6 +342,7 @@ async function handleGoogleSignup() {
     document.getElementById('signupForm').style.display = 'none';
     document.getElementById('pendingState').classList.add('active');
     showToast('Account created! Pending activation.', 'success');
+    notifyDiscordNewClient(user.displayName, user.email, '');
   } catch(err) {
     showToast(firebaseError(err.code), 'error');
   }

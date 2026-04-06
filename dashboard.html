@@ -745,6 +745,37 @@ let clientFilter = 'all';
 // Admin emails — only these addresses get admin access
 const ADMIN_EMAILS = ['nes@impulso-operations.com', 'impulsoogrowth@gmail.com'];
 
+// Discord webhooks
+const WH_PIPELINE = 'https://discord.com/api/webhooks/1490548351664521286/k_sCipFezvnHzf3c0_B5MEKiUzwoMdTBMkenFv8eMwe5sgWUy3c4VVo8EFcbN9on0H_M';
+
+// Netlify function — auto-creates Discord workspace on client activation
+const DISCORD_SETUP_URL = 'https://impulso-operations.netlify.app/.netlify/functions/discord-setup';
+
+function notifyDiscordNewLead(data) {
+  const statusColors = { new: 0x3b82f6, contacted: 0xf59e0b, qualified: 0x8b5cf6, proposal: 0xec4899, closed: 0x10b981, lost: 0xef4444 };
+  fetch(WH_PIPELINE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      embeds: [{
+        title: '🎯 New Lead Added to Pipeline',
+        color: statusColors[data.status] || 0x3b82f6,
+        fields: [
+          { name: '👤 Name',     value: `${data.firstName} ${data.lastName}`.trim() || '—', inline: true },
+          { name: '🏢 Business', value: data.bizName || '—', inline: true },
+          { name: '📧 Email',    value: data.email   || '—', inline: true },
+          { name: '📱 Phone',    value: data.phone   || '—', inline: true },
+          { name: '🏷️ Niche',   value: data.niche   || '—', inline: true },
+          { name: '📊 Status',   value: data.status  || '—', inline: true },
+          { name: '📝 Notes',    value: data.notes   || '—', inline: false },
+        ],
+        footer: { text: 'Impulso CRM · Pipeline Update' },
+        timestamp: new Date().toISOString()
+      }]
+    })
+  }).catch(() => {});
+}
+
 try {
   firebase.initializeApp(firebaseConfig);
   auth = firebase.auth();
@@ -870,6 +901,7 @@ function renderClients() {
       <td style="color:var(--gray);font-size:.8rem;">${joined}</td>
       <td><div class="td-actions">
         ${status !== 'active' ? `<button class="approve-btn" onclick="setClientStatus('${c.uid}', 'active')">✓ Activate</button>` : `<button class="revoke-btn" onclick="setClientStatus('${c.uid}', 'pending')">✕ Revoke</button>`}
+        ${c.discordInvite ? `<button class="approve-btn" style="background:rgba(88,101,242,.15);color:#5865F2;border:1px solid rgba(88,101,242,.3);" onclick="navigator.clipboard.writeText('${c.discordInvite}');showToast('Discord invite copied!','success')">🔗 Discord</button>` : ''}
       </div></td>
     </tr>`;
   }).join('');
@@ -878,14 +910,48 @@ function renderClients() {
 async function setClientStatus(uid, status) {
   if (!db) return;
   try {
-    await db.collection('users').doc(uid).update({ status });
     const client = allClients.find(c => c.uid === uid);
+    const updateData = { status };
+
+    // On activation: spin up their Discord workspace if not already created
+    if (status === 'active' && client && !client.discordInvite) {
+      showToast('Activating & creating Discord workspace…', '');
+      try {
+        const res = await fetch(DISCORD_SETUP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clientUID:    uid,
+            businessName: client.businessName || client.displayName || uid,
+            clientEmail:  client.email || '',
+          }),
+        });
+        if (res.ok) {
+          const discord = await res.json();
+          updateData.discordInvite    = discord.inviteUrl;
+          updateData.discordRoleId    = discord.roleId;
+          updateData.discordCategoryId = discord.categoryId;
+          updateData.discordChannels  = discord.channels;
+          if (client) {
+            client.discordInvite   = discord.inviteUrl;
+            client.discordChannels = discord.channels;
+          }
+        } else {
+          console.warn('Discord setup failed:', await res.text());
+        }
+      } catch(discordErr) {
+        console.warn('Discord setup error:', discordErr);
+        // Still activate the client even if Discord setup fails
+      }
+    }
+
+    await db.collection('users').doc(uid).update(updateData);
     if (client) client.status = status;
     document.getElementById('adminTotal').textContent = allClients.length;
     document.getElementById('adminPending').textContent = allClients.filter(c => c.status !== 'active').length;
     document.getElementById('adminActive').textContent = allClients.filter(c => c.status === 'active').length;
     renderClients();
-    showToast(status === 'active' ? 'Client activated!' : 'Access revoked.', status === 'active' ? 'success' : '');
+    showToast(status === 'active' ? 'Client activated + Discord workspace created!' : 'Access revoked.', status === 'active' ? 'success' : '');
   } catch(e) { showToast('Could not update status.', 'error'); }
 }
 
@@ -973,6 +1039,7 @@ async function saveLead() {
     updateStats();
     closeModal();
     showToast('Lead added!', 'success');
+    notifyDiscordNewLead(data);
   } catch(e) { showToast('Could not save. Try again.', 'error'); }
 }
 

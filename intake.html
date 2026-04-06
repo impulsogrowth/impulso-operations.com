@@ -473,15 +473,13 @@ function selectRating(groupId, btn, val) {
   if (input) input.value = val;
 }
 
-// ── EMAILJS CONFIG ─────────────────────────────────────────────
-// 1. Sign up free at emailjs.com (use nes22gfx@gmail.com)
-// 2. Add Email Service → Gmail → copy Service ID below
-// 3. Create Email Template → copy Template ID below
-// 4. Account → API Keys → copy Public Key below
-const EJ_SERVICE  = 'service_impulso';   // ← replace with your Service ID
-const EJ_TEMPLATE = 'template_intake';   // ← replace with your Template ID
-const EJ_KEY      = 'YOUR_PUBLIC_KEY';   // ← replace with your Public Key
+// ── DISCORD WEBHOOKS ───────────────────────────────────────────
+const WH_INTAKE = 'https://discord.com/api/webhooks/1490548337676386427/0Ti3_hoO2V1ms9mgqmh_cWvNkIjKjmrAMkJ9vGTIKkdm3KDtUURnM5WC81Pf9uEeV6yK';
 
+// ── EMAILJS CONFIG ─────────────────────────────────────────────
+const EJ_SERVICE  = 'service_impulso';
+const EJ_TEMPLATE = 'template_intake';
+const EJ_KEY      = 'YOUR_PUBLIC_KEY';
 emailjs.init({ publicKey: EJ_KEY });
 
 async function submitForm() {
@@ -566,17 +564,38 @@ Submitted: ${data.submittedAt}
     message:     message
   };
 
+  // ── Fire Discord notification (always, non-blocking) ──
+  fetch(WH_INTAKE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      embeds: [{
+        title: '📋 New Intake Form Submitted',
+        color: 0xB8943C,
+        fields: [
+          { name: '👤 Client',    value: `${data.firstName} ${data.lastName}`, inline: true },
+          { name: '🏢 Business',  value: data.bizName || '—',                  inline: true },
+          { name: '🏭 Niche',     value: data.niche || '—',                    inline: true },
+          { name: '📧 Email',     value: data.email || '—',                    inline: true },
+          { name: '📱 Phone',     value: data.phone || '—',                    inline: true },
+          { name: '💳 Plan',      value: data.selectedPlan || '—',             inline: true },
+          { name: '📍 Location',  value: data.location || '—',                 inline: true },
+          { name: '🎯 90-Day Goal', value: data.goal90 || '—',                 inline: false },
+          { name: '⚠️ Biggest Challenge', value: data.challenge || '—',        inline: false },
+        ],
+        footer: { text: `Submitted ${data.submittedAt}` },
+        timestamp: new Date().toISOString()
+      }]
+    })
+  }).catch(() => {});
+
+  // ── Send email via EmailJS ──
   try {
     await emailjs.send(EJ_SERVICE, EJ_TEMPLATE, templateParams);
-    showSuccess();
   } catch(err) {
     console.warn('EmailJS error:', err);
-    // Graceful fallback — still show success and open mailto as backup
-    showSuccess();
-    const subject = encodeURIComponent(`New Intake: ${data.firstName} ${data.lastName} — ${data.bizName}`);
-    const body = encodeURIComponent(message);
-    window.open(`mailto:nes@impulso-operations.com?subject=${subject}&body=${body}`, '_blank');
   }
+  showSuccess();
 }
 
 function showSuccess() {
