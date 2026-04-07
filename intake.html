@@ -6,7 +6,6 @@
   <title>Business Intake Form — Impulso Operations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -476,11 +475,8 @@ function selectRating(groupId, btn, val) {
 // ── DISCORD WEBHOOKS ───────────────────────────────────────────
 const WH_INTAKE = 'https://discord.com/api/webhooks/1490548337676386427/0Ti3_hoO2V1ms9mgqmh_cWvNkIjKjmrAMkJ9vGTIKkdm3KDtUURnM5WC81Pf9uEeV6yK';
 
-// ── EMAILJS CONFIG ─────────────────────────────────────────────
-const EJ_SERVICE  = 'service_impulso';
-const EJ_TEMPLATE = 'template_intake';
-const EJ_KEY      = 'YOUR_PUBLIC_KEY';
-emailjs.init({ publicKey: EJ_KEY });
+// ── EMAIL CONFIG ────────────────────────────────────────────────
+const SEND_INTAKE_URL = '/.netlify/functions/send-intake';
 
 async function submitForm() {
   const plan = document.querySelector('input[name=plan]:checked');
@@ -589,12 +585,12 @@ Submitted: ${data.submittedAt}
     })
   }).catch(() => {});
 
-  // ── Send email via EmailJS ──
-  try {
-    await emailjs.send(EJ_SERVICE, EJ_TEMPLATE, templateParams);
-  } catch(err) {
-    console.warn('EmailJS error:', err);
-  }
+  // ── Send email via Zoho SMTP (Netlify function) ──
+  fetch(SEND_INTAKE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).catch(() => {});
   showSuccess();
 }
 
