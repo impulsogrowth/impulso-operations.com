@@ -569,11 +569,32 @@
 
     <!-- ===== REPORTS ===== -->
     <div class="section" id="section-reports">
-      <div class="page-head"><h1>Monthly <span class="gradient-text">Reports</span></h1><p>Full performance breakdowns.</p></div>
-      <div class="card" style="text-align:center;padding:3rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">📈</div>
-        <p style="font-weight:700;margin-bottom:.5rem;">Reports generate automatically</p>
-        <p style="color:var(--gray);font-size:.875rem;">Your first report will appear at the end of your first active month.</p>
+      <div class="page-head"><h1>Performance <span class="gradient-text">Reports</span></h1><p>Live pipeline analytics and breakdowns.</p></div>
+
+      <div class="stats-grid" style="margin-bottom:1.5rem;">
+        <div class="stat-card s1"><div class="stat-label">Total Leads</div><div class="stat-val" id="rpt-total">0</div><div class="stat-sub">All time</div></div>
+        <div class="stat-card s2"><div class="stat-label">Contacted</div><div class="stat-val" id="rpt-contacted">0</div><div class="stat-sub">Reached out</div></div>
+        <div class="stat-card s3"><div class="stat-label">Closed</div><div class="stat-val" id="rpt-closed">0</div><div class="stat-sub">Won deals</div></div>
+        <div class="stat-card s4"><div class="stat-label">Close Rate</div><div class="stat-val" id="rpt-rate">0%</div><div class="stat-sub">Leads → clients</div></div>
+      </div>
+
+      <div class="two-col" style="margin-bottom:1.5rem;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">📊 Pipeline Breakdown</span></div>
+          <div id="rpt-breakdown" style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">🏷️ Top Niches</span></div>
+          <div id="rpt-niches" style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem;"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📋 All Leads Export</span>
+          <button onclick="exportCSV()" style="padding:.4rem .9rem;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.3);border-radius:8px;color:var(--purple);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;">⬇️ Export CSV</button>
+        </div>
+        <p style="font-size:.82rem;color:var(--gray);margin-top:.25rem;">Download your full lead pipeline as a CSV file.</p>
       </div>
     </div>
 
@@ -589,25 +610,92 @@
 
     <!-- ===== CONTENT ===== -->
     <div class="section" id="section-content">
-      <div class="page-head"><h1>Content <span class="gradient-text">Generator</span></h1><p>AI-written content for your business.</p></div>
-      <div class="card" style="text-align:center;padding:3rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">✍️</div>
-        <p style="font-weight:700;margin-bottom:.5rem;">Coming soon</p>
-        <p style="color:var(--gray);font-size:.875rem;">AI-generated posts, emails, and ads tailored to your business. Launching Q2 2026.</p>
+      <div class="page-head"><h1>Content <span class="gradient-text">Generator</span></h1><p>AI-written content tailored to your business.</p></div>
+
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-header"><span class="card-title">✍️ Generate Content</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+          <div>
+            <label style="font-size:.8rem;font-weight:600;color:var(--gray);display:block;margin-bottom:.4rem;">Content Type</label>
+            <select id="cg-type" style="width:100%;padding:.65rem .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--white);font-family:inherit;font-size:.875rem;">
+              <option value="instagram-reel">Instagram Reel Script</option>
+              <option value="instagram-carousel">Instagram Carousel</option>
+              <option value="instagram-caption">Instagram Caption</option>
+              <option value="cold-email">Cold Outreach Email</option>
+              <option value="follow-up">Follow-Up Message</option>
+              <option value="dm-script">Cold DM Script</option>
+              <option value="google-ad">Google Ad Copy</option>
+              <option value="meta-ad">Meta Ad Copy</option>
+              <option value="sms">SMS Outreach</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:.8rem;font-weight:600;color:var(--gray);display:block;margin-bottom:.4rem;">Tone</label>
+            <select id="cg-tone" style="width:100%;padding:.65rem .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--white);font-family:inherit;font-size:.875rem;">
+              <option value="professional">Professional</option>
+              <option value="casual">Casual & Friendly</option>
+              <option value="bold">Bold & Direct</option>
+              <option value="urgent">Urgent</option>
+              <option value="storytelling">Storytelling</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:.75rem;">
+          <label style="font-size:.8rem;font-weight:600;color:var(--gray);display:block;margin-bottom:.4rem;">Topic / Goal (optional)</label>
+          <input id="cg-topic" type="text" placeholder="e.g. generate more leads, promote my service, re-engage old clients..." style="width:100%;padding:.65rem .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--white);font-family:inherit;font-size:.875rem;">
+        </div>
+        <button onclick="generateContent()" id="cg-btn" class="btn-primary" style="width:100%;justify-content:center;padding:.85rem;">✨ Generate Content</button>
+      </div>
+
+      <div class="card" id="cg-result-card" style="display:none;">
+        <div class="card-header">
+          <span class="card-title">📄 Generated Content</span>
+          <button onclick="copyContent()" style="padding:.4rem .9rem;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.3);border-radius:8px;color:var(--purple);font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;">📋 Copy</button>
+        </div>
+        <div id="cg-output" style="white-space:pre-wrap;font-size:.875rem;line-height:1.7;color:var(--light);padding:.5rem;background:rgba(0,0,0,.02);border-radius:8px;min-height:80px;"></div>
       </div>
     </div>
 
     <!-- ===== BOOKING ===== -->
     <div class="section" id="section-booking">
       <div class="page-head"><h1>Book a <span class="gradient-text">Call</span></h1><p>Schedule time with your account manager.</p></div>
-      <div class="card">
-        <p style="color:var(--gray);font-size:.875rem;line-height:1.6;margin-bottom:1.2rem;">Schedule a free strategy call or onboarding session. We'll walk through your system, answer questions, and plan your next steps.</p>
-        <div class="support-links">
-          <a href="mailto:nes@impulso-operations.com?subject=Book a Call" class="support-link">📧 Email to book</a>
-          <a href="tel:7862286229" class="support-link">📱 786-228-6229</a>
+
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-header"><span class="card-title">📅 Schedule a Call</span></div>
+        <p style="color:var(--gray);font-size:.875rem;line-height:1.6;margin-bottom:1.5rem;">Pick a time that works for you. We'll walk through your system, review your pipeline, and plan your next steps together.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+          <div style="background:rgba(14,165,233,.05);border:1px solid rgba(14,165,233,.15);border-radius:12px;padding:1.2rem;">
+            <div style="font-size:1.4rem;margin-bottom:.5rem;">🎯</div>
+            <p style="font-weight:700;font-size:.9rem;margin-bottom:.3rem;">Strategy Call</p>
+            <p style="color:var(--gray);font-size:.8rem;line-height:1.5;">30 min · Review your pipeline, content, and outreach. Plan your next 30 days.</p>
+          </div>
+          <div style="background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.15);border-radius:12px;padding:1.2rem;">
+            <div style="font-size:1.4rem;margin-bottom:.5rem;">🚀</div>
+            <p style="font-weight:700;font-size:.9rem;margin-bottom:.3rem;">Onboarding Call</p>
+            <p style="color:var(--gray);font-size:.8rem;line-height:1.5;">45 min · Walk through your full system setup. Get everything live and running.</p>
+          </div>
         </div>
-        <div style="margin-top:1.5rem;background:rgba(124,58,237,.06);border:1px solid rgba(56,189,248,.15);border-radius:12px;padding:1.5rem;text-align:center;">
-          <p style="font-size:.875rem;color:var(--gray);">Calendly booking coming soon — email us to schedule for now.</p>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+          <a href="mailto:nes@impulso-operations.com?subject=Book a Call — Strategy&body=Hi Nes, I'd like to schedule a strategy call. My availability is:" class="btn-primary" style="flex:1;justify-content:center;">📧 Book via Email</a>
+          <a href="tel:7862286229" class="btn-secondary" style="flex:1;justify-content:center;">📱 Call Directly</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">🕐 Response Times</span></div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.65rem .75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="font-size:.85rem;color:var(--gray);">Premium Marketing</span>
+            <span style="font-size:.82rem;font-weight:600;color:var(--emerald);">Within 24 hours</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.65rem .75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="font-size:.85rem;color:var(--gray);">System Install</span>
+            <span style="font-size:.82rem;font-weight:600;color:var(--emerald);">Within 12 hours</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.65rem .75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+            <span style="font-size:.85rem;color:var(--gray);">System + Agent</span>
+            <span style="font-size:.82rem;font-weight:600;color:var(--gold);">Within 4 hours</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1126,7 +1214,8 @@ const sectionIds = ['overview','pipeline','reports','outreach','content','bookin
 function showSection(id) {
   sectionIds.forEach(s => document.getElementById('section-'+s).classList.toggle('active', s === id));
   document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-  const titles = { overview:'Dashboard', pipeline:'Lead Pipeline', reports:'Reports', outreach:'Outreach', content:'Content', booking:'Book a Call', billing:'Billing', profile:'Profile', support:'Support' };
+  const titles = { overview:'Dashboard', pipeline:'Lead Pipeline', reports:'Reports', outreach:'Outreach', content:'Content Generator', booking:'Book a Call', billing:'Billing', profile:'Profile', support:'Support' };
+  if (id === 'reports') buildReports();
   document.getElementById('topbarTitle').textContent = titles[id] || 'Dashboard';
   event && document.querySelectorAll('.nav-item').forEach(btn => { if (btn.textContent.trim().toLowerCase().includes(id === 'overview' ? 'dashboard' : id)) btn.classList.add('active'); });
   if (window.innerWidth < 640) document.getElementById('sidebar').classList.remove('open');
@@ -1134,6 +1223,132 @@ function showSection(id) {
 }
 
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+// ========== CONTENT GENERATOR ==========
+async function generateContent() {
+  const type    = document.getElementById('cg-type').value;
+  const tone    = document.getElementById('cg-tone').value;
+  const topic   = document.getElementById('cg-topic').value.trim();
+  const btn     = document.getElementById('cg-btn');
+  const card    = document.getElementById('cg-result-card');
+  const output  = document.getElementById('cg-output');
+
+  // Get user's business context
+  const bizName = document.getElementById('profileBiz').textContent || 'my business';
+  const plan    = document.getElementById('billingPlanName').textContent || '';
+
+  const typeLabels = {
+    'instagram-reel':     'Instagram Reel script (hook + body + CTA, 60 seconds spoken)',
+    'instagram-carousel': 'Instagram Carousel (5-7 slides with headlines and body copy)',
+    'instagram-caption':  'Instagram caption (hook, value, CTA, 3-5 hashtags)',
+    'cold-email':         'cold outreach email (subject line + body, under 150 words)',
+    'follow-up':          'follow-up message (for a prospect who hasn\'t responded in 3 days)',
+    'dm-script':          'cold DM script (opening question, not a pitch, under 50 words)',
+    'google-ad':          'Google Ad (headline 1, headline 2, headline 3, description)',
+    'meta-ad':            'Meta/Facebook Ad (primary text, headline, description, CTA)',
+    'sms':                'SMS outreach message (under 160 characters, conversational)',
+  };
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  card.style.display = 'none';
+
+  const EL_KEY   = 'sk_bf72860357197960813364b31d93624e3ac38358fa47f0eb'; // reuse for Anthropic via proxy not needed — use direct API
+  const ANTH_KEY = 'sk-ant-api03-placeholder'; // placeholder — use Netlify function
+
+  try {
+    // Call Netlify function to generate content via Claude
+    const res = await fetch('/.netlify/functions/generate-content', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, tone, topic, bizName, plan })
+    });
+
+    if (!res.ok) throw new Error('Generation failed');
+    const data = await res.json();
+    output.textContent = data.content;
+    card.style.display = 'block';
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } catch(e) {
+    showToast('Generation failed. Try again.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ Generate Content';
+  }
+}
+
+function copyContent() {
+  const text = document.getElementById('cg-output').textContent;
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!', 'success'));
+}
+
+// ========== REPORTS ==========
+function buildReports() {
+  if (!leads.length) return;
+
+  const counts = {};
+  const niches  = {};
+  leads.forEach(l => {
+    const s = l.status || 'new';
+    counts[s] = (counts[s] || 0) + 1;
+    if (l.niche) niches[l.niche] = (niches[l.niche] || 0) + 1;
+  });
+
+  const total     = leads.length;
+  const contacted = (counts.contacted||0) + (counts.qualified||0) + (counts.proposal||0) + (counts.closed||0);
+  const closed    = counts.closed || 0;
+  const rate      = total ? Math.round((closed / total) * 100) : 0;
+
+  document.getElementById('rpt-total').textContent     = total;
+  document.getElementById('rpt-contacted').textContent = contacted;
+  document.getElementById('rpt-closed').textContent    = closed;
+  document.getElementById('rpt-rate').textContent      = rate + '%';
+
+  // Pipeline breakdown bars
+  const colors = { new:'#3b82f6', contacted:'#f59e0b', qualified:'#8b5cf6', proposal:'#ec4899', closed:'#10b981', lost:'#ef4444' };
+  const breakdown = document.getElementById('rpt-breakdown');
+  breakdown.innerHTML = Object.entries(counts).map(([s, n]) => `
+    <div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:.3rem;">
+        <span style="font-size:.82rem;font-weight:600;text-transform:capitalize;">${s}</span>
+        <span style="font-size:.82rem;color:var(--gray);">${n} (${Math.round((n/total)*100)}%)</span>
+      </div>
+      <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px;">
+        <div style="height:6px;border-radius:3px;background:${colors[s]||'#64748b'};width:${Math.round((n/total)*100)}%;transition:width .6s;"></div>
+      </div>
+    </div>`).join('');
+
+  // Top niches
+  const nicheEl = document.getElementById('rpt-niches');
+  const sorted  = Object.entries(niches).sort((a,b) => b[1]-a[1]).slice(0, 6);
+  if (sorted.length) {
+    nicheEl.innerHTML = sorted.map(([n, count]) => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .75rem;background:rgba(255,255,255,.02);border-radius:8px;">
+        <span style="font-size:.85rem;text-transform:capitalize;">${n}</span>
+        <span style="font-size:.82rem;font-weight:700;color:var(--purple-light);">${count} lead${count>1?'s':''}</span>
+      </div>`).join('');
+  } else {
+    nicheEl.innerHTML = '<p style="font-size:.82rem;color:var(--gray);">Add leads with a niche to see breakdown.</p>';
+  }
+}
+
+// ========== EXPORT CSV ==========
+function exportCSV() {
+  if (!leads.length) { showToast('No leads to export.', 'error'); return; }
+  const headers = ['First Name','Last Name','Business','Email','Phone','Niche','Status','Score','Notes','Date Added'];
+  const rows = leads.map(l => [
+    l.firstName||'', l.lastName||'', l.bizName||'', l.email||'',
+    l.phone||'', l.niche||'', l.status||'', l.score||'', (l.notes||'').replace(/,/g,' '),
+    l.createdAt ? new Date(l.createdAt.seconds*1000).toLocaleDateString() : ''
+  ]);
+  const csv  = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `impulso-leads-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  showToast('CSV downloaded!', 'success');
+}
 
 async function handleLogout() {
   if (auth) await auth.signOut();
