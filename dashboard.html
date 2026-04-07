@@ -901,7 +901,8 @@ function renderClients() {
       <td style="color:var(--gray);font-size:.8rem;">${joined}</td>
       <td><div class="td-actions">
         ${status !== 'active' ? `<button class="approve-btn" onclick="setClientStatus('${c.uid}', 'active')">✓ Activate</button>` : `<button class="revoke-btn" onclick="setClientStatus('${c.uid}', 'pending')">✕ Revoke</button>`}
-        ${c.discordInvite ? `<button class="approve-btn" style="background:rgba(88,101,242,.15);color:#5865F2;border:1px solid rgba(88,101,242,.3);" onclick="navigator.clipboard.writeText('${c.discordInvite}');showToast('Discord invite copied!','success')">🔗 Discord</button>` : ''}
+        ${c.discordInvite ? `<button class="approve-btn" style="background:rgba(88,101,242,.15);color:#5865F2;border:1px solid rgba(88,101,242,.3);" onclick="navigator.clipboard.writeText('${c.discordInvite}');showToast('Discord invite copied!','success')" title="Copy client invite link">🔗 ${c.discordPlanTier || 'Basic'}</button>` : ''}
+        ${c.discordBotInvite ? `<button class="approve-btn" style="background:rgba(88,101,242,.08);color:#5865F2;border:1px solid rgba(88,101,242,.2);font-size:.75rem;" onclick="window.open('${c.discordBotInvite}','_blank')" title="Add Impulso Bot to their server">🤖 Add Bot</button>` : ''}
       </div></td>
     </tr>`;
   }).join('');
@@ -924,24 +925,29 @@ async function setClientStatus(uid, status) {
             clientUID:    uid,
             businessName: client.businessName || client.displayName || uid,
             clientEmail:  client.email || '',
+            plan:         client.plan || 'premium-marketing',
           }),
         });
         if (res.ok) {
-          const discord = await res.json();
-          updateData.discordInvite    = discord.inviteUrl;
-          updateData.discordRoleId    = discord.roleId;
-          updateData.discordCategoryId = discord.categoryId;
-          updateData.discordChannels  = discord.channels;
+          const d = await res.json();
+          updateData.discordInvite      = d.inviteUrl;
+          updateData.discordGuildId     = d.guildId;
+          updateData.discordGuildName   = d.guildName;
+          updateData.discordPlanTier    = d.planTier;
+          updateData.discordBotInvite   = d.botInviteUrl;
+          updateData.discordChannels    = d.channels;
+          updateData.discordLeadWebhook = d.leadWebhookUrl || '';
           if (client) {
-            client.discordInvite   = discord.inviteUrl;
-            client.discordChannels = discord.channels;
+            client.discordInvite    = d.inviteUrl;
+            client.discordBotInvite = d.botInviteUrl;
+            client.discordPlanTier  = d.planTier;
+            client.discordChannels  = d.channels;
           }
         } else {
           console.warn('Discord setup failed:', await res.text());
         }
       } catch(discordErr) {
         console.warn('Discord setup error:', discordErr);
-        // Still activate the client even if Discord setup fails
       }
     }
 
