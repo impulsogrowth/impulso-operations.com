@@ -603,11 +603,109 @@
 
     <!-- ===== OUTREACH ===== -->
     <div class="section" id="section-outreach">
-      <div class="page-head"><h1>Outreach <span class="gradient-text">Center</span></h1><p>Emails and SMS sent on your behalf.</p></div>
-      <div class="card" style="text-align:center;padding:3rem;">
-        <div style="font-size:3rem;margin-bottom:1rem;">📨</div>
-        <p style="font-weight:700;margin-bottom:.5rem;">Outreach runs automatically</p>
-        <p style="color:var(--gray);font-size:.875rem;">Once your system is active, outreach logs will appear here. Every email and SMS sent on your behalf is tracked.</p>
+      <div class="page-head"><h1>Outreach <span class="gradient-text">Center</span></h1><p>Every message sent on your behalf — tracked in real time.</p></div>
+
+      <!-- OUTREACH STATS -->
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.5rem;">
+        <div class="stat-card s1"><div class="stat-label">Sent This Month</div><div class="stat-val" id="or-sent">—</div><div class="stat-sub">Emails + DMs combined</div></div>
+        <div class="stat-card s2"><div class="stat-label">Response Rate</div><div class="stat-val" id="or-rate">—</div><div class="stat-sub">Industry avg: 3–5%</div></div>
+        <div class="stat-card s3"><div class="stat-label">Replies Received</div><div class="stat-val" id="or-replies">—</div><div class="stat-sub">Warm prospects</div></div>
+        <div class="stat-card s4"><div class="stat-label">Follow-Ups Queued</div><div class="stat-val" id="or-queue">—</div><div class="stat-sub">Next 7 days</div></div>
+      </div>
+
+      <!-- SEQUENCE STATUS -->
+      <div class="two-col" style="margin-bottom:1.5rem;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">📬 Active Sequences</span><span style="font-size:.72rem;color:var(--green);font-weight:600;">● Running</span></div>
+          <div style="display:flex;flex-direction:column;gap:.6rem;" id="or-sequences">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.15);border-radius:8px;">
+              <div>
+                <div style="font-size:.83rem;font-weight:700;">Cold Email — 5 Touch</div>
+                <div style="font-size:.72rem;color:var(--gray);margin-top:.15rem;">Day 1 → Day 3 → Day 7 → Day 14 → Day 21</div>
+              </div>
+              <span style="font-size:.72rem;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:var(--green);padding:.2rem .6rem;border-radius:20px;font-weight:700;">Active</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:rgba(14,165,233,.05);border:1px solid rgba(14,165,233,.15);border-radius:8px;">
+              <div>
+                <div style="font-size:.83rem;font-weight:700;">Cold DM — LinkedIn + Instagram</div>
+                <div style="font-size:.72rem;color:var(--gray);margin-top:.15rem;">Opening DM → Value follow-up → Last touch</div>
+              </div>
+              <span style="font-size:.72rem;background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.3);color:var(--purple-light);padding:.2rem .6rem;border-radius:20px;font-weight:700;">Active</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">📅 Upcoming Send Schedule</span></div>
+          <div style="display:flex;flex-direction:column;gap:.5rem;" id="or-schedule">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:.82rem;color:var(--light);">Today</span>
+              <span style="font-size:.82rem;font-weight:700;color:var(--purple-light);" id="or-today-count">— messages</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:.82rem;color:var(--light);">Tomorrow</span>
+              <span style="font-size:.82rem;font-weight:700;" id="or-tomorrow-count">— messages</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);">
+              <span style="font-size:.82rem;color:var(--light);">This week</span>
+              <span style="font-size:.82rem;font-weight:700;" id="or-week-count">— messages</span>
+            </div>
+            <div style="margin-top:.5rem;font-size:.75rem;color:var(--gray);line-height:1.5;">Outreach runs Mon–Fri 9am–5pm local time to maximise open rates. Weekends paused automatically.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OUTREACH LOG TABLE -->
+      <div class="pipeline-wrap">
+        <div class="pipeline-header">
+          <span class="pipeline-title">Outreach Log</span>
+          <div class="pipeline-filters">
+            <button class="filter-btn active" onclick="filterOutreach('all',this)">All</button>
+            <button class="filter-btn" onclick="filterOutreach('email',this)">Email</button>
+            <button class="filter-btn" onclick="filterOutreach('dm',this)">DM</button>
+            <button class="filter-btn" onclick="filterOutreach('replied',this)">Replied</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Prospect</th>
+                <th>Channel</th>
+                <th>Touch</th>
+                <th>Status</th>
+                <th>Sent</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="orTable">
+              <tr><td colspan="6"><div class="empty-table"><div class="ei">📨</div>Outreach log will populate here once your system sends its first messages. Hang tight.</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MANUAL OUTREACH -->
+      <div class="card" style="margin-top:1.5rem;">
+        <div class="card-header"><span class="card-title">✍️ Send Manual Outreach</span><span style="font-size:.72rem;color:var(--gray);">Compose a one-off message to a specific prospect</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem;">
+          <div>
+            <label style="font-size:.78rem;font-weight:600;color:var(--gray);display:block;margin-bottom:.3rem;">Prospect Name</label>
+            <input id="or-name" type="text" placeholder="John Smith / HVAC Pro Inc." style="width:100%;padding:.65rem .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--white);font-family:inherit;font-size:.875rem;">
+          </div>
+          <div>
+            <label style="font-size:.78rem;font-weight:600;color:var(--gray);display:block;margin-bottom:.3rem;">Email or Phone</label>
+            <input id="or-contact" type="text" placeholder="owner@business.com or (305) 555-0000" style="width:100%;padding:.65rem .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--white);font-family:inherit;font-size:.875rem;">
+          </div>
+        </div>
+        <div style="margin-bottom:.75rem;">
+          <label style="font-size:.78rem;font-weight:600;color:var(--gray);display:block;margin-bottom:.3rem;">Message</label>
+          <textarea id="or-message" rows="4" placeholder="Type your outreach message or use the Content Generator to create one..." style="width:100%;padding:.7rem .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--white);font-family:inherit;font-size:.875rem;resize:vertical;"></textarea>
+        </div>
+        <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+          <button onclick="logManualOutreach()" style="padding:.65rem 1.4rem;background:linear-gradient(135deg,var(--blue-dark),var(--purple));border:none;border-radius:8px;color:white;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;">Log as Sent</button>
+          <button onclick="showSection('content')" style="padding:.65rem 1.2rem;background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);border-radius:8px;color:var(--purple-light);font-size:.85rem;font-weight:600;cursor:pointer;font-family:inherit;">✍️ Generate Message First</button>
+          <span style="font-size:.75rem;color:var(--gray);">Logging tracks what's been sent — actual delivery is done via email or Discord.</span>
+        </div>
       </div>
     </div>
 
@@ -1619,6 +1717,7 @@ function showSection(id) {
   document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
   const titles = { overview:'Dashboard', pipeline:'Lead Pipeline', reports:'Reports', outreach:'Outreach', content:'Content Generator', booking:'Book a Call', products:'Products', sop:'Playbook & SOP', billing:'Billing', profile:'Profile', support:'Support' };
   if (id === 'reports') buildReports();
+  if (id === 'outreach') buildOutreach();
   document.getElementById('topbarTitle').textContent = titles[id] || 'Dashboard';
   event && document.querySelectorAll('.nav-item').forEach(btn => { if (btn.textContent.trim().toLowerCase().includes(id === 'overview' ? 'dashboard' : id)) btn.classList.add('active'); });
   if (window.innerWidth < 640) document.getElementById('sidebar').classList.remove('open');
@@ -1771,6 +1870,124 @@ function showToast(msg, type='') {
   t.className = 'toast ' + type;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ========== OUTREACH ==========
+let outreachLog = [];
+let outreachFilter = 'all';
+
+async function buildOutreach() {
+  if (!db || !currentUID) return;
+  try {
+    const snap = await db.collection('users').doc(currentUID).collection('outreach')
+      .orderBy('sentAt', 'desc').limit(100).get();
+    outreachLog = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) {
+    // collection may not exist yet — that's fine
+    outreachLog = [];
+  }
+  renderOutreachStats();
+  renderOutreachLog();
+}
+
+function renderOutreachStats() {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const sent = outreachLog.filter(o => o.sentAt && new Date(o.sentAt.seconds * 1000) >= monthStart);
+  const replied = outreachLog.filter(o => o.status === 'replied');
+  const rate = sent.length > 0 ? Math.round((replied.length / sent.length) * 100) : 0;
+  const queued = outreachLog.filter(o => o.status === 'queued').length;
+
+  document.getElementById('or-sent').textContent = sent.length || '—';
+  document.getElementById('or-rate').textContent = sent.length ? rate + '%' : '—';
+  document.getElementById('or-replies').textContent = replied.length || '—';
+  document.getElementById('or-queue').textContent = queued || '—';
+
+  // Schedule projections based on plan (rough estimate)
+  document.getElementById('or-today-count').textContent = outreachLog.length ? '15–25 messages' : 'Not started';
+  document.getElementById('or-tomorrow-count').textContent = outreachLog.length ? '15–25 messages' : 'Not started';
+  document.getElementById('or-week-count').textContent = outreachLog.length ? '75–125 messages' : 'Not started';
+}
+
+function renderOutreachLog(filter = outreachFilter) {
+  const tbody = document.getElementById('orTable');
+  let rows = outreachLog;
+  if (filter === 'email') rows = rows.filter(o => o.channel === 'email');
+  if (filter === 'dm')    rows = rows.filter(o => o.channel === 'dm');
+  if (filter === 'replied') rows = rows.filter(o => o.status === 'replied');
+
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-table"><div class="ei">📨</div>${outreachLog.length ? 'No messages match that filter.' : 'Outreach log will populate here once your system sends its first messages.'}</div></td></tr>`;
+    return;
+  }
+
+  const statusColors = { sent:'#3b82f6', replied:'#10b981', queued:'#f59e0b', bounced:'#ef4444', opened:'#8b5cf6' };
+  const touchLabels  = { 1:'Touch 1', 2:'Touch 2', 3:'Touch 3', 4:'Touch 4', 5:'Touch 5 (Final)' };
+
+  tbody.innerHTML = rows.map(o => {
+    const date = o.sentAt ? new Date(o.sentAt.seconds * 1000).toLocaleDateString('en-US', { month:'short', day:'numeric' }) : '—';
+    const status = o.status || 'sent';
+    const color = statusColors[status] || '#64748b';
+    const touch = touchLabels[o.touch] || `Touch ${o.touch || 1}`;
+    const channel = o.channel === 'email' ? '📧 Email' : o.channel === 'dm' ? '💬 DM' : o.channel || '—';
+    return `<tr>
+      <td><div class="td-name">${o.prospectName || '—'}</div><div class="td-sub">${o.prospectEmail || o.prospectPhone || ''}</div></td>
+      <td style="font-size:.82rem;color:var(--light);">${channel}</td>
+      <td style="font-size:.82rem;color:var(--gray);">${touch}</td>
+      <td><span class="status-badge" style="background:${color}22;color:${color};border-color:${color}44;">${status}</span></td>
+      <td style="font-size:.8rem;color:var(--gray);">${date}</td>
+      <td><button class="act-btn" onclick="markOutreachReplied('${o.id}')" style="${status === 'replied' ? 'opacity:.4;cursor:default;' : ''}">✅ Replied</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterOutreach(filter, btn) {
+  outreachFilter = filter;
+  document.querySelectorAll('#section-outreach .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderOutreachLog(filter);
+}
+
+async function markOutreachReplied(id) {
+  if (!db || !currentUID) return;
+  try {
+    await db.collection('users').doc(currentUID).collection('outreach').doc(id).update({ status: 'replied' });
+    const entry = outreachLog.find(o => o.id === id);
+    if (entry) entry.status = 'replied';
+    renderOutreachStats();
+    renderOutreachLog();
+    showToast('Marked as replied!', 'success');
+  } catch(e) { showToast('Could not update.', 'error'); }
+}
+
+async function logManualOutreach() {
+  if (!db || !currentUID) return;
+  const name    = document.getElementById('or-name').value.trim();
+  const contact = document.getElementById('or-contact').value.trim();
+  const message = document.getElementById('or-message').value.trim();
+  if (!name || !message) return showToast('Add a prospect name and message.', 'error');
+
+  const channel = contact.includes('@') ? 'email' : contact.match(/\d/) ? 'sms' : 'dm';
+  const data = {
+    prospectName:  name,
+    prospectEmail: contact.includes('@') ? contact : '',
+    prospectPhone: !contact.includes('@') ? contact : '',
+    channel,
+    message,
+    touch: 1,
+    status: 'sent',
+    sentAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+  try {
+    const ref = await db.collection('users').doc(currentUID).collection('outreach').add(data);
+    outreachLog.unshift({ id: ref.id, ...data, sentAt: { seconds: Date.now() / 1000 } });
+    document.getElementById('or-name').value = '';
+    document.getElementById('or-contact').value = '';
+    document.getElementById('or-message').value = '';
+    renderOutreachStats();
+    renderOutreachLog();
+    showToast('Outreach logged!', 'success');
+  } catch(e) { showToast('Could not log outreach.', 'error'); }
 }
 
 // ========== SOP TABS ==========
