@@ -22,6 +22,7 @@ const TYPE_PROMPTS = {
   'google-ad':          'Write a Google Ad. Format: Headline 1 (30 chars max), Headline 2 (30 chars max), Headline 3 (30 chars max), Description 1 (90 chars max), Description 2 (90 chars max).',
   'meta-ad':            'Write a Meta/Facebook Ad. Format: Primary Text (hook + story + proof + CTA, under 200 words), Headline (under 40 chars), Description (under 30 chars).',
   'sms':                'Write an SMS outreach message. Under 160 characters. Casual, first name personalization placeholder [Name], clear CTA.',
+  'lead-recommendation':'You are an elite sales coach for a lead generation agency. Based on the lead data in Topic/Goal, write a tactical closing strategy. Format:\n\n1. LEAD ASSESSMENT\nRate this lead\'s potential and explain why in 2-3 sentences.\n\n2. CLOSING APPROACH\nWhich strategy fits: Direct Close, Consultative, Value-First, or Urgency. Explain why in 1-2 sentences.\n\n3. EXACT SCRIPT\nWord-for-word what to say in the very next touchpoint (call, DM, or email — pick the best one). Make it natural, not salesy.\n\n4. OBJECTION HANDLING\n3 likely objections for this niche + your exact response to each.\n\n5. NEXT 3 ACTIONS\nSpecific, time-bound actions to close this lead within 7 days. No vague advice.',
 };
 
 exports.handler = async (event) => {

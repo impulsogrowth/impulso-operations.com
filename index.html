@@ -191,6 +191,25 @@
     .pkg-intake { display:block;text-align:center;padding:.65rem;font-size:.82rem;font-weight:600;color:var(--muted);transition:color .2s; }
     .pkg-intake:hover { color:var(--gold); }
 
+    /* ── PRODUCTS ────────────────────────── */
+    #products { background:var(--card); }
+    .products-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:980px;margin:0 auto; }
+    .product-card { background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:2rem;display:flex;flex-direction:column;transition:all .3s;position:relative;overflow:hidden; }
+    .product-card:hover { border-color:var(--gold-border);transform:translateY(-4px);box-shadow:var(--shadow-lg); }
+    .product-card::after { content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-2)); }
+    .product-badge { display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#fff;padding:.2rem .65rem;border-radius:50px;font-size:.65rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.9rem; }
+    .product-icon { font-size:2.2rem;margin-bottom:.75rem; }
+    .product-name { font-size:1.2rem;font-weight:800;letter-spacing:-.4px;margin-bottom:.3rem; }
+    .product-desc { color:var(--muted);font-size:.875rem;line-height:1.6;margin-bottom:1.25rem;flex:1; }
+    .product-price { display:flex;align-items:baseline;gap:.35rem;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border); }
+    .product-price .amount { font-size:2.6rem;font-weight:900;letter-spacing:-1.5px; }
+    .product-price .period { color:var(--muted);font-size:.85rem;font-weight:600; }
+    .product-features { list-style:none;margin-bottom:1.5rem;display:flex;flex-direction:column;gap:.45rem; }
+    .product-features li { display:flex;align-items:center;gap:.65rem;font-size:.875rem;color:var(--ink-2); }
+    .product-cta { display:block;text-align:center;padding:.85rem;border-radius:10px;font-weight:700;font-size:.9rem;transition:all .3s;background:var(--ink);color:#fff; }
+    .product-cta:hover { background:var(--ink-2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.18); }
+    .product-coming { display:block;text-align:center;padding:.85rem;border-radius:10px;font-weight:600;font-size:.875rem;border:1.5px solid var(--border);color:var(--muted);cursor:default; }
+
     /* ── CONVERSION CTA ──────────────────── */
     .conversion-section { padding:120px 6%;background:var(--ink);text-align:center;position:relative;overflow:hidden; }
     .conversion-glow { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:400px;background:radial-gradient(ellipse,rgba(184,148,60,.08) 0%,transparent 65%);pointer-events:none; }
@@ -314,6 +333,7 @@
     <li><a href="#results">Results</a></li>
     <li><a href="#how">How It Works</a></li>
     <li><a href="#packages">Plans</a></li>
+    <li><a href="#products">Products</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
 
@@ -567,6 +587,79 @@
       <a href="https://buy.stripe.com/cNi5kD0XCg1EczzazT6Na01" target="_blank" class="pkg-cta ghost">Get My Agent →</a>
       <a href="intake.html" class="pkg-intake">📋 Fill intake form first</a>
     </div>
+  </div>
+</section>
+
+<!-- ── PRODUCTS ──────────────────────────────────────── -->
+<section id="products">
+  <div class="section-center reveal">
+    <span class="section-tag">One-Time Products</span>
+    <h2>Need something specific?<br>We've got it.</h2>
+    <p class="section-sub">No monthly commitment. Pay once, own it forever. Each product is fully handled by us — delivered and done.</p>
+  </div>
+  <div class="products-grid reveal">
+
+    <!-- WEBSITE PACKAGE -->
+    <div class="product-card">
+      <div class="product-badge">One-Time</div>
+      <div class="product-icon">🌐</div>
+      <div class="product-name">Business Website</div>
+      <div class="product-desc">A clean, fast, conversion-focused website built for your business — domain included, ready to launch.</div>
+      <div class="product-price">
+        <span class="amount">$133</span><span style="font-size:1.1rem;font-weight:900;align-self:flex-start;margin-top:.5rem;">.45</span>
+        <span class="period">one-time</span>
+      </div>
+      <ul class="product-features">
+        <li><span class="check">✓</span>Custom design (up to 5 pages)</li>
+        <li><span class="check">✓</span>Domain registration included (1 year)</li>
+        <li><span class="check">✓</span>Hosting setup included (1 year)</li>
+        <li><span class="check">✓</span>SSL certificate + mobile responsive</li>
+        <li><span class="check">✓</span>Contact form + basic on-page SEO</li>
+        <li><span class="check">✓</span>Delivered in 5–7 business days</li>
+      </ul>
+      <a href="mailto:nes@impulso-operations.com?subject=Website%20Package%20Inquiry&body=Hi%2C%20I%27m%20interested%20in%20the%20Business%20Website%20package%20(%24133.45).%20Here%27s%20my%20info%3A%0A%0ABusiness%20name%3A%20%0ANiche%2FIndustry%3A%20%0AWebsite%20goals%3A%20" class="product-cta">Contact Me →</a>
+    </div>
+
+    <!-- LOGO + BRAND KIT -->
+    <div class="product-card" style="opacity:.75;">
+      <div class="product-badge" style="background:var(--muted);">Coming Soon</div>
+      <div class="product-icon">🎨</div>
+      <div class="product-name">Logo + Brand Kit</div>
+      <div class="product-desc">A complete brand identity — logo, color palette, typography, and brand guidelines delivered as a ready-to-use kit.</div>
+      <div class="product-price">
+        <span class="amount" style="color:var(--muted);">TBA</span>
+      </div>
+      <ul class="product-features">
+        <li><span class="check">✓</span>Primary + secondary logo variations</li>
+        <li><span class="check">✓</span>Color palette + typography guide</li>
+        <li><span class="check">✓</span>Business card design</li>
+        <li><span class="check">✓</span>Social media profile graphics</li>
+        <li><span class="check">✓</span>Full brand guidelines PDF</li>
+        <li><span class="check">✓</span>All files in print + web formats</li>
+      </ul>
+      <span class="product-coming">Notify Me When Live</span>
+    </div>
+
+    <!-- LANDING PAGE -->
+    <div class="product-card" style="opacity:.75;">
+      <div class="product-badge" style="background:var(--muted);">Coming Soon</div>
+      <div class="product-icon">📄</div>
+      <div class="product-name">High-Converting Landing Page</div>
+      <div class="product-desc">A single-page sales funnel built to capture leads and convert visitors — copy, design, and form setup included.</div>
+      <div class="product-price">
+        <span class="amount" style="color:var(--muted);">TBA</span>
+      </div>
+      <ul class="product-features">
+        <li><span class="check">✓</span>Copywriting included</li>
+        <li><span class="check">✓</span>Lead capture form + email integration</li>
+        <li><span class="check">✓</span>Mobile-optimized design</li>
+        <li><span class="check">✓</span>A/B headline variants</li>
+        <li><span class="check">✓</span>Connected to your Impulso CRM</li>
+        <li><span class="check">✓</span>Delivered in 3–5 business days</li>
+      </ul>
+      <span class="product-coming">Notify Me When Live</span>
+    </div>
+
   </div>
 </section>
 
