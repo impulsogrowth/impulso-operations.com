@@ -6,7 +6,7 @@
   <title>Impulso Operations — We Build Systems That Get You Clients</title>
   <meta name="description" content="We help service businesses generate leads, automate follow-up, and scale without guesswork. AI-powered growth systems for local businesses." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -31,6 +31,17 @@
 
     html { scroll-behavior: smooth; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); overflow-x: hidden; }
+
+    /* ── TICKER BAR ──────────────────────── */
+    .ticker-wrap { background:var(--ink);overflow:hidden;padding:.55rem 0;position:relative;z-index:201; }
+    .ticker-wrap::before,.ticker-wrap::after { content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2; }
+    .ticker-wrap::before { left:0;background:linear-gradient(90deg,var(--ink),transparent); }
+    .ticker-wrap::after  { right:0;background:linear-gradient(-90deg,var(--ink),transparent); }
+    .ticker { display:flex;gap:0;width:max-content;animation:ticker 35s linear infinite; }
+    .ticker-inner { display:flex;gap:0;white-space:nowrap; }
+    .ticker-item { display:inline-flex;align-items:center;gap:.5rem;padding:0 2.5rem;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55); }
+    .ticker-dot { width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0; }
+    @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
     a { color: inherit; text-decoration: none; }
     img { max-width: 100%; }
 
@@ -69,18 +80,24 @@
     .mob-cta { background:var(--ink) !important;color:#fff !important;padding:.9rem 2.5rem;border-radius:10px;font-size:1.2rem !important; }
 
     /* ── HERO ────────────────────────────── */
-    .hero { min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 6% 80px;position:relative;overflow:hidden; }
-    .hero-noise { position:absolute;inset:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:200px; }
-    .hero-glow { position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(ellipse,rgba(184,148,60,.07) 0%,transparent 65%);pointer-events:none; }
+    .hero { min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 6% 80px;position:relative;overflow:hidden;background:#06060a; }
+    .hero-noise { position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:200px; }
+    .hero-glow { position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:900px;height:900px;background:radial-gradient(ellipse,rgba(184,148,60,.12) 0%,rgba(184,148,60,.04) 40%,transparent 70%);pointer-events:none;animation:pulse-glow 6s ease-in-out infinite; }
+    .hero-orb1 { position:absolute;top:15%;left:8%;width:350px;height:350px;background:radial-gradient(ellipse,rgba(99,102,241,.08) 0%,transparent 70%);border-radius:50%;animation:float1 8s ease-in-out infinite;pointer-events:none; }
+    .hero-orb2 { position:absolute;bottom:20%;right:8%;width:280px;height:280px;background:radial-gradient(ellipse,rgba(184,148,60,.1) 0%,transparent 70%);border-radius:50%;animation:float2 10s ease-in-out infinite;pointer-events:none; }
+    .hero-grid { position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none; }
+    @keyframes pulse-glow { 0%,100%{opacity:1;transform:translateX(-50%) scale(1)} 50%{opacity:.7;transform:translateX(-50%) scale(1.08)} }
+    @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-30px)} }
+    @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,20px)} }
 
-    .hero-content { position:relative;z-index:1;max-width:860px; }
-    .hero-eyebrow { display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--gold-border);background:var(--gold-bg);color:var(--gold);padding:.35rem 1rem;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2rem;animation:fadeUp .6s ease both; }
+    .hero-content { position:relative;z-index:1;max-width:900px; }
+    .hero-eyebrow { display:inline-flex;align-items:center;gap:.5rem;border:1px solid rgba(184,148,60,.35);background:rgba(184,148,60,.1);color:var(--gold-2);padding:.4rem 1.1rem;border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:2.2rem;animation:fadeUp .6s ease both;backdrop-filter:blur(8px); }
     .eyebrow-dot { width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 2s infinite; }
     @keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
 
-    h1 { font-size:clamp(3rem,7vw,5.5rem);font-weight:900;line-height:1.02;letter-spacing:-3px;margin-bottom:1.5rem;color:var(--ink);animation:fadeUp .7s .1s ease both; }
-    .gold-word { color:var(--gold); }
-    .hero-sub { font-size:clamp(1rem,2vw,1.2rem);color:var(--muted);max-width:520px;margin:0 auto 2.8rem;line-height:1.75;animation:fadeUp .7s .2s ease both;font-weight:400; }
+    h1 { font-family:'Space Grotesk',sans-serif;font-size:clamp(3.2rem,7.5vw,6.2rem);font-weight:800;line-height:.98;letter-spacing:-4px;margin-bottom:1.6rem;color:#fff;animation:fadeUp .7s .1s ease both; }
+    .gold-word { background:linear-gradient(135deg,var(--gold),var(--gold-2),#f0c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .hero-sub { font-size:clamp(1rem,2vw,1.2rem);color:rgba(255,255,255,.55);max-width:520px;margin:0 auto 3rem;line-height:1.8;animation:fadeUp .7s .2s ease both;font-weight:400; }
     .hero-btns { display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .3s ease both; }
 
     .btn-primary { background:var(--ink);color:#fff;padding:1rem 2.2rem;border-radius:10px;font-weight:700;font-size:1rem;transition:all .3s;display:inline-flex;align-items:center;gap:.5rem;letter-spacing:.01em; }
@@ -168,7 +185,7 @@
 
     /* ── PACKAGES ────────────────────────── */
     #packages { background:var(--surface); }
-    .packages { display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1100px;margin:0 auto; }
+    .packages { display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;max-width:1200px;margin:0 auto; }
     .package { background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:2.5rem;display:flex;flex-direction:column;transition:all .35s;position:relative;overflow:hidden; }
     .package:hover { border-color:var(--border-strong);transform:translateY(-5px);box-shadow:var(--shadow-lg); }
     .package.featured { border-color:var(--gold);background:#fff; }
@@ -314,6 +331,32 @@
 <div class="cursor" id="cursor"></div>
 <div class="toast" id="toast"></div>
 
+<!-- ── TICKER BAR ────────────────────────────────────── -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span class="ticker-item"><span class="ticker-dot"></span>Lead Generation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>AI-Powered Outreach</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Business Automation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>CRM &amp; Follow-Up</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>300% More Leads</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>First Leads in 48hrs</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Built for Local Business</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Done For You</span>
+    </div>
+    <div class="ticker-inner">
+      <span class="ticker-item"><span class="ticker-dot"></span>Lead Generation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>AI-Powered Outreach</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Business Automation</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>CRM &amp; Follow-Up</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>300% More Leads</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>First Leads in 48hrs</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Built for Local Business</span>
+      <span class="ticker-item"><span class="ticker-dot"></span>Done For You</span>
+    </div>
+  </div>
+</div>
+
 <!-- ── NAV ───────────────────────────────────────────── -->
 <nav id="nav">
   <a href="#" class="logo">
@@ -358,10 +401,13 @@
 <section class="hero">
   <div class="hero-noise"></div>
   <div class="hero-glow"></div>
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-grid"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow"><span class="eyebrow-dot"></span>AI Systems for Local Business</div>
-    <h1>We build systems that turn<br><span class="gold-word">attention into clients.</span></h1>
-    <p class="hero-sub">We help service businesses generate leads, automate follow-up, and scale without guesswork.</p>
+    <div class="hero-eyebrow"><span class="eyebrow-dot"></span>AI-Powered Growth Systems for Local Business</div>
+    <h1>Stop chasing clients.<br><span class="gold-word">Build a machine that<br>brings them to you.</span></h1>
+    <p class="hero-sub">We build AI-powered lead generation and automation systems for local service businesses — and we run them 24/7 so you don't have to.</p>
     <div class="hero-btns">
       <a href="checkout.html" class="btn-primary">Get More Clients →</a>
       <a href="#how" class="btn-outline">See How It Works</a>
@@ -585,6 +631,24 @@
         <li><span class="check">✓</span>Weekly reports + strategy calls</li>
       </ul>
       <a href="https://buy.stripe.com/cNi5kD0XCg1EczzazT6Na01" target="_blank" class="pkg-cta ghost">Get My Agent →</a>
+      <a href="intake.html" class="pkg-intake">📋 Fill intake form first</a>
+    </div>
+
+    <!-- BUSINESS AUTOMATION -->
+    <div class="package" style="border-color:rgba(99,102,241,.35);position:relative;">
+      <div class="pkg-badge" style="background:linear-gradient(135deg,#6366f1,#818cf8);">Let's Automate</div>
+      <div class="pkg-name">Business Automation</div>
+      <div class="pkg-desc">We map, build, and run the automations that eliminate repetitive work — so you focus on growth, not busywork.</div>
+      <div class="pkg-price"><span class="amount">$850</span><span class="period">/month</span></div>
+      <ul class="pkg-features">
+        <li><span class="check" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#6366f1;">✓</span>Full business process audit</li>
+        <li><span class="check" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#6366f1;">✓</span>Custom automation workflows built</li>
+        <li><span class="check" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#6366f1;">✓</span>CRM, invoicing &amp; scheduling flows</li>
+        <li><span class="check" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#6366f1;">✓</span>AI follow-up &amp; nurture sequences</li>
+        <li><span class="check" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#6366f1;">✓</span>Team handoff &amp; task automation</li>
+        <li><span class="check" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:#6366f1;">✓</span>Monthly optimization review</li>
+      </ul>
+      <a href="mailto:nes@impulso-operations.com?subject=Business%20Automation%20Inquiry&body=Hi%2C%20I%27m%20interested%20in%20the%20Business%20Automation%20package.%20Here%27s%20my%20business%3A%0A%0ABusiness%20name%3A%20%0ANiche%2FIndustry%3A%20%0ABiggest%20bottleneck%20right%20now%3A%20" class="pkg-cta ghost" style="border-color:rgba(99,102,241,.4);color:#6366f1;">Let's Automate Your Business →</a>
       <a href="intake.html" class="pkg-intake">📋 Fill intake form first</a>
     </div>
   </div>

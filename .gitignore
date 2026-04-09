@@ -1,0 +1,36 @@
+# ── Environment & secrets ────────────────────────────────────────────────────
+.env
+.env.*
+*.env
+secrets.json
+credentials.json
+service-account*.json
+firebase-adminsdk*.json
+
+# ── Netlify local ────────────────────────────────────────────────────────────
+.netlify/
+netlify/functions/node_modules/
+netlify/functions/.env
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# ── Firebase ─────────────────────────────────────────────────────────────────
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+
+# ── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Editor ───────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+
+# ── Private client data ───────────────────────────────────────────────────────
+client_guilds.json
+client_channels.json
+leads.db
