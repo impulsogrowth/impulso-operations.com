@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Benecasa — Distribution Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#02040a;--surface:#080d1a;--card:#0c1220;--card2:#101828;
+      --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+      --gold:#f59e0b;--gold-2:#fbbf24;--gold-bg:rgba(245,158,11,.08);--gold-border:rgba(245,158,11,.2);
+      --green:#10b981;--green-bg:rgba(16,185,129,.08);--green-border:rgba(16,185,129,.2);
+      --red:#ef4444;--red-bg:rgba(239,68,68,.08);--red-border:rgba(239,68,68,.2);
+      --blue:#3b82f6;--blue-bg:rgba(59,130,246,.08);--blue-border:rgba(59,130,246,.2);
+      --purple:#8b5cf6;--purple-bg:rgba(139,92,246,.08);
+      --muted:#64748b;--light:#e2e8f0;--white:#fff;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    input,select,textarea{font-family:inherit}
+
+    /* ── SIDEBAR ── */
+    .sidebar{position:fixed;left:0;top:0;bottom:0;width:230px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:50}
+    .sidebar-logo{padding:1.4rem 1.2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem}
+    .sidebar-logo svg{flex-shrink:0}
+    .logo-text{font-size:1rem;font-weight:800;letter-spacing:-.4px}
+    .logo-text span{color:var(--gold)}
+    .logo-sub{font-size:.65rem;color:var(--muted);font-weight:500;margin-top:.1rem}
+    .sidebar-nav{flex:1;padding:.8rem 0;overflow-y:auto}
+    .nav-section{padding:.5rem 1.1rem .2rem;font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.4rem}
+    .nav-item{display:flex;align-items:center;gap:.7rem;padding:.65rem 1.1rem;color:var(--muted);font-size:.85rem;font-weight:500;cursor:pointer;border:none;background:none;width:100%;font-family:inherit;text-align:left;transition:all .15s;border-left:2px solid transparent}
+    .nav-item:hover{color:var(--white);background:rgba(255,255,255,.04)}
+    .nav-item.active{color:var(--white);background:rgba(245,158,11,.08);border-left-color:var(--gold)}
+    .nav-item .ni{width:16px;text-align:center;flex-shrink:0;font-size:.9rem}
+    .sidebar-footer{padding:1rem;border-top:1px solid var(--border)}
+    .sf-pill{display:flex;align-items:center;gap:.5rem;background:var(--green-bg);border:1px solid var(--green-border);border-radius:8px;padding:.5rem .8rem;font-size:.75rem;font-weight:600;color:var(--green)}
+    .sf-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.8);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+    /* ── MAIN ── */
+    .main{margin-left:230px;min-height:100vh;display:flex;flex-direction:column}
+    .topbar{padding:.9rem 1.8rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,8,.85);backdrop-filter:blur(20px);position:sticky;top:0;z-index:40}
+    .topbar-title{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:-.3px}
+    .topbar-right{display:flex;align-items:center;gap:.75rem}
+    .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem;border-radius:8px;font-size:.82rem;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+    .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#000}
+    .btn-gold:hover{opacity:.9;transform:translateY(-1px)}
+    .btn-ghost{background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--light)}
+    .btn-ghost:hover{background:rgba(255,255,255,.09)}
+    .btn-red{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
+    .btn-red:hover{background:rgba(239,68,68,.15)}
+    .btn-green{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+    .btn-sm{padding:.38rem .7rem;font-size:.75rem}
+
+    .content{flex:1;padding:1.6rem 1.8rem;display:none}
+    .content.active{display:block}
+
+    /* ── STATS ROW ── */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.6rem}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.4rem;position:relative;overflow:hidden}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+    .stat-card.gold::before{background:linear-gradient(90deg,var(--gold),var(--gold-2))}
+    .stat-card.green::before{background:linear-gradient(90deg,var(--green),#34d399)}
+    .stat-card.blue::before{background:linear-gradient(90deg,var(--blue),#60a5fa)}
+    .stat-card.purple::before{background:linear-gradient(90deg,var(--purple),#a78bfa)}
+    .stat-label{font-size:.7rem;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+    .stat-val{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:800;letter-spacing:-1px;line-height:1}
+    .stat-sub{font-size:.75rem;color:var(--muted);margin-top:.3rem}
+    .stat-trend{font-size:.72rem;font-weight:600;margin-top:.4rem;display:inline-flex;align-items:center;gap:.2rem}
+    .stat-trend.up{color:var(--green)}
+    .stat-trend.down{color:var(--red)}
+
+    /* ── TABLE ── */
+    .table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem}
+    .table-header{padding:1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+    .table-title{font-size:.9rem;font-weight:700;letter-spacing:-.2px}
+    .table-actions{display:flex;align-items:center;gap:.6rem}
+    .search-input{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:.45rem .8rem;font-size:.8rem;color:var(--white);font-family:inherit;width:200px;outline:none;transition:border .2s}
+    .search-input:focus{border-color:rgba(245,158,11,.4)}
+    .search-input::placeholder{color:var(--muted)}
+    table{width:100%;border-collapse:collapse}
+    th{padding:.75rem 1.2rem;text-align:left;font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
+    td{padding:.85rem 1.2rem;font-size:.85rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--light)}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(255,255,255,.025)}
+    .badge{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:50px;font-size:.7rem;font-weight:700}
+    .badge-green{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+    .badge-gold{background:var(--gold-bg);border:1px solid var(--gold-border);color:var(--gold)}
+    .badge-red{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red)}
+    .badge-blue{background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)}
+    .badge-gray{background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.2);color:var(--muted)}
+    .empty-state{text-align:center;padding:3rem 1rem;color:var(--muted)}
+    .empty-state .es-icon{font-size:2.5rem;margin-bottom:.75rem;opacity:.4}
+    .empty-state p{font-size:.875rem}
+
+    /* ── MODAL ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+    .modal-overlay.open{display:flex}
+    .modal{background:var(--card2);border:1px solid var(--border2);border-radius:18px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+    .modal-head{padding:1.4rem 1.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .modal-title{font-size:1rem;font-weight:700}
+    .modal-close{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:1.1rem;transition:all .2s}
+    .modal-close:hover{color:var(--white);background:rgba(255,255,255,.1)}
+    .modal-body{padding:1.4rem 1.6rem;display:flex;flex-direction:column;gap:1rem}
+    .modal-footer{padding:1rem 1.6rem;border-top:1px solid var(--border);display:flex;gap:.75rem;justify-content:flex-end}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    .form-group{display:flex;flex-direction:column;gap:.4rem}
+    .form-label{font-size:.75rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+    .form-input{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:9px;padding:.65rem .9rem;font-size:.875rem;color:var(--white);font-family:inherit;outline:none;transition:border .2s;width:100%}
+    .form-input:focus{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.04)}
+    .form-input::placeholder{color:var(--muted)}
+    select.form-input option{background:#0c1220;color:var(--white)}
+
+    /* ── SECTION HEADERS ── */
+    .section-head{margin-bottom:1.4rem}
+    .section-head h2{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-.5px;margin-bottom:.2rem}
+    .section-head p{color:var(--muted);font-size:.85rem}
+
+    /* ── PROJECTIONS CHART ── */
+    .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+    .proj-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem}
+    .proj-card h3{font-size:.85rem;font-weight:700;margin-bottom:1rem;color:var(--light)}
+    .bar-chart{display:flex;flex-direction:column;gap:.6rem}
+    .bar-row{display:flex;align-items:center;gap:.75rem}
+    .bar-label{font-size:.75rem;color:var(--muted);width:100px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bar-track{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:50px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:50px;transition:width .6s ease}
+    .bar-val{font-size:.72rem;font-weight:700;color:var(--light);width:55px;text-align:right;flex-shrink:0}
+
+    /* ── INVENTORY ── */
+    .inv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+    .inv-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;position:relative}
+    .inv-name{font-size:.9rem;font-weight:700;margin-bottom:.2rem}
+    .inv-sku{font-size:.7rem;color:var(--muted);margin-bottom:.9rem}
+    .inv-stock-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+    .inv-stock-num{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-1px}
+    .inv-track{height:5px;background:rgba(255,255,255,.06);border-radius:50px;overflow:hidden;margin-bottom:.8rem}
+    .inv-fill{height:100%;border-radius:50px}
+    .inv-fill.ok{background:var(--green)}
+    .inv-fill.low{background:var(--gold)}
+    .inv-fill.critical{background:var(--red)}
+    .inv-meta{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted)}
+    .inv-actions{display:flex;gap:.4rem;margin-top:.9rem}
+
+    /* ── ROUTE MAP ── */
+    .route-list{display:flex;flex-direction:column;gap:.5rem}
+    .route-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.9rem 1.1rem;display:flex;align-items:center;gap:1rem}
+    .route-num{width:28px;height:28px;border-radius:50%;background:var(--gold-bg);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:var(--gold);flex-shrink:0}
+    .route-info{flex:1}
+    .route-name{font-size:.875rem;font-weight:600}
+    .route-addr{font-size:.75rem;color:var(--muted)}
+    .route-meta{display:flex;align-items:center;gap.6rem;font-size:.75rem;color:var(--muted);flex-shrink:0}
+
+    /* ── TOAST ── */
+    .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:.85rem 1.2rem;font-size:.85rem;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);max-width:300px;display:flex;align-items:center;gap:.6rem}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast.success{border-color:var(--green-border);color:var(--green)}
+    .toast.error{border-color:var(--red-border);color:var(--red)}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px){
+      .sidebar{transform:translateX(-100%)}
+      .main{margin-left:0}
+      .stats-row{grid-template-columns:1fr 1fr}
+      .proj-grid,.inv-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ── SIDEBAR ─────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <svg width="30" height="30" viewBox="0 0 38 38" fill="none"><rect width="38" height="38" rx="9" fill="#0A0A0A"/><rect x="8" y="24" width="6" height="7" rx="1.5" fill="rgba(255,255,255,0.45)"/><rect x="16" y="17" width="6" height="14" rx="1.5" fill="rgba(255,255,255,0.8)"/><rect x="24" y="9" width="6" height="22" rx="1.5" fill="#f59e0b"/></svg>
+    <div>
+      <div class="logo-text">BENECASA<span>.</span></div>
+      <div class="logo-sub">Distribution Manager</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Overview</div>
+    <button class="nav-item active" onclick="showSection('overview',this)"><span class="ni">📊</span>Dashboard</button>
+
+    <div class="nav-section">Accounts</div>
+    <button class="nav-item" onclick="showSection('accounts',this)"><span class="ni">🏪</span>Store Accounts</button>
+    <button class="nav-item" onclick="showSection('projections',this)"><span class="ni">📈</span>Projections</button>
+    <button class="nav-item" onclick="showSection('route',this)"><span class="ni">🗺️</span>Route Planner</button>
+
+    <div class="nav-section">Operations</div>
+    <button class="nav-item" onclick="showSection('inventory',this)"><span class="ni">📦</span>Inventory</button>
+    <button class="nav-item" onclick="showSection('reps',this)"><span class="ni">👥</span>Reps</button>
+    <button class="nav-item" onclick="showSection('reorders',this)"><span class="ni">🔁</span>Reorders</button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sf-pill"><span class="sf-dot"></span>Live — Auto-saves</div>
+  </div>
+</aside>
+
+<!-- ── MAIN ───────────────────────────────────────────── -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="exportData()">⬇ Export</button>
+      <button class="btn btn-gold btn-sm" onclick="openModalBySection()">+ Add New</button>
+    </div>
+  </div>
+
+  <!-- ── OVERVIEW ── -->
+  <div class="content active" id="sec-overview">
+    <div class="section-head">
+      <h2>Overview</h2>
+      <p>Live snapshot of your distribution operation.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card gold">
+        <div class="stat-label">Total Accounts</div>
+        <div class="stat-val" id="ov-accounts">0</div>
+        <div class="stat-sub">Active store placements</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Monthly Revenue</div>
+        <div class="stat-val" id="ov-revenue">$0</div>
+        <div class="stat-sub">Projected this month</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">SKUs Placed</div>
+        <div class="stat-val" id="ov-skus">0</div>
+        <div class="stat-sub">Across all accounts</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-label">Reorders Due</div>
+        <div class="stat-val" id="ov-reorders">0</div>
+        <div class="stat-sub">Next 7 days</div>
+      </div>
+    </div>
+
+    <!-- Recent accounts -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Recent Accounts</span>
+        <button class="btn btn-ghost btn-sm" onclick="showSection('accounts',document.querySelector('[onclick*=accounts]'))">View All</button>
+      </div>
+      <table>
+        <thead><tr><th>Store</th><th>City</th><th>Status</th><th>Last Order</th><th>Monthly $</th><th>Next Reorder</th></tr></thead>
+        <tbody id="ov-table"><tr><td colspan="6"><div class="empty-state"><div class="es-icon">🏪</div><p>No accounts yet — add your first store</p></div></td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- Low stock alert -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">⚠️ Low Stock Alerts</span>
+      </div>
+      <table>
+        <thead><tr><th>Product</th><th>SKU</th><th>Stock</th><th>Min Level</th><th>Status</th></tr></thead>
+        <tbody id="ov-low-stock"><tr><td colspan="5"><div class="empty-state"><div class="es-icon">📦</div><p>No low stock alerts</p></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── ACCOUNTS ── -->
+  <div class="content" id="sec-accounts">
+    <div class="section-head">
+      <h2>Store Accounts</h2>
+      <p>Every store you supply — contacts, orders, and reorder schedule.</p>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">All Accounts</span>
+        <div class="table-actions">
+          <input class="search-input" placeholder="Search stores..." oninput="filterAccounts(this.value)"/>
+          <select class="search-input" style="width:130px" onchange="filterAccountsStatus(this.value)">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="new">New</option>
+            <option value="follow-up">Follow-Up</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <button class="btn btn-gold btn-sm" onclick="openModal('account')">+ Add Store</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Store Name</th><th>Manager</th><th>City</th><th>Phone / WA</th><th>Status</th><th>Monthly $</th><th>Next Reorder</th><th>Rep</th><th></th></tr></thead>
+        <tbody id="accounts-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── PROJECTIONS ── -->
+  <div class="content" id="sec-projections">
+    <div class="section-head">
+      <h2>Revenue Projections</h2>
+      <p>Monthly forecasts per account and territory.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card gold">
+        <div class="stat-label">This Month (Projected)</div>
+        <div class="stat-val" id="proj-month">$0</div>
+        <div class="stat-sub">Based on active accounts</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">Annual Run Rate</div>
+        <div class="stat-val" id="proj-annual">$0</div>
+        <div class="stat-sub">Current × 12</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-label">Avg Per Account</div>
+        <div class="stat-val" id="proj-avg">$0</div>
+        <div class="stat-sub">Monthly average</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-label">Growth Potential</div>
+        <div class="stat-val" id="proj-potential">$0</div>
+        <div class="stat-sub">If all follow-ups convert</div>
+      </div>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <h3>Revenue by Account</h3>
+        <div class="bar-chart" id="proj-by-account"></div>
+      </div>
+      <div class="proj-card">
+        <h3>Revenue by City</h3>
+        <div class="bar-chart" id="proj-by-city"></div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Account Projections Detail</span>
+        <button class="btn btn-gold btn-sm" onclick="openModal('projection')">+ Add Projection</button>
+      </div>
+      <table>
+        <thead><tr><th>Store</th><th>Current Monthly</th><th>30-Day Proj</th><th>60-Day Proj</th><th>90-Day Proj</th><th>Notes</th></tr></thead>
+        <tbody id="proj-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── ROUTE ── -->
+  <div class="content" id="sec-route">
+    <div class="section-head">
+      <h2>Route Planner</h2>
+      <p>Organize your store visits by city and priority.</p>
+    </div>
+    <div style="display:flex;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center">
+      <select class="search-input" style="width:160px" id="route-city-filter" onchange="renderRoute()">
+        <option value="">All Cities</option>
+      </select>
+      <select class="search-input" style="width:160px" id="route-rep-filter" onchange="renderRoute()">
+        <option value="">All Reps</option>
+      </select>
+      <button class="btn btn-gold btn-sm" onclick="openModal('account')">+ Add Stop</button>
+    </div>
+    <div class="table-card" style="padding:1.2rem 1.4rem">
+      <div class="route-list" id="route-list">
+        <div class="empty-state"><div class="es-icon">🗺️</div><p>Add accounts to build your route</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── INVENTORY ── -->
+  <div class="content" id="sec-inventory">
+    <div class="section-head">
+      <h2>Inventory</h2>
+      <p>Track stock levels across all SKUs.</p>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-bottom:1.2rem;align-items:center;flex-wrap:wrap">
+      <input class="search-input" placeholder="Search products..." oninput="filterInventory(this.value)"/>
+      <button class="btn btn-gold btn-sm" onclick="openModal('inventory')">+ Add Product</button>
+    </div>
+    <div class="inv-grid" id="inv-grid">
+      <div class="empty-state" style="grid-column:1/-1"><div class="es-icon">📦</div><p>No products yet — add your first SKU</p></div>
+    </div>
+  </div>
+
+  <!-- ── REPS ── -->
+  <div class="content" id="sec-reps">
+    <div class="section-head">
+      <h2>Sales Reps</h2>
+      <p>Track rep performance and territory assignments.</p>
+    </div>
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Rep Roster</span>
+        <button class="btn btn-gold btn-sm" onclick="openModal('rep')">+ Add Rep</button>
+      </div>
+      <table>
+        <thead><tr><th>Name</th><th>Territory</th><th>Phone</th><th>Accounts</th><th>Monthly Rev</th><th>Commission</th><th></th></tr></thead>
+        <tbody id="reps-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── REORDERS ── -->
+  <div class="content" id="sec-reorders">
+    <div class="section-head">
+      <h2>Reorder Schedule</h2>
+      <p>Upcoming reorders across all accounts.</p>
+    </div>
+    <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card red"><div class="stat-label">Overdue</div><div class="stat-val" id="ro-overdue">0</div><div class="stat-sub">Past reorder date</div></div>
+      <div class="stat-card gold"><div class="stat-label">Due This Week</div><div class="stat-val" id="ro-week">0</div><div class="stat-sub">Next 7 days</div></div>
+      <div class="stat-card green"><div class="stat-label">Due This Month</div><div class="stat-val" id="ro-month">0</div><div class="stat-sub">Next 30 days</div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-header"><span class="table-title">Reorder Queue</span></div>
+      <table>
+        <thead><tr><th>Store</th><th>City</th><th>Manager</th><th>Contact</th><th>Last Order</th><th>Reorder Date</th><th>Status</th><th></th></tr></thead>
+        <tbody id="reorder-table"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ── MODAL ───────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="modal-title" id="modal-title">Add</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA LAYER ─────────────────────────────────────────
+const DB = {
+  get(k){ try{ return JSON.parse(localStorage.getItem('bcd_'+k)||'[]') }catch{return[]} },
+  set(k,v){ localStorage.setItem('bcd_'+k, JSON.stringify(v)) },
+  id(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6) }
+};
+
+// ── NAVIGATION ─────────────────────────────────────────
+let currentSection = 'overview';
+function showSection(id, btn){
+  document.querySelectorAll('.content').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  currentSection = id;
+  const titles = {overview:'Dashboard',accounts:'Store Accounts',projections:'Revenue Projections',route:'Route Planner',inventory:'Inventory',reps:'Sales Reps',reorders:'Reorder Schedule'};
+  document.getElementById('topbarTitle').textContent = titles[id]||id;
+  renderAll();
+}
+function openModalBySection(){
+  const map = {accounts:'account',projections:'projection',inventory:'inventory',reps:'rep',route:'account'};
+  openModal(map[currentSection]||'account');
+}
+
+// ── RENDER ALL ─────────────────────────────────────────
+function renderAll(){
+  renderOverview();
+  renderAccounts();
+  renderProjections();
+  renderRoute();
+  renderInventory();
+  renderReps();
+  renderReorders();
+}
+
+// ── OVERVIEW ───────────────────────────────────────────
+function renderOverview(){
+  const accounts = DB.get('accounts');
+  const inv = DB.get('inventory');
+  const active = accounts.filter(a=>a.status==='active');
+  const totalRev = active.reduce((s,a)=>s+parseFloat(a.monthly||0),0);
+  const skus = accounts.reduce((s,a)=>s+(parseInt(a.skus||0)),0);
+  const now = new Date();
+  const in7 = new Date(now.getTime()+7*86400000);
+  const reordersDue = accounts.filter(a=>{if(!a.nextReorder)return false;const d=new Date(a.nextReorder);return d>=now&&d<=in7}).length;
+
+  document.getElementById('ov-accounts').textContent = accounts.length;
+  document.getElementById('ov-revenue').textContent = '$'+totalRev.toLocaleString();
+  document.getElementById('ov-skus').textContent = skus;
+  document.getElementById('ov-reorders').textContent = reordersDue;
+
+  // Recent accounts table
+  const tbody = document.getElementById('ov-table');
+  const recent = [...accounts].sort((a,b)=>b._created-a._created).slice(0,5);
+  if(!recent.length){ tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="es-icon">🏪</div><p>No accounts yet</p></div></td></tr>'; return; }
+  tbody.innerHTML = recent.map(a=>`<tr>
+    <td><strong>${esc(a.name)}</strong></td>
+    <td>${esc(a.city)}</td>
+    <td>${statusBadge(a.status)}</td>
+    <td>${a.lastOrder?fmtDate(a.lastOrder):'—'}</td>
+    <td>${a.monthly?'$'+parseFloat(a.monthly).toLocaleString():'—'}</td>
+    <td>${a.nextReorder?reorderBadge(a.nextReorder):'—'}</td>
+  </tr>`).join('');
+
+  // Low stock
+  const lowTbody = document.getElementById('ov-low-stock');
+  const low = inv.filter(p=>parseInt(p.stock||0)<=parseInt(p.minStock||0));
+  if(!low.length){ lowTbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="es-icon">✅</div><p>All stock levels OK</p></div></td></tr>'; return; }
+  lowTbody.innerHTML = low.map(p=>{
+    const pct = Math.max(0,Math.min(100,parseInt(p.stock)/Math.max(1,parseInt(p.maxStock||100))*100));
+    const cls = pct<20?'badge-red':pct<50?'badge-gold':'badge-green';
+    return `<tr><td><strong>${esc(p.name)}</strong></td><td><span class="badge badge-gray">${esc(p.sku||'—')}</span></td><td>${p.stock}</td><td>${p.minStock||0}</td><td><span class="badge ${cls}">${pct<20?'Critical':pct<50?'Low':'OK'}</span></td></tr>`;
+  }).join('');
+}
+
+// ── ACCOUNTS ───────────────────────────────────────────
+let _acFilter='', _acStatus='';
+function filterAccounts(v){ _acFilter=v.toLowerCase(); renderAccounts(); }
+function filterAccountsStatus(v){ _acStatus=v; renderAccounts(); }
+
+function renderAccounts(){
+  const reps = DB.get('reps');
+  let accounts = DB.get('accounts');
+  if(_acFilter) accounts = accounts.filter(a=>(a.name+a.city+a.manager).toLowerCase().includes(_acFilter));
+  if(_acStatus) accounts = accounts.filter(a=>a.status===_acStatus);
+  const tbody = document.getElementById('accounts-table');
+  if(!accounts.length){ tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><div class="es-icon">🏪</div><p>No accounts yet — click "+ Add Store"</p></div></td></tr>'; return; }
+  const repMap = Object.fromEntries(reps.map(r=>[r.id,r.name]));
+  tbody.innerHTML = accounts.map(a=>`<tr>
+    <td><strong>${esc(a.name)}</strong></td>
+    <td>${esc(a.manager||'—')}</td>
+    <td>${esc(a.city)}</td>
+    <td><a href="https://wa.me/${clean(a.phone)}" target="_blank" style="color:var(--green)">${esc(a.phone||'—')}</a></td>
+    <td>${statusBadge(a.status)}</td>
+    <td>${a.monthly?'$'+parseFloat(a.monthly).toLocaleString():'—'}</td>
+    <td>${a.nextReorder?reorderBadge(a.nextReorder):'—'}</td>
+    <td>${a.repId&&repMap[a.repId]?`<span class="badge badge-blue">${esc(repMap[a.repId])}</span>`:'—'}</td>
+    <td style="display:flex;gap:.3rem">
+      <button class="btn btn-ghost btn-sm" onclick="openModal('account','${a.id}')">✏️</button>
+      <button class="btn btn-red btn-sm" onclick="deleteItem('accounts','${a.id}')">🗑</button>
+    </td>
+  </tr>`).join('');
+}
+
+// ── PROJECTIONS ────────────────────────────────────────
+function renderProjections(){
+  const accounts = DB.get('accounts').filter(a=>a.status==='active'||a.status==='new');
+  const projections = DB.get('projections');
+  const totalRev = accounts.reduce((s,a)=>s+parseFloat(a.monthly||0),0);
+  const followUpRev = DB.get('accounts').filter(a=>a.status==='follow-up').reduce((s,a)=>s+parseFloat(a.monthly||0),0);
+
+  document.getElementById('proj-month').textContent='$'+totalRev.toLocaleString();
+  document.getElementById('proj-annual').textContent='$'+(totalRev*12).toLocaleString();
+  document.getElementById('proj-avg').textContent = accounts.length?'$'+Math.round(totalRev/accounts.length).toLocaleString():'$0';
+  document.getElementById('proj-potential').textContent='$'+(totalRev+followUpRev).toLocaleString();
+
+  // Bar by account
+  const sortedAcc = [...accounts].sort((a,b)=>parseFloat(b.monthly||0)-parseFloat(a.monthly||0)).slice(0,6);
+  const maxRev = sortedAcc[0]?parseFloat(sortedAcc[0].monthly||0):1;
+  document.getElementById('proj-by-account').innerHTML = sortedAcc.length
+    ? sortedAcc.map(a=>{
+        const pct=Math.round(parseFloat(a.monthly||0)/maxRev*100);
+        return `<div class="bar-row"><div class="bar-label">${esc(a.name)}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--gold),var(--gold-2))"></div></div><div class="bar-val">$${parseFloat(a.monthly||0).toLocaleString()}</div></div>`;
+      }).join('')
+    : '<p style="color:var(--muted);font-size:.8rem">No active accounts</p>';
+
+  // Bar by city
+  const cityMap={};
+  accounts.forEach(a=>{ const c=a.city||'Other'; cityMap[c]=(cityMap[c]||0)+parseFloat(a.monthly||0); });
+  const cities=Object.entries(cityMap).sort((a,b)=>b[1]-a[1]);
+  const maxCity=cities[0]?cities[0][1]:1;
+  const colors=['#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#06b6d4'];
+  document.getElementById('proj-by-city').innerHTML = cities.length
+    ? cities.map(([c,v],i)=>`<div class="bar-row"><div class="bar-label">${esc(c)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/maxCity*100)}%;background:${colors[i%colors.length]}"></div></div><div class="bar-val">$${v.toLocaleString()}</div></div>`).join('')
+    : '<p style="color:var(--muted);font-size:.8rem">No data</p>';
+
+  // Projection table
+  const tbody = document.getElementById('proj-table');
+  const allAcc = DB.get('accounts');
+  const projMap = Object.fromEntries(projections.map(p=>[p.accountId,p]));
+  if(!allAcc.length){ tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="es-icon">📈</div><p>No accounts to project</p></div></td></tr>'; return; }
+  tbody.innerHTML = allAcc.map(a=>{
+    const p = projMap[a.id]||{};
+    const m = parseFloat(a.monthly||0);
+    const p30 = p.p30||Math.round(m*1.1);
+    const p60 = p.p60||Math.round(m*1.2);
+    const p90 = p.p90||Math.round(m*1.35);
+    return `<tr>
+      <td><strong>${esc(a.name)}</strong><br><span style="font-size:.72rem;color:var(--muted)">${esc(a.city)}</span></td>
+      <td>$${m.toLocaleString()}</td>
+      <td style="color:var(--gold)">$${p30.toLocaleString()}</td>
+      <td style="color:var(--gold-2)">$${p60.toLocaleString()}</td>
+      <td style="color:var(--green)">$${p90.toLocaleString()}</td>
+      <td style="color:var(--muted);font-size:.78rem">${esc(p.notes||'—')}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── ROUTE ──────────────────────────────────────────────
+function renderRoute(){
+  const accounts = DB.get('accounts');
+  const reps = DB.get('reps');
+  const cityFilter = document.getElementById('route-city-filter')?.value||'';
+  const repFilter = document.getElementById('route-rep-filter')?.value||'';
+
+  // Populate filters
+  const cities=[...new Set(accounts.map(a=>a.city).filter(Boolean))];
+  const cf=document.getElementById('route-city-filter');
+  if(cf){ const cur=cf.value; cf.innerHTML='<option value="">All Cities</option>'+cities.map(c=>`<option value="${c}">${c}</option>`).join(''); cf.value=cur; }
+  const rf=document.getElementById('route-rep-filter');
+  if(rf){ const cur=rf.value; rf.innerHTML='<option value="">All Reps</option>'+reps.map(r=>`<option value="${r.id}">${r.name}</option>`).join(''); rf.value=cur; }
+
+  let filtered = accounts;
+  if(cityFilter) filtered=filtered.filter(a=>a.city===cityFilter);
+  if(repFilter) filtered=filtered.filter(a=>a.repId===repFilter);
+  filtered.sort((a,b)=>(a.city||'').localeCompare(b.city||''));
+  const repMap=Object.fromEntries(reps.map(r=>[r.id,r.name]));
+
+  const el=document.getElementById('route-list');
+  if(!filtered.length){ el.innerHTML='<div class="empty-state"><div class="es-icon">🗺️</div><p>No stores match filters</p></div>'; return; }
+  el.innerHTML=filtered.map((a,i)=>`<div class="route-item">
+    <div class="route-num">${i+1}</div>
+    <div class="route-info">
+      <div class="route-name">${esc(a.name)}</div>
+      <div class="route-addr">${esc(a.address||a.city)} · ${esc(a.manager||'No manager')} · <a href="https://wa.me/${clean(a.phone)}" target="_blank" style="color:var(--green)">${esc(a.phone||'—')}</a></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.6rem;flex-shrink:0">
+      ${statusBadge(a.status)}
+      ${a.repId&&repMap[a.repId]?`<span class="badge badge-blue">${esc(repMap[a.repId])}</span>`:''}
+      ${a.nextReorder?reorderBadge(a.nextReorder):''}
+    </div>
+  </div>`).join('');
+}
+
+// ── INVENTORY ──────────────────────────────────────────
+let _invFilter='';
+function filterInventory(v){ _invFilter=v.toLowerCase(); renderInventory(); }
+
+function renderInventory(){
+  let inv = DB.get('inventory');
+  if(_invFilter) inv=inv.filter(p=>(p.name+p.sku).toLowerCase().includes(_invFilter));
+  const el=document.getElementById('inv-grid');
+  if(!inv.length){ el.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">📦</div><p>No products yet</p></div>'; return; }
+  el.innerHTML=inv.map(p=>{
+    const stock=parseInt(p.stock||0), min=parseInt(p.minStock||0), max=parseInt(p.maxStock||100);
+    const pct=Math.max(0,Math.min(100,stock/Math.max(1,max)*100));
+    const cls=pct<20?'critical':pct<50?'low':'ok';
+    const badge=pct<20?'badge-red':pct<50?'badge-gold':'badge-green';
+    const label=pct<20?'Critical':pct<50?'Low Stock':'In Stock';
+    return `<div class="inv-card">
+      <div style="position:absolute;top:.9rem;right:.9rem"><span class="badge ${badge}">${label}</span></div>
+      <div class="inv-name">${esc(p.name)}</div>
+      <div class="inv-sku">SKU: ${esc(p.sku||'—')} · $${parseFloat(p.price||0).toFixed(2)}/unit</div>
+      <div class="inv-stock-row">
+        <div class="inv-stock-num" style="color:${cls==='critical'?'var(--red)':cls==='low'?'var(--gold)':'var(--green)'}">${stock}</div>
+        <div style="font-size:.72rem;color:var(--muted)">/ ${max} units</div>
+      </div>
+      <div class="inv-track"><div class="inv-fill ${cls}" style="width:${pct}%"></div></div>
+      <div class="inv-meta"><span>Min: ${min}</span><span>Reorder at ${min}</span></div>
+      <div class="inv-actions">
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="adjustStock('${p.id}',1)">+ Add Stock</button>
+        <button class="btn btn-ghost btn-sm" onclick="openModal('inventory','${p.id}')">✏️</button>
+        <button class="btn btn-red btn-sm" onclick="deleteItem('inventory','${p.id}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function adjustStock(id, dir){
+  const qty = prompt(dir>0?'How many units to add?':'How many units to remove?');
+  if(!qty||isNaN(qty)) return;
+  const inv=DB.get('inventory');
+  const p=inv.find(x=>x.id===id);
+  if(!p) return;
+  p.stock=Math.max(0,parseInt(p.stock||0)+(parseInt(qty)*dir));
+  DB.set('inventory',inv);
+  renderAll(); toast('Stock updated','success');
+}
+
+// ── REPS ───────────────────────────────────────────────
+function renderReps(){
+  const reps=DB.get('reps');
+  const accounts=DB.get('accounts');
+  const tbody=document.getElementById('reps-table');
+  if(!reps.length){ tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="es-icon">👥</div><p>No reps yet</p></div></td></tr>'; return; }
+  tbody.innerHTML=reps.map(r=>{
+    const myAccounts=accounts.filter(a=>a.repId===r.id);
+    const rev=myAccounts.reduce((s,a)=>s+parseFloat(a.monthly||0),0);
+    const comm=rev*(parseFloat(r.commission||10)/100);
+    return `<tr>
+      <td><strong>${esc(r.name)}</strong></td>
+      <td>${esc(r.territory||'—')}</td>
+      <td><a href="https://wa.me/${clean(r.phone)}" target="_blank" style="color:var(--green)">${esc(r.phone||'—')}</a></td>
+      <td>${myAccounts.length}</td>
+      <td>$${rev.toLocaleString()}</td>
+      <td><span class="badge badge-gold">${r.commission||10}%</span> · $${Math.round(comm).toLocaleString()}</td>
+      <td style="display:flex;gap:.3rem">
+        <button class="btn btn-ghost btn-sm" onclick="openModal('rep','${r.id}')">✏️</button>
+        <button class="btn btn-red btn-sm" onclick="deleteItem('reps','${r.id}')">🗑</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── REORDERS ───────────────────────────────────────────
+function renderReorders(){
+  const accounts=DB.get('accounts');
+  const now=new Date(); now.setHours(0,0,0,0);
+  const in7=new Date(now.getTime()+7*86400000);
+  const in30=new Date(now.getTime()+30*86400000);
+  const withDates=accounts.filter(a=>a.nextReorder).map(a=>({...a,_rd:new Date(a.nextReorder)}));
+  const sorted=withDates.sort((a,b)=>a._rd-b._rd);
+  const overdue=sorted.filter(a=>a._rd<now).length;
+  const week=sorted.filter(a=>a._rd>=now&&a._rd<=in7).length;
+  const month=sorted.filter(a=>a._rd>=now&&a._rd<=in30).length;
+  document.getElementById('ro-overdue').textContent=overdue;
+  document.getElementById('ro-week').textContent=week;
+  document.getElementById('ro-month').textContent=month;
+
+  const tbody=document.getElementById('reorder-table');
+  if(!sorted.length){ tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="es-icon">🔁</div><p>No reorder dates set — add them in Store Accounts</p></div></td></tr>'; return; }
+  tbody.innerHTML=sorted.map(a=>{
+    const overdue=a._rd<now;
+    const soon=a._rd>=now&&a._rd<=in7;
+    const cls=overdue?'badge-red':soon?'badge-gold':'badge-green';
+    const label=overdue?'Overdue':soon?'Due Soon':'Upcoming';
+    return `<tr>
+      <td><strong>${esc(a.name)}</strong></td>
+      <td>${esc(a.city)}</td>
+      <td>${esc(a.manager||'—')}</td>
+      <td><a href="https://wa.me/${clean(a.phone)}" target="_blank" style="color:var(--green)">${esc(a.phone||'—')}</a></td>
+      <td>${a.lastOrder?fmtDate(a.lastOrder):'—'}</td>
+      <td>${fmtDate(a.nextReorder)}</td>
+      <td><span class="badge ${cls}">${label}</span></td>
+      <td><button class="btn btn-green btn-sm" onclick="markReordered('${a.id}')">✓ Done</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function markReordered(id){
+  const accounts=DB.get('accounts');
+  const a=accounts.find(x=>x.id===id);
+  if(!a) return;
+  const today=new Date();
+  a.lastOrder=today.toISOString().split('T')[0];
+  const next=new Date(today.getTime()+30*86400000);
+  a.nextReorder=next.toISOString().split('T')[0];
+  DB.set('accounts',accounts);
+  renderAll(); toast('Reorder marked — next date set +30 days','success');
+}
+
+// ── MODALS ─────────────────────────────────────────────
+let _editId=null, _editType=null;
+function openModal(type, id=null){
+  _editId=id; _editType=type;
+  const overlay=document.getElementById('modal');
+  const title=document.getElementById('modal-title');
+  const body=document.getElementById('modal-body');
+  const footer=document.getElementById('modal-footer');
+  const reps=DB.get('reps');
+  const repOpts=reps.map(r=>`<option value="${r.id}">${esc(r.name)}</option>`).join('');
+
+  const forms={
+    account:(d={})=>{
+      title.textContent=(id?'Edit':'Add')+' Store Account';
+      body.innerHTML=`
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Store Name *</label><input class="form-input" id="f-name" value="${esc(d.name||'')}" placeholder="e.g. Presidente Market"/></div>
+          <div class="form-group"><label class="form-label">Manager Name</label><input class="form-input" id="f-manager" value="${esc(d.manager||'')}" placeholder="e.g. Carlos"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">City *</label><input class="form-input" id="f-city" value="${esc(d.city||'')}" placeholder="Miami, Lehigh Acres..."/></div>
+          <div class="form-group"><label class="form-label">Status</label><select class="form-input" id="f-status"><option value="new" ${d.status==='new'?'selected':''}>New</option><option value="active" ${d.status==='active'?'selected':''}>Active</option><option value="follow-up" ${d.status==='follow-up'?'selected':''}>Follow-Up</option><option value="inactive" ${d.status==='inactive'?'selected':''}>Inactive</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Phone / WhatsApp</label><input class="form-input" id="f-phone" value="${esc(d.phone||'')}" placeholder="+1 786 000 0000"/></div>
+          <div class="form-group"><label class="form-label">Monthly Revenue ($)</label><input class="form-input" type="number" id="f-monthly" value="${d.monthly||''}" placeholder="e.g. 500"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">SKUs Placed</label><input class="form-input" type="number" id="f-skus" value="${d.skus||''}" placeholder="e.g. 5"/></div>
+          <div class="form-group"><label class="form-label">Assign Rep</label><select class="form-input" id="f-repId"><option value="">No Rep</option>${repOpts}</select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Last Order Date</label><input class="form-input" type="date" id="f-lastOrder" value="${d.lastOrder||''}"/></div>
+          <div class="form-group"><label class="form-label">Next Reorder Date</label><input class="form-input" type="date" id="f-nextReorder" value="${d.nextReorder||''}"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="f-address" value="${esc(d.address||'')}" placeholder="Full address (optional)"/></div>
+        <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="f-notes" rows="2" placeholder="Any notes...">${esc(d.notes||'')}</textarea></div>`;
+      if(id){ const a=DB.get('accounts').find(x=>x.id===id); if(a){ document.getElementById('f-repId').value=a.repId||''; } }
+      footer.innerHTML=`<button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" onclick="saveAccount()">Save Account</button>`;
+    },
+    inventory:(d={})=>{
+      title.textContent=(id?'Edit':'Add')+' Product / SKU';
+      body.innerHTML=`
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Product Name *</label><input class="form-input" id="f-name" value="${esc(d.name||'')}" placeholder="e.g. Premium Non-Stick Pan"/></div>
+          <div class="form-group"><label class="form-label">SKU Code</label><input class="form-input" id="f-sku" value="${esc(d.sku||'')}" placeholder="e.g. BNC-001"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Unit Price ($)</label><input class="form-input" type="number" step="0.01" id="f-price" value="${d.price||''}" placeholder="0.00"/></div>
+          <div class="form-group"><label class="form-label">Category</label><input class="form-input" id="f-category" value="${esc(d.category||'')}" placeholder="Kitchen, Cleaning..."/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Current Stock</label><input class="form-input" type="number" id="f-stock" value="${d.stock||0}" placeholder="0"/></div>
+          <div class="form-group"><label class="form-label">Min Stock (Reorder At)</label><input class="form-input" type="number" id="f-minStock" value="${d.minStock||10}" placeholder="10"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Max Stock (Capacity)</label><input class="form-input" type="number" id="f-maxStock" value="${d.maxStock||100}" placeholder="100"/></div>
+          <div class="form-group"><label class="form-label">Supplier</label><input class="form-input" id="f-supplier" value="${esc(d.supplier||'Benecasa')}" placeholder="Benecasa"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="f-notes" rows="2" placeholder="Any notes...">${esc(d.notes||'')}</textarea></div>`;
+      footer.innerHTML=`<button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" onclick="saveInventory()">Save Product</button>`;
+    },
+    rep:(d={})=>{
+      title.textContent=(id?'Edit':'Add')+' Sales Rep';
+      body.innerHTML=`
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="f-name" value="${esc(d.name||'')}" placeholder="e.g. Miguel Torres"/></div>
+          <div class="form-group"><label class="form-label">Phone / WhatsApp</label><input class="form-input" id="f-phone" value="${esc(d.phone||'')}" placeholder="+1 786 000 0000"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Territory</label><input class="form-input" id="f-territory" value="${esc(d.territory||'')}" placeholder="e.g. Hialeah / Broward"/></div>
+          <div class="form-group"><label class="form-label">Commission %</label><input class="form-input" type="number" id="f-commission" value="${d.commission||10}" placeholder="10"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="f-notes" rows="2" placeholder="Any notes...">${esc(d.notes||'')}</textarea></div>`;
+      footer.innerHTML=`<button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" onclick="saveRep()">Save Rep</button>`;
+    },
+    projection:(d={})=>{
+      const accounts=DB.get('accounts');
+      const accOpts=accounts.map(a=>`<option value="${a.id}" ${d.accountId===a.id?'selected':''}>${esc(a.name)}</option>`).join('');
+      title.textContent='Add Projection';
+      body.innerHTML=`
+        <div class="form-group"><label class="form-label">Account *</label><select class="form-input" id="f-accountId"><option value="">Select store...</option>${accOpts}</select></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">30-Day Projection ($)</label><input class="form-input" type="number" id="f-p30" value="${d.p30||''}"/></div>
+          <div class="form-group"><label class="form-label">60-Day Projection ($)</label><input class="form-input" type="number" id="f-p60" value="${d.p60||''}"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">90-Day Projection ($)</label><input class="form-input" type="number" id="f-p90" value="${d.p90||''}"/></div>
+        </div>
+        <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="f-notes" rows="2" placeholder="Assumptions, notes...">${esc(d.notes||'')}</textarea></div>`;
+      footer.innerHTML=`<button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-gold" onclick="saveProjection()">Save Projection</button>`;
+    }
+  };
+
+  // Load existing data if editing
+  let existing={};
+  if(id){
+    const typeMap={account:'accounts',inventory:'inventory',rep:'reps',projection:'projections'};
+    existing=DB.get(typeMap[type]).find(x=>x.id===id)||{};
+  }
+  forms[type](existing);
+  overlay.classList.add('open');
+}
+
+function closeModal(){ document.getElementById('modal').classList.remove('open'); _editId=null; _editType=null; }
+
+// ── SAVE FUNCTIONS ─────────────────────────────────────
+function saveAccount(){
+  const name=v('f-name'); if(!name){toast('Store name required','error');return;}
+  const accounts=DB.get('accounts');
+  const obj={
+    id:_editId||DB.id(), name, manager:v('f-manager'), city:v('f-city'),
+    status:v('f-status'), phone:v('f-phone'), monthly:v('f-monthly'),
+    skus:v('f-skus'), repId:v('f-repId'), lastOrder:v('f-lastOrder'),
+    nextReorder:v('f-nextReorder'), address:v('f-address'), notes:v('f-notes'),
+    _created:_editId?(accounts.find(x=>x.id===_editId)||{})._created||Date.now():Date.now()
+  };
+  if(_editId){ const i=accounts.findIndex(x=>x.id===_editId); accounts[i]=obj; }
+  else accounts.unshift(obj);
+  DB.set('accounts',accounts);
+  closeModal(); renderAll(); toast((_editId?'Updated':'Added')+': '+name,'success');
+}
+
+function saveInventory(){
+  const name=v('f-name'); if(!name){toast('Product name required','error');return;}
+  const inv=DB.get('inventory');
+  const obj={id:_editId||DB.id(),name,sku:v('f-sku'),price:v('f-price'),category:v('f-category'),stock:v('f-stock')||0,minStock:v('f-minStock')||10,maxStock:v('f-maxStock')||100,supplier:v('f-supplier'),notes:v('f-notes')};
+  if(_editId){ const i=inv.findIndex(x=>x.id===_editId); inv[i]=obj; }
+  else inv.unshift(obj);
+  DB.set('inventory',inv);
+  closeModal(); renderAll(); toast((_editId?'Updated':'Added')+': '+name,'success');
+}
+
+function saveRep(){
+  const name=v('f-name'); if(!name){toast('Rep name required','error');return;}
+  const reps=DB.get('reps');
+  const obj={id:_editId||DB.id(),name,phone:v('f-phone'),territory:v('f-territory'),commission:v('f-commission')||10,notes:v('f-notes')};
+  if(_editId){ const i=reps.findIndex(x=>x.id===_editId); reps[i]=obj; }
+  else reps.unshift(obj);
+  DB.set('reps',reps);
+  closeModal(); renderAll(); toast((_editId?'Updated':'Added')+': '+name,'success');
+}
+
+function saveProjection(){
+  const accountId=v('f-accountId'); if(!accountId){toast('Select an account','error');return;}
+  const projs=DB.get('projections').filter(p=>p.accountId!==accountId);
+  projs.push({id:DB.id(),accountId,p30:v('f-p30'),p60:v('f-p60'),p90:v('f-p90'),notes:v('f-notes')});
+  DB.set('projections',projs);
+  closeModal(); renderAll(); toast('Projection saved','success');
+}
+
+function deleteItem(type, id){
+  if(!confirm('Delete this item?')) return;
+  const data=DB.get(type).filter(x=>x.id!==id);
+  DB.set(type,data);
+  renderAll(); toast('Deleted','success');
+}
+
+// ── EXPORT ─────────────────────────────────────────────
+function exportData(){
+  const data={accounts:DB.get('accounts'),inventory:DB.get('inventory'),reps:DB.get('reps'),projections:DB.get('projections'),exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='benecasa-export-'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+  toast('Data exported','success');
+}
+
+// ── UTILS ──────────────────────────────────────────────
+function v(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function clean(p){ return (p||'').replace(/[^\d+]/g,''); }
+function fmtDate(d){ if(!d) return '—'; const dt=new Date(d+'T00:00:00'); return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function statusBadge(s){
+  const map={active:'badge-green',new:'badge-blue','follow-up':'badge-gold',inactive:'badge-gray'};
+  return `<span class="badge ${map[s]||'badge-gray'}">${s||'unknown'}</span>`;
+}
+function reorderBadge(d){
+  const now=new Date(); now.setHours(0,0,0,0);
+  const rd=new Date(d+'T00:00:00');
+  const diff=Math.round((rd-now)/(86400000));
+  if(diff<0) return `<span class="badge badge-red">Overdue ${Math.abs(diff)}d</span>`;
+  if(diff<=7) return `<span class="badge badge-gold">In ${diff}d</span>`;
+  return `<span class="badge badge-green">${fmtDate(d)}</span>`;
+}
+let _toastTimer;
+function toast(msg,type='success'){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='toast '+type;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+
+// ── INIT ───────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
