@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Benecasa Distribution — Growth Infrastructure Proposal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink:    #0A0A0A;
+      --ink-2:  #1C1C1E;
+      --muted:  #6B7280;
+      --bg:     #FAFAF8;
+      --card:   #FFFFFF;
+      --border: rgba(0,0,0,.08);
+      --gold:   #B8943C;
+      --gold-2: #D4AF5A;
+      --gold-bg: rgba(184,148,60,.07);
+      --gold-border: rgba(184,148,60,.25);
+      --surface: #F4F3F0;
+      --green:  #10B981;
+      --green-bg: rgba(16,185,129,.07);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── COVER ── */
+    .cover {
+      min-height: 100vh;
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 6%;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(184,148,60,.14) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cover-grid {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .cover-content { position: relative; z-index: 1; max-width: 800px; }
+    .cover-eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      border: 1px solid rgba(184,148,60,.35);
+      background: rgba(184,148,60,.1);
+      color: var(--gold-2);
+      padding: .4rem 1.1rem; border-radius: 50px;
+      font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      margin-bottom: 2.5rem;
+    }
+    .eyebrow-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .cover h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -3px;
+      color: #fff;
+      margin-bottom: 1.5rem;
+    }
+    .cover h1 .gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold-2), #f0c96a);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .cover-sub {
+      color: rgba(255,255,255,.5);
+      font-size: 1.1rem;
+      line-height: 1.8;
+      max-width: 560px;
+      margin: 0 auto 3rem;
+    }
+    .cover-meta {
+      display: flex; gap: 2.5rem; justify-content: center; flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 2.5rem; margin-top: 1rem;
+    }
+    .cover-meta-item { text-align: center; }
+    .cover-meta-label { font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.3); margin-bottom: .35rem; }
+    .cover-meta-val { font-size: .95rem; font-weight: 600; color: rgba(255,255,255,.75); }
+
+    /* ── SECTIONS ── */
+    .section { padding: 90px 6%; max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; background: var(--gold-bg);
+      border: 1px solid var(--gold-border); color: var(--gold);
+      padding: .3rem .9rem; border-radius: 50px;
+      font-size: .68rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800; letter-spacing: -2px; line-height: 1.1;
+      margin-bottom: .8rem; color: var(--ink);
+    }
+    .section-sub { color: var(--muted); font-size: 1.05rem; line-height: 1.75; max-width: 580px; margin-bottom: 3.5rem; }
+
+    /* ── PROBLEM ── */
+    .problem-section { background: var(--card); }
+    .problem-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .problem-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 18px; padding: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .problem-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #ef4444, #f97316);
+    }
+    .problem-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .problem-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: .5rem; letter-spacing: -.3px; }
+    .problem-card p { color: var(--muted); font-size: .875rem; line-height: 1.7; }
+
+    /* ── SOLUTION GRID ── */
+    .solution-section { background: var(--bg); }
+    .solution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .solution-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 2.2rem; transition: all .3s;
+      position: relative; overflow: hidden;
+    }
+    .solution-card:hover { border-color: var(--gold-border); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,.08); }
+    .solution-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-2));
+      transform: scaleX(0); transform-origin: left; transition: transform .4s;
+    }
+    .solution-card:hover::after { transform: scaleX(1); }
+    .sol-num {
+      font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--gold); background: var(--gold-bg); border: 1px solid var(--gold-border);
+      display: inline-block; padding: .25rem .7rem; border-radius: 50px; margin-bottom: 1.2rem;
+    }
+    .solution-card h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: .6rem; letter-spacing: -.4px; }
+    .solution-card p { color: var(--muted); font-size: .9rem; line-height: 1.7; margin-bottom: 1.2rem; }
+    .sol-features { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+    .sol-features li { display: flex; align-items: flex-start; gap: .6rem; font-size: .85rem; color: var(--ink-2); }
+    .sol-check { width: 16px; height: 16px; border-radius: 50%; background: var(--gold-bg); border: 1px solid var(--gold-border); display: flex; align-items: center; justify-content: center; font-size: .55rem; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
+
+    /* ── WHAT CHANGES ── */
+    .change-section { background: var(--ink); color: #fff; }
+    .change-section .section-tag { background: rgba(184,148,60,.15); border-color: rgba(184,148,60,.3); color: var(--gold-2); }
+    .change-section h2 { color: #fff; }
+    .change-section .section-sub { color: rgba(255,255,255,.5); }
+    .change-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .change-card {
+      border-radius: 16px; padding: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .change-card.before { background: rgba(239,68,68,.06); border: 1px solid rgba(239,68,68,.15); }
+    .change-card.after  { background: rgba(16,185,129,.06); border: 1px solid rgba(16,185,129,.15); }
+    .change-label {
+      font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+      margin-bottom: 1.5rem; display: flex; align-items: center; gap: .5rem;
+    }
+    .change-card.before .change-label { color: #ef4444; }
+    .change-card.after  .change-label { color: var(--green); }
+    .change-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .change-card.before .change-dot { background: #ef4444; }
+    .change-card.after  .change-dot { background: var(--green); }
+    .change-list { list-style: none; display: flex; flex-direction: column; gap: .75rem; }
+    .change-list li { font-size: .9rem; line-height: 1.6; color: rgba(255,255,255,.7); display: flex; gap: .75rem; align-items: flex-start; }
+    .change-list li span.icon { flex-shrink: 0; }
+
+    /* ── ROI ── */
+    .roi-section { background: var(--surface); }
+    .roi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+    .roi-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 18px; padding: 2rem; text-align: center;
+    }
+    .roi-num { font-size: 3rem; font-weight: 900; letter-spacing: -2px; color: var(--gold); line-height: 1; margin-bottom: .4rem; }
+    .roi-label { font-size: .8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+    .roi-desc { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+    .roi-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 16px; overflow: hidden; border: 1.5px solid var(--border); }
+    .roi-table th { background: var(--ink); color: #fff; padding: 1rem 1.4rem; text-align: left; font-size: .8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .roi-table td { padding: 1rem 1.4rem; font-size: .9rem; border-bottom: 1px solid var(--border); color: var(--ink-2); }
+    .roi-table tr:last-child td { border-bottom: none; }
+    .roi-table tr:hover td { background: var(--surface); }
+    .tag-green { display: inline-block; background: var(--green-bg); color: var(--green); padding: .2rem .6rem; border-radius: 50px; font-size: .75rem; font-weight: 700; }
+    .tag-gold  { display: inline-block; background: var(--gold-bg); color: var(--gold); padding: .2rem .6rem; border-radius: 50px; font-size: .75rem; font-weight: 700; }
+
+    /* ── INVESTMENT ── */
+    .invest-section { background: var(--card); }
+    .invest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+    .invest-card {
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 2.5rem; position: relative; overflow: hidden;
+    }
+    .invest-card.featured { background: var(--ink); border-color: var(--gold); }
+    .invest-card.featured::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-2)); }
+    .invest-badge {
+      display: inline-block; background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #fff; padding: .25rem .75rem; border-radius: 50px;
+      font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .invest-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -.5px; margin-bottom: .4rem; }
+    .invest-card.featured .invest-name { color: #fff; }
+    .invest-desc { color: var(--muted); font-size: .875rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .invest-card.featured .invest-desc { color: rgba(255,255,255,.5); }
+    .invest-price { display: flex; align-items: baseline; gap: .3rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .invest-card.featured .invest-price { border-bottom-color: rgba(255,255,255,.1); }
+    .invest-price .amount { font-size: 3rem; font-weight: 900; letter-spacing: -2px; }
+    .invest-card.featured .invest-price .amount { color: #fff; }
+    .invest-price .per { color: var(--muted); font-size: .9rem; }
+    .invest-card.featured .invest-price .per { color: rgba(255,255,255,.4); }
+    .invest-list { list-style: none; display: flex; flex-direction: column; gap: .6rem; margin-bottom: 2rem; }
+    .invest-list li { display: flex; gap: .7rem; align-items: flex-start; font-size: .875rem; }
+    .invest-card.featured .invest-list li { color: rgba(255,255,255,.75); }
+    .invest-chk { width: 16px; height: 16px; border-radius: 50%; background: var(--gold-bg); border: 1px solid var(--gold-border); display: flex; align-items: center; justify-content: center; font-size: .55rem; color: var(--gold); flex-shrink: 0; margin-top: 2px; }
+    .invest-btn {
+      display: block; text-align: center; padding: .95rem;
+      border-radius: 10px; font-weight: 700; font-size: .95rem; transition: all .3s;
+    }
+    .invest-btn.solid { background: var(--ink); color: #fff; }
+    .invest-btn.solid:hover { background: #2d2d2d; }
+    .invest-btn.gold { background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: #fff; }
+    .invest-btn.gold:hover { box-shadow: 0 8px 24px rgba(184,148,60,.35); transform: translateY(-1px); }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--ink); text-align: center; padding: 100px 6%;
+      position: relative; overflow: hidden;
+    }
+    .cta-glow {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 350px;
+      background: radial-gradient(ellipse, rgba(184,148,60,.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-content { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+    .cta-section .section-tag { background: rgba(184,148,60,.15); border-color: rgba(184,148,60,.3); color: var(--gold-2); }
+    .cta-section h2 { color: #fff; margin-bottom: 1rem; }
+    .cta-section p { color: rgba(255,255,255,.5); font-size: 1.05rem; line-height: 1.8; margin-bottom: 2.5rem; }
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: linear-gradient(135deg, var(--gold), var(--gold-2));
+      color: #fff; padding: 1.1rem 2.8rem; border-radius: 10px;
+      font-weight: 800; font-size: 1.05rem; transition: all .3s;
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(184,148,60,.4); }
+    .cta-contact { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 2.5rem; }
+    .cta-link { color: rgba(255,255,255,.4); font-size: .875rem; transition: color .2s; display: flex; align-items: center; gap: .4rem; }
+    .cta-link:hover { color: rgba(255,255,255,.75); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #050507; padding: 2rem 6%;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo { display: flex; align-items: center; gap: .6rem; }
+    .footer-wordmark { font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: -.5px; }
+    .footer-wordmark span { color: var(--gold); }
+    footer p { color: rgba(255,255,255,.25); font-size: .78rem; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 768px) {
+      .problem-cards, .solution-grid, .change-grid, .roi-grid, .invest-grid { grid-template-columns: 1fr; }
+      .cover h1 { letter-spacing: -1.5px; }
+      h2 { letter-spacing: -1.5px; }
+      .section { padding: 60px 5%; }
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      .cover { min-height: auto; padding: 40px; }
+      .section { padding: 40px 0; }
+      body { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── COVER ───────────────────────────────────────────── -->
+<div class="cover">
+  <div class="cover-glow"></div>
+  <div class="cover-grid"></div>
+  <div class="cover-content">
+    <div class="cover-eyebrow"><span class="eyebrow-dot"></span>Confidential — Prepared by Impulso Operations</div>
+    <h1>You've built the network.<br>Now let's make it run <span class="gold">without you.</span></h1>
+    <p class="cover-sub">A growth infrastructure proposal for Benecasa Distribution — AI automation systems that scale your routes, manage your reps, and open new markets around the clock.</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Prepared for</div>
+        <div class="cover-meta-val">Benecasa Distribution</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Prepared by</div>
+        <div class="cover-meta-val">Nes — Impulso Operations</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Focus</div>
+        <div class="cover-meta-val">Operations &amp; Scale</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Markets</div>
+        <div class="cover-meta-val">Miami · Lehigh · Florida</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── THE PROBLEM ─────────────────────────────────────── -->
+<div style="background:var(--card);">
+  <div class="section">
+    <span class="section-tag">The Reality</span>
+    <h2>You've outgrown<br>your current system.</h2>
+    <p class="section-sub">You built this through relationships, hustle, and persistence. But at a certain scale, the thing that got you here starts holding you back.</p>
+    <div class="problem-cards">
+      <div class="problem-card">
+        <div class="problem-icon">⏱️</div>
+        <h3>It Runs on You</h3>
+        <p>Every reorder, every follow-up, every new account — requires your time and presence. The business doesn't grow when you're not in the room.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">📍</div>
+        <h3>Geography Is the Ceiling</h3>
+        <p>Miami to Lehigh is 2+ hours each way. Every new city you want to enter requires either your body or a rep you're managing manually.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">📋</div>
+        <h3>Nothing Is Automated</h3>
+        <p>Reorders are chased manually. Rep performance is tracked on spreadsheets. New account outreach depends on who has time that week.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── THE SOLUTION ────────────────────────────────────── -->
+<div style="background:var(--bg);">
+  <div class="section">
+    <span class="section-tag">What We Build</span>
+    <h2>Enterprise-level operations.<br>Without the enterprise overhead.</h2>
+    <p class="section-sub">Every major distributor at scale — UNFI, KeHE, Sysco — runs on systems. We build you that infrastructure lean, fast, and specific to your operation.</p>
+    <div class="solution-grid">
+
+      <div class="solution-card">
+        <div class="sol-num">System 01</div>
+        <h3>Automated Reorder Sequences</h3>
+        <p>Every store account gets a reorder sequence that runs on its own. No more chasing managers — the system follows up for you at the right time, every time.</p>
+        <ul class="sol-features">
+          <li><span class="sol-check">✓</span>Triggers automatically 25 days after each order</li>
+          <li><span class="sol-check">✓</span>Personalized message per store manager</li>
+          <li><span class="sol-check">✓</span>WhatsApp + email — whichever they prefer</li>
+          <li><span class="sol-check">✓</span>Escalates if no response in 3 days</li>
+        </ul>
+      </div>
+
+      <div class="solution-card">
+        <div class="sol-num">System 02</div>
+        <h3>Rep Management Dashboard</h3>
+        <p>Every rep logs visits and orders from their phone. You see the entire operation in real time — no calls, no check-ins, no spreadsheets.</p>
+        <ul class="sol-features">
+          <li><span class="sol-check">✓</span>Live visit log per rep per account</li>
+          <li><span class="sol-check">✓</span>Alert when account hasn't been visited in 30 days</li>
+          <li><span class="sol-check">✓</span>Revenue per rep tracked automatically</li>
+          <li><span class="sol-check">✓</span>New account flagged instantly for review</li>
+        </ul>
+      </div>
+
+      <div class="solution-card">
+        <div class="sol-num">System 03</div>
+        <h3>Chain Buyer Outreach on Autopilot</h3>
+        <p>AI researches regional chain buyers — Presidente, Sedano's, Dollar Tree — finds the right contact, and sends personalized outreach until they respond.</p>
+        <ul class="sol-features">
+          <li><span class="sol-check">✓</span>Finds buyer name, email, and LinkedIn</li>
+          <li><span class="sol-check">✓</span>Sends tailored pitch based on their chain</li>
+          <li><span class="sol-check">✓</span>Follows up automatically on a schedule</li>
+          <li><span class="sol-check">✓</span>You only see warm conversations</li>
+        </ul>
+      </div>
+
+      <div class="solution-card">
+        <div class="sol-num">System 04</div>
+        <h3>New Market Expansion System</h3>
+        <p>You name the city — Tampa, Orlando, Jacksonville — the system maps every target store, finds manager contacts, and warms them up before your rep ever walks in.</p>
+        <ul class="sol-features">
+          <li><span class="sol-check">✓</span>Store discovery by city and store type</li>
+          <li><span class="sol-check">✓</span>Manager contact research automated</li>
+          <li><span class="sol-check">✓</span>Pre-visit outreach sent on your behalf</li>
+          <li><span class="sol-check">✓</span>Rep walks into warm accounts, not cold doors</li>
+        </ul>
+      </div>
+
+      <div class="solution-card">
+        <div class="sol-num">System 05</div>
+        <h3>SKU Performance Intelligence</h3>
+        <p>Tracks which products move fastest by store type, location, and season. Tells you what to push and where — before inventory runs dry or sits too long.</p>
+        <ul class="sol-features">
+          <li><span class="sol-check">✓</span>Best-selling SKUs per store category</li>
+          <li><span class="sol-check">✓</span>Slow mover alerts before they become dead stock</li>
+          <li><span class="sol-check">✓</span>Seasonal push recommendations</li>
+          <li><span class="sol-check">✓</span>Upsell suggestions per account</li>
+        </ul>
+      </div>
+
+      <div class="solution-card">
+        <div class="sol-num">System 06</div>
+        <h3>Territory Intelligence &amp; Mapping</h3>
+        <p>A live map of every account, rep, and gap in your territory. See exactly where you're underpenetrated and where the next 20 accounts are waiting.</p>
+        <ul class="sol-features">
+          <li><span class="sol-check">✓</span>Full account map across all territories</li>
+          <li><span class="sol-check">✓</span>Gap analysis — stores you're not in yet</li>
+          <li><span class="sol-check">✓</span>Rep route optimization</li>
+          <li><span class="sol-check">✓</span>Expansion opportunity scoring</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── BEFORE / AFTER ──────────────────────────────────── -->
+<div style="background:var(--ink);">
+  <div class="section">
+    <span class="section-tag">The Difference</span>
+    <h2 style="color:#fff;">What your operation looks like<br><span style="background:linear-gradient(135deg,var(--gold),var(--gold-2),#f0c96a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">before and after.</span></h2>
+    <p class="section-sub">Same product. Same network. Completely different output.</p>
+    <div class="change-grid">
+      <div class="change-card before">
+        <div class="change-label"><span class="change-dot"></span>Before Impulso</div>
+        <ul class="change-list">
+          <li><span class="icon">❌</span>Reorders chased manually — some slip every month</li>
+          <li><span class="icon">❌</span>Miami to Lehigh run eats 5+ hours every trip</li>
+          <li><span class="icon">❌</span>Rep performance tracked on WhatsApp and gut feeling</li>
+          <li><span class="icon">❌</span>New markets require you to physically go there first</li>
+          <li><span class="icon">❌</span>Chain buyer meetings require cold walking and cold calling</li>
+          <li><span class="icon">❌</span>Business stalls when you take a day off</li>
+        </ul>
+      </div>
+      <div class="change-card after">
+        <div class="change-label"><span class="change-dot"></span>After Impulso</div>
+        <ul class="change-list">
+          <li><span class="icon">✅</span>Every account reorders on a schedule — automated</li>
+          <li><span class="icon">✅</span>Lehigh rep managed remotely — dashboard shows everything</li>
+          <li><span class="icon">✅</span>Live performance metrics per rep, per account, per SKU</li>
+          <li><span class="icon">✅</span>New city launched with pre-warmed accounts before rep arrives</li>
+          <li><span class="icon">✅</span>Chain buyer outreach running in background — you get warm leads</li>
+          <li><span class="icon">✅</span>Operation runs 24/7 — with or without you in it</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ROI ─────────────────────────────────────────────── -->
+<div style="background:var(--surface);">
+  <div class="section">
+    <span class="section-tag">The Numbers</span>
+    <h2>This pays for itself<br>in the first month.</h2>
+    <p class="section-sub">Conservative estimates based on what automation recovers in a distribution operation your size.</p>
+    <div class="roi-grid">
+      <div class="roi-card">
+        <div class="roi-num">5–10</div>
+        <div class="roi-label">Recovered Reorders / Month</div>
+        <div class="roi-desc">Accounts that would've slipped through manual follow-up. At $300–500 avg order = $1,500–5,000 recovered.</div>
+      </div>
+      <div class="roi-card">
+        <div class="roi-num">2x</div>
+        <div class="roi-label">Rep Output</div>
+        <div class="roi-desc">Reps with a clear dashboard and pre-warmed accounts close twice as many new stores as reps going in cold.</div>
+      </div>
+      <div class="roi-card">
+        <div class="roi-num">3–4</div>
+        <div class="roi-label">New Markets / Quarter</div>
+        <div class="roi-desc">With AI pre-warming accounts, entering a new city goes from a 3-month project to a 3-week sprint.</div>
+      </div>
+    </div>
+
+    <table class="roi-table">
+      <thead>
+        <tr>
+          <th>What Gets Automated</th>
+          <th>Current Cost (Manual)</th>
+          <th>With Impulso</th>
+          <th>Monthly Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Reorder follow-up</td>
+          <td>~5 hrs/week of your time</td>
+          <td>Fully automated</td>
+          <td><span class="tag-green">+$1,500–5,000</span></td>
+        </tr>
+        <tr>
+          <td>Rep management</td>
+          <td>Daily calls + spreadsheets</td>
+          <td>Live dashboard</td>
+          <td><span class="tag-green">+20% rep efficiency</span></td>
+        </tr>
+        <tr>
+          <td>New market entry</td>
+          <td>Road trips + cold visits</td>
+          <td>Pre-warmed accounts</td>
+          <td><span class="tag-green">3x faster launch</span></td>
+        </tr>
+        <tr>
+          <td>Chain buyer outreach</td>
+          <td>Cold walk-ins, rarely works</td>
+          <td>AI outreach + warm leads</td>
+          <td><span class="tag-gold">1 chain deal = 20–50 locations</span></td>
+        </tr>
+        <tr>
+          <td>SKU optimization</td>
+          <td>Gut feeling per visit</td>
+          <td>Data-driven per account</td>
+          <td><span class="tag-green">+15–25% order size</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── INVESTMENT ──────────────────────────────────────── -->
+<div style="background:var(--card);">
+  <div class="section">
+    <span class="section-tag">Investment</span>
+    <h2>Simple pricing.<br>Clear ROI.</h2>
+    <p class="section-sub">No long-term contracts to start. If it doesn't pay for itself in 30 days, we adjust until it does.</p>
+    <div class="invest-grid">
+
+      <div class="invest-card">
+        <div class="invest-name">Business Automation</div>
+        <div class="invest-desc">Core automation infrastructure — reorder sequences, rep dashboard, SKU tracking, and account management.</div>
+        <div class="invest-price">
+          <span class="amount">$850</span>
+          <span class="per">/month</span>
+        </div>
+        <ul class="invest-list">
+          <li><span class="invest-chk">✓</span>Full operation process audit</li>
+          <li><span class="invest-chk">✓</span>Reorder automation per account</li>
+          <li><span class="invest-chk">✓</span>Rep performance dashboard</li>
+          <li><span class="invest-chk">✓</span>SKU intelligence reporting</li>
+          <li><span class="invest-chk">✓</span>Monthly optimization review</li>
+        </ul>
+        <a href="mailto:nes@impulso-operations.com?subject=Benecasa%20Automation%20Inquiry" class="invest-btn solid">Start with Automation</a>
+      </div>
+
+      <div class="invest-card featured">
+        <div class="invest-badge">Recommended</div>
+        <div class="invest-name">Full Scale System</div>
+        <div class="invest-desc">Everything in Automation plus chain buyer outreach, market expansion, and a dedicated account manager from Impulso.</div>
+        <div class="invest-price">
+          <span class="amount">$1,450</span>
+          <span class="per">/month</span>
+        </div>
+        <ul class="invest-list">
+          <li><span class="invest-chk">✓</span>Everything in Business Automation</li>
+          <li><span class="invest-chk">✓</span>Chain buyer AI outreach</li>
+          <li><span class="invest-chk">✓</span>New market expansion system</li>
+          <li><span class="invest-chk">✓</span>Territory gap mapping</li>
+          <li><span class="invest-chk">✓</span>Dedicated Impulso account manager</li>
+          <li><span class="invest-chk">✓</span>Weekly strategy call</li>
+        </ul>
+        <a href="mailto:nes@impulso-operations.com?subject=Benecasa%20Full%20Scale%20System" class="invest-btn gold">Build My Scale System →</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── CTA ─────────────────────────────────────────────── -->
+<div class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="cta-content">
+    <span class="section-tag">Next Step</span>
+    <h2>30 minutes.<br>That's all it takes.</h2>
+    <p>We map your current operation, identify the biggest bottlenecks, and show you exactly what gets automated first. No deck. No pitch. Just a straight conversation.</p>
+    <a href="mailto:nes@impulso-operations.com?subject=Benecasa%20Scale%20Call&body=Hi%20Nes%2C%20I%20reviewed%20the%20proposal%20and%20I%27d%20like%20to%20schedule%20a%2030-minute%20call." class="btn-gold">Schedule the Call →</a>
+    <div class="cta-contact">
+      <a href="mailto:nes@impulso-operations.com" class="cta-link">📧 nes@impulso-operations.com</a>
+      <a href="tel:7862286229" class="cta-link">📱 786-228-6229</a>
+      <span class="cta-link">🌐 impulso-operations.com</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ──────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">
+    <svg width="28" height="28" viewBox="0 0 38 38" fill="none"><rect width="38" height="38" rx="9" fill="#0A0A0A"/><rect x="8" y="24" width="6" height="7" rx="1.5" fill="rgba(255,255,255,0.45)"/><rect x="16" y="17" width="6" height="14" rx="1.5" fill="rgba(255,255,255,0.8)"/><rect x="24" y="9" width="6" height="22" rx="1.5" fill="#B8943C"/></svg>
+    <span class="footer-wordmark">IMPULSO<span>.</span></span>
+  </div>
+  <p>Confidential — Prepared exclusively for Benecasa Distribution</p>
+  <p>© 2026 Impulso Operations · impulso-operations.com</p>
+</footer>
+
+</body>
+</html>
