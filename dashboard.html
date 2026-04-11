@@ -351,6 +351,8 @@
 
     <button class="nav-item" onclick="showSection('products')"><i class="icon">🛍️</i> Products</button>
     <button class="nav-item" onclick="showSection('sop')"><i class="icon">📚</i> Playbook & SOP</button>
+    <button class="nav-item" onclick="showSection('hunt')"><i class="icon">🔍</i> Auto Hunt</button>
+    <button class="nav-item" onclick="showSection('scalper')"><i class="icon">📈</i> Scalper</button>
 
     <p class="nav-section">Account</p>
     <button class="nav-item" onclick="showSection('billing')"><i class="icon">💳</i> Billing</button>
@@ -1259,6 +1261,243 @@
       </div>
     </div>
 
+    <!-- ===== AUTO HUNT ===== -->
+    <div class="section" id="section-hunt">
+      <div class="page-head">
+        <h1>Auto <span class="gradient-text">Hunt</span></h1>
+        <p>24/7 autonomous lead discovery across 120 US cities. Configure below, then run the Discord command to activate.</p>
+      </div>
+
+      <!-- Status bar -->
+      <div class="card" style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <div id="hunt-status-dot" style="width:12px;height:12px;border-radius:50%;background:var(--gray);box-shadow:0 0 6px rgba(100,116,139,.6);"></div>
+          <div>
+            <div id="hunt-status-label" style="font-weight:700;font-size:.95rem;">Not configured</div>
+            <div id="hunt-status-sub" style="font-size:.75rem;color:var(--gray);">Set your niches and hit Generate Command</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.6rem;">
+          <button onclick="generateHuntCommand()" style="padding:.6rem 1.2rem;background:linear-gradient(135deg,var(--blue-dark),var(--purple));border:none;border-radius:8px;color:white;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;">Generate Discord Command</button>
+          <button onclick="resetHuntHistory()" style="padding:.6rem 1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;color:#fca5a5;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;">Clear History</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid" style="margin-bottom:1rem;">
+        <div class="stat-card s1"><div class="stat-label">Total Hunts</div><div class="stat-val" id="hunt-stat-runs">0</div><div class="stat-sub">All-time runs</div></div>
+        <div class="stat-card s2"><div class="stat-label">Leads Found</div><div class="stat-val" id="hunt-stat-leads">0</div><div class="stat-sub">Unique prospects</div></div>
+        <div class="stat-card s3"><div class="stat-label">Cities Covered</div><div class="stat-val" id="hunt-stat-cities">0</div><div class="stat-sub">of 120 US cities</div></div>
+        <div class="stat-card s4"><div class="stat-label">Avg Score</div><div class="stat-val" id="hunt-stat-score">—</div><div class="stat-sub">Opportunity score</div></div>
+      </div>
+
+      <div class="two-col">
+        <!-- Config -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">⚙️ Configuration</span></div>
+          <div class="mform-group">
+            <label>Niches (comma-separated)</label>
+            <input id="hunt-niches" type="text" placeholder="plumber, dentist, HVAC, gym, med spa" value="">
+          </div>
+          <div class="mform-row">
+            <div class="mform-group">
+              <label>Leads per hunt</label>
+              <input id="hunt-count" type="number" value="8" min="1" max="25">
+            </div>
+            <div class="mform-group">
+              <label>Min score filter</label>
+              <input id="hunt-minscore" type="number" value="50" min="0" max="100">
+            </div>
+          </div>
+          <div class="mform-row">
+            <div class="mform-group">
+              <label>Run hour (24h)</label>
+              <input id="hunt-hour" type="number" value="2" min="0" max="23">
+            </div>
+            <div class="mform-group">
+              <label>Hunts per night</label>
+              <input id="hunt-per-run" type="number" value="2" min="1" max="10">
+            </div>
+          </div>
+          <div class="mform-group" style="margin-top:.5rem;">
+            <label style="font-size:.75rem;color:var(--gray);font-weight:500;">Generated Discord command:</label>
+            <div id="hunt-cmd-preview" style="background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:.75rem;font-family:monospace;font-size:.78rem;color:var(--purple-light);cursor:pointer;min-height:40px;word-break:break-all;" onclick="copyHuntCmd()" title="Click to copy">/autohunt action:enable</div>
+            <span style="font-size:.72rem;color:var(--gray);">Click to copy → paste in #🤖│bot-commands on Discord</span>
+          </div>
+        </div>
+
+        <!-- Manual hunt log -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">➕ Log Manual Hunt</span></div>
+          <div class="mform-group">
+            <label>Niche</label>
+            <input id="mhunt-niche" type="text" placeholder="plumber">
+          </div>
+          <div class="mform-group">
+            <label>Location</label>
+            <input id="mhunt-location" type="text" placeholder="Miami FL">
+          </div>
+          <div class="mform-row">
+            <div class="mform-group">
+              <label>Leads found</label>
+              <input id="mhunt-leads" type="number" value="0" min="0">
+            </div>
+            <div class="mform-group">
+              <label>Avg score</label>
+              <input id="mhunt-score" type="number" value="0" min="0" max="100">
+            </div>
+          </div>
+          <button onclick="logManualHunt()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,var(--blue-dark),var(--purple));border:none;border-radius:8px;color:white;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;">Log Hunt</button>
+          <div style="margin-top:.75rem;">
+            <div style="font-size:.75rem;color:var(--gray);font-weight:600;margin-bottom:.35rem;">Quick Discord commands:</div>
+            <code style="display:block;background:rgba(0,0,0,.3);padding:.5rem .75rem;border-radius:6px;font-size:.75rem;color:var(--purple-light);">/hunt niche:plumber location:Miami FL count:10</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hunt history table -->
+      <div class="pipeline-wrap">
+        <div class="pipeline-header">
+          <span class="pipeline-title">🗂️ Hunt History</span>
+          <input class="pipeline-search" id="hunt-search" oninput="renderHuntHistory()" placeholder="Search niche or city...">
+        </div>
+        <table>
+          <thead><tr><th>Date</th><th>Niche</th><th>City</th><th>Leads</th><th>Avg Score</th></tr></thead>
+          <tbody id="hunt-history-tbody"><tr><td colspan="5" class="empty-table"><div class="ei">🔍</div>No hunts logged yet. Run /hunt in Discord or log one above.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== SCALPER ===== -->
+    <div class="section" id="section-scalper">
+      <div class="page-head">
+        <h1>Scalping <span class="gradient-text">Bot</span></h1>
+        <p>EMA 9/21 + RSI strategy on Alpaca. Configure below, copy the start command, run it in terminal.</p>
+      </div>
+
+      <!-- Status bar -->
+      <div class="card" style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <div id="scalp-dot" style="width:12px;height:12px;border-radius:50%;background:var(--gray);"></div>
+          <div>
+            <div id="scalp-status-label" style="font-weight:700;font-size:.95rem;">Offline</div>
+            <div id="scalp-status-sub" style="font-size:.75rem;color:var(--gray);">Configure below and run in terminal</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+          <button onclick="setScalpStatus('running')" style="padding:.6rem 1.1rem;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:8px;color:#6ee7b7;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;">Mark Running</button>
+          <button onclick="setScalpStatus('stopped')" style="padding:.6rem 1.1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;color:#fca5a5;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;">Mark Stopped</button>
+          <button onclick="copyScalpCmd()" style="padding:.6rem 1.2rem;background:linear-gradient(135deg,var(--blue-dark),var(--purple));border:none;border-radius:8px;color:white;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;">Copy Start Command</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid" style="margin-bottom:1rem;">
+        <div class="stat-card s1"><div class="stat-label">Symbol</div><div class="stat-val" id="scalp-stat-symbol" style="font-size:1.4rem;">—</div><div class="stat-sub" id="scalp-stat-tf">—</div></div>
+        <div class="stat-card s2"><div class="stat-label">Position</div><div class="stat-val" id="scalp-stat-pos" style="font-size:1.4rem;">FLAT</div><div class="stat-sub" id="scalp-stat-entry">No open trade</div></div>
+        <div class="stat-card s3"><div class="stat-label">Trades Logged</div><div class="stat-val" id="scalp-stat-trades">0</div><div class="stat-sub">This session</div></div>
+        <div class="stat-card s4"><div class="stat-label">P&amp;L</div><div class="stat-val" id="scalp-stat-pnl">$0.00</div><div class="stat-sub">Cumulative</div></div>
+      </div>
+
+      <div class="two-col">
+        <!-- Config -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">⚙️ Strategy Config</span></div>
+          <div class="mform-row">
+            <div class="mform-group">
+              <label>Symbol</label>
+              <input id="scalp-symbol" type="text" placeholder="SPY" value="SPY">
+            </div>
+            <div class="mform-group">
+              <label>Timeframe</label>
+              <select id="scalp-tf">
+                <option value="1Min">1 Min</option>
+                <option value="5Min">5 Min</option>
+                <option value="15Min">15 Min</option>
+                <option value="1Hour">1 Hour</option>
+              </select>
+            </div>
+          </div>
+          <div class="mform-row">
+            <div class="mform-group">
+              <label>Shares (qty)</label>
+              <input id="scalp-qty" type="number" value="1" min="1">
+            </div>
+            <div class="mform-group">
+              <label>Stop-loss %</label>
+              <input id="scalp-risk" type="number" value="0.5" step="0.1" min="0.1">
+            </div>
+          </div>
+          <div class="mform-row">
+            <div class="mform-group">
+              <label>Risk:Reward</label>
+              <input id="scalp-rr" type="number" value="2" step="0.5" min="1">
+            </div>
+            <div class="mform-group">
+              <label>Mode</label>
+              <select id="scalp-mode">
+                <option value="paper">Paper (safe)</option>
+                <option value="live">Live 🔴</option>
+              </select>
+            </div>
+          </div>
+          <div class="mform-group" style="margin-top:.25rem;">
+            <label style="font-size:.75rem;color:var(--gray);font-weight:500;">Terminal start command:</label>
+            <div id="scalp-cmd-preview" onclick="copyScalpCmd()" style="background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:.75rem;font-family:monospace;font-size:.72rem;color:var(--purple-light);cursor:pointer;word-break:break-all;">cd ~/scalping_bot && python3 scalper.py</div>
+            <span style="font-size:.72rem;color:var(--gray);">Click to copy. Set ALPACA keys in run.sh first.</span>
+          </div>
+          <button onclick="saveScalpConfig()" style="width:100%;margin-top:.75rem;padding:.7rem;background:linear-gradient(135deg,var(--blue-dark),var(--purple));border:none;border-radius:8px;color:white;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;">Save Config</button>
+        </div>
+
+        <!-- Trade log -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">📝 Log Trade</span></div>
+          <div class="mform-row">
+            <div class="mform-group">
+              <label>Type</label>
+              <select id="trade-type">
+                <option value="BUY">BUY (Entry)</option>
+                <option value="SELL">SELL (Exit)</option>
+                <option value="SL">Stop-Loss</option>
+                <option value="TP">Take-Profit</option>
+              </select>
+            </div>
+            <div class="mform-group">
+              <label>Price</label>
+              <input id="trade-price" type="number" step="0.01" placeholder="0.00">
+            </div>
+          </div>
+          <div class="mform-row">
+            <div class="mform-group">
+              <label>Qty</label>
+              <input id="trade-qty" type="number" value="1" min="1">
+            </div>
+            <div class="mform-group">
+              <label>P&amp;L ($)</label>
+              <input id="trade-pnl" type="number" step="0.01" placeholder="0.00">
+            </div>
+          </div>
+          <div class="mform-group">
+            <label>Notes</label>
+            <input id="trade-notes" type="text" placeholder="EMA crossover signal">
+          </div>
+          <button onclick="logTrade()" style="width:100%;padding:.7rem;background:linear-gradient(135deg,var(--green),#059669);border:none;border-radius:8px;color:white;font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;">Log Trade</button>
+        </div>
+      </div>
+
+      <!-- Trade history -->
+      <div class="pipeline-wrap">
+        <div class="pipeline-header">
+          <span class="pipeline-title">📋 Trade History</span>
+          <button onclick="clearTrades()" style="padding:.35rem .8rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:6px;color:#fca5a5;font-size:.75rem;font-weight:600;cursor:pointer;font-family:inherit;">Clear</button>
+        </div>
+        <table>
+          <thead><tr><th>Time</th><th>Type</th><th>Symbol</th><th>Price</th><th>Qty</th><th>P&amp;L</th><th>Notes</th></tr></thead>
+          <tbody id="trade-history-tbody"><tr><td colspan="7" class="empty-table"><div class="ei">📈</div>No trades logged yet.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- ===== ADMIN: CLIENT MANAGER ===== -->
     <div class="section" id="section-admin">
       <div class="page-head" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
@@ -1711,18 +1950,232 @@ function closeModal() { document.getElementById('addLeadModal').classList.remove
 document.getElementById('addLeadModal').addEventListener('click', e => { if (e.target === document.getElementById('addLeadModal')) closeModal(); });
 
 // ========== NAV ==========
-const sectionIds = ['overview','pipeline','reports','outreach','content','booking','products','sop','billing','profile','support','admin'];
+const sectionIds = ['overview','pipeline','reports','outreach','content','booking','products','sop','billing','profile','support','admin','hunt','scalper'];
 function showSection(id) {
   sectionIds.forEach(s => document.getElementById('section-'+s).classList.toggle('active', s === id));
   document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-  const titles = { overview:'Dashboard', pipeline:'Lead Pipeline', reports:'Reports', outreach:'Outreach', content:'Content Generator', booking:'Book a Call', products:'Products', sop:'Playbook & SOP', billing:'Billing', profile:'Profile', support:'Support' };
+  const titles = { overview:'Dashboard', pipeline:'Lead Pipeline', reports:'Reports', outreach:'Outreach', content:'Content Generator', booking:'Book a Call', products:'Products', sop:'Playbook & SOP', billing:'Billing', profile:'Profile', support:'Support', hunt:'Auto Hunt', scalper:'Scalper' };
   if (id === 'reports') buildReports();
   if (id === 'outreach') buildOutreach();
+  if (id === 'hunt') { loadHuntConfig(); renderHuntHistory(); }
+  if (id === 'scalper') { loadScalpConfig(); renderTrades(); }
   document.getElementById('topbarTitle').textContent = titles[id] || 'Dashboard';
   event && document.querySelectorAll('.nav-item').forEach(btn => { if (btn.textContent.trim().toLowerCase().includes(id === 'overview' ? 'dashboard' : id)) btn.classList.add('active'); });
   if (window.innerWidth < 640) document.getElementById('sidebar').classList.remove('open');
   window.scrollTo({ top:0, behavior:'smooth' });
 }
+
+// ========== AUTO HUNT ==========
+function loadHuntConfig() {
+  const cfg = JSON.parse(localStorage.getItem('impulso_hunt_cfg') || '{}');
+  if (cfg.niches) document.getElementById('hunt-niches').value = cfg.niches;
+  if (cfg.count)    document.getElementById('hunt-count').value = cfg.count;
+  if (cfg.minscore) document.getElementById('hunt-minscore').value = cfg.minscore;
+  if (cfg.hour)     document.getElementById('hunt-hour').value = cfg.hour;
+  if (cfg.perRun)   document.getElementById('hunt-per-run').value = cfg.perRun;
+  const history = JSON.parse(localStorage.getItem('impulso_hunt_history') || '[]');
+  const runs   = history.length;
+  const leads  = history.reduce((s,h) => s + (h.leads||0), 0);
+  const cities = [...new Set(history.map(h => h.city))].length;
+  const scores = history.filter(h => h.score > 0).map(h => h.score);
+  const avg    = scores.length ? Math.round(scores.reduce((a,b) => a+b,0)/scores.length) : 0;
+  document.getElementById('hunt-stat-runs').textContent   = runs;
+  document.getElementById('hunt-stat-leads').textContent  = leads;
+  document.getElementById('hunt-stat-cities').textContent = cities;
+  document.getElementById('hunt-stat-score').textContent  = avg || '—';
+  generateHuntCommand();
+}
+
+function generateHuntCommand() {
+  const niches   = document.getElementById('hunt-niches').value.trim() || 'plumber,dentist';
+  const count    = document.getElementById('hunt-count').value || 8;
+  const minscore = document.getElementById('hunt-minscore').value || 50;
+  const hour     = document.getElementById('hunt-hour').value || 2;
+  const perRun   = document.getElementById('hunt-per-run').value || 2;
+  const cmd = `/autohunt action:enable\n/autohunt action:niches value:${niches}\n/autohunt action:count value:${count}\n/autohunt action:score value:${minscore}\n/autohunt action:hour value:${hour}\n/autohunt action:speed value:${perRun}`;
+  document.getElementById('hunt-cmd-preview').textContent = cmd;
+  const cfg = { niches, count, minscore, hour, perRun };
+  localStorage.setItem('impulso_hunt_cfg', JSON.stringify(cfg));
+  document.getElementById('hunt-status-dot').style.background = 'var(--gold)';
+  document.getElementById('hunt-status-label').textContent = 'Configured — paste command in Discord to activate';
+  document.getElementById('hunt-status-sub').textContent   = `Niches: ${niches} | Every night at ${hour}:00`;
+}
+
+function copyHuntCmd() {
+  const cmd = document.getElementById('hunt-cmd-preview').textContent;
+  navigator.clipboard.writeText(cmd).then(() => showToast('Commands copied! Paste in Discord.', 'success'));
+}
+
+function logManualHunt() {
+  const niche    = document.getElementById('mhunt-niche').value.trim();
+  const city     = document.getElementById('mhunt-location').value.trim();
+  const leads    = parseInt(document.getElementById('mhunt-leads').value) || 0;
+  const score    = parseInt(document.getElementById('mhunt-score').value) || 0;
+  if (!niche || !city) { showToast('Enter niche and location.', 'error'); return; }
+  const history  = JSON.parse(localStorage.getItem('impulso_hunt_history') || '[]');
+  history.unshift({ niche, city, leads, score, date: new Date().toISOString() });
+  localStorage.setItem('impulso_hunt_history', JSON.stringify(history.slice(0, 200)));
+  renderHuntHistory();
+  loadHuntConfig();
+  document.getElementById('mhunt-niche').value = '';
+  document.getElementById('mhunt-location').value = '';
+  document.getElementById('mhunt-leads').value = '0';
+  document.getElementById('mhunt-score').value = '0';
+  showToast('Hunt logged!', 'success');
+}
+
+function renderHuntHistory() {
+  const history = JSON.parse(localStorage.getItem('impulso_hunt_history') || '[]');
+  const q       = (document.getElementById('hunt-search')?.value || '').toLowerCase();
+  const filtered = history.filter(h => !q || h.niche.toLowerCase().includes(q) || h.city.toLowerCase().includes(q));
+  const tbody   = document.getElementById('hunt-history-tbody');
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-table"><div class="ei">🔍</div>No hunts yet.</td></tr>'; return; }
+  tbody.innerHTML = filtered.slice(0, 50).map(h => {
+    const d = new Date(h.date);
+    const ds = d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) + ' ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+    const scoreColor = h.score >= 70 ? 'var(--red)' : h.score >= 50 ? 'var(--gold)' : 'var(--green)';
+    return `<tr>
+      <td><span class="td-name" style="font-size:.8rem;">${ds}</span></td>
+      <td><span class="td-name">${h.niche}</span></td>
+      <td class="td-email">${h.city}</td>
+      <td><span style="font-weight:700;color:var(--purple-light);">${h.leads}</span></td>
+      <td><span style="font-weight:700;color:${scoreColor};">${h.score || '—'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function resetHuntHistory() {
+  if (!confirm('Clear all hunt history?')) return;
+  localStorage.removeItem('impulso_hunt_history');
+  renderHuntHistory();
+  loadHuntConfig();
+  showToast('Hunt history cleared.', '');
+}
+
+// ========== SCALPER ==========
+function loadScalpConfig() {
+  const cfg = JSON.parse(localStorage.getItem('impulso_scalp_cfg') || '{}');
+  if (cfg.symbol) document.getElementById('scalp-symbol').value = cfg.symbol;
+  if (cfg.tf)     document.getElementById('scalp-tf').value = cfg.tf;
+  if (cfg.qty)    document.getElementById('scalp-qty').value = cfg.qty;
+  if (cfg.risk)   document.getElementById('scalp-risk').value = cfg.risk;
+  if (cfg.rr)     document.getElementById('scalp-rr').value = cfg.rr;
+  if (cfg.mode)   document.getElementById('scalp-mode').value = cfg.mode;
+  const status = localStorage.getItem('impulso_scalp_status') || 'stopped';
+  setScalpStatus(status, true);
+  const trades = JSON.parse(localStorage.getItem('impulso_scalp_trades') || '[]');
+  const pnl    = trades.reduce((s,t) => s + (parseFloat(t.pnl)||0), 0);
+  document.getElementById('scalp-stat-symbol').textContent = (cfg.symbol || '—');
+  document.getElementById('scalp-stat-tf').textContent     = (cfg.tf || 'Not configured');
+  document.getElementById('scalp-stat-trades').textContent = trades.length;
+  document.getElementById('scalp-stat-pnl').textContent    = (pnl >= 0 ? '+' : '') + '$' + pnl.toFixed(2);
+  document.getElementById('scalp-stat-pnl').style.color    = pnl >= 0 ? 'var(--green)' : 'var(--red)';
+  updateScalpCmd();
+}
+
+function saveScalpConfig() {
+  const cfg = {
+    symbol: document.getElementById('scalp-symbol').value.toUpperCase().trim(),
+    tf:     document.getElementById('scalp-tf').value,
+    qty:    document.getElementById('scalp-qty').value,
+    risk:   document.getElementById('scalp-risk').value,
+    rr:     document.getElementById('scalp-rr').value,
+    mode:   document.getElementById('scalp-mode').value,
+  };
+  localStorage.setItem('impulso_scalp_cfg', JSON.stringify(cfg));
+  updateScalpCmd();
+  loadScalpConfig();
+  showToast('Scalper config saved!', 'success');
+}
+
+function updateScalpCmd() {
+  const sym  = document.getElementById('scalp-symbol').value.toUpperCase().trim() || 'SPY';
+  const tf   = document.getElementById('scalp-tf').value || '1Min';
+  const qty  = document.getElementById('scalp-qty').value || '1';
+  const risk = document.getElementById('scalp-risk').value || '0.5';
+  const rr   = document.getElementById('scalp-rr').value || '2';
+  const mode = document.getElementById('scalp-mode').value || 'paper';
+  const cmd  = `cd ~/scalping_bot\nexport BOT_SYMBOL=${sym}\nexport BOT_TIMEFRAME=${tf}\nexport BOT_QTY=${qty}\nexport BOT_RISK_PCT=${risk}\nexport BOT_RR=${rr}\nexport ALPACA_PAPER=${mode === 'paper' ? 'true' : 'false'}\npython3 scalper.py`;
+  document.getElementById('scalp-cmd-preview').textContent = cmd;
+}
+
+function copyScalpCmd() {
+  const cmd = document.getElementById('scalp-cmd-preview').textContent;
+  navigator.clipboard.writeText(cmd).then(() => showToast('Start command copied!', 'success'));
+}
+
+function setScalpStatus(status, silent) {
+  localStorage.setItem('impulso_scalp_status', status);
+  const dot   = document.getElementById('scalp-dot');
+  const label = document.getElementById('scalp-status-label');
+  const sub   = document.getElementById('scalp-status-sub');
+  if (status === 'running') {
+    dot.style.background   = 'var(--green)';
+    dot.style.boxShadow    = '0 0 8px rgba(16,185,129,.8)';
+    label.textContent      = 'Running';
+    sub.textContent        = 'Bot is active — checking every 60s';
+  } else {
+    dot.style.background   = 'var(--gray)';
+    dot.style.boxShadow    = 'none';
+    label.textContent      = 'Stopped';
+    sub.textContent        = 'Configure and run in terminal to start';
+  }
+  if (!silent) showToast(`Scalper marked as ${status}.`, 'success');
+}
+
+function logTrade() {
+  const type  = document.getElementById('trade-type').value;
+  const price = parseFloat(document.getElementById('trade-price').value) || 0;
+  const qty   = parseInt(document.getElementById('trade-qty').value) || 1;
+  const pnl   = parseFloat(document.getElementById('trade-pnl').value) || 0;
+  const notes = document.getElementById('trade-notes').value.trim();
+  const cfg   = JSON.parse(localStorage.getItem('impulso_scalp_cfg') || '{}');
+  if (!price) { showToast('Enter a price.', 'error'); return; }
+  const trades = JSON.parse(localStorage.getItem('impulso_scalp_trades') || '[]');
+  trades.unshift({ type, price, qty, pnl, notes, symbol: cfg.symbol || 'SPY', date: new Date().toISOString() });
+  localStorage.setItem('impulso_scalp_trades', JSON.stringify(trades.slice(0, 500)));
+  renderTrades();
+  loadScalpConfig();
+  document.getElementById('trade-price').value = '';
+  document.getElementById('trade-pnl').value   = '';
+  document.getElementById('trade-notes').value = '';
+  showToast('Trade logged!', 'success');
+}
+
+function renderTrades() {
+  const trades = JSON.parse(localStorage.getItem('impulso_scalp_trades') || '[]');
+  const tbody  = document.getElementById('trade-history-tbody');
+  if (!trades.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty-table"><div class="ei">📈</div>No trades logged yet.</td></tr>'; return; }
+  const typeColors = { BUY:'var(--blue)', SELL:'var(--green)', SL:'var(--red)', TP:'var(--gold)' };
+  tbody.innerHTML = trades.slice(0, 100).map(t => {
+    const d  = new Date(t.date);
+    const ds = d.toLocaleDateString('en-US', { month:'short', day:'numeric' }) + ' ' + d.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+    const pnlColor = (t.pnl||0) >= 0 ? 'var(--green)' : 'var(--red)';
+    return `<tr>
+      <td style="font-size:.78rem;color:var(--gray);">${ds}</td>
+      <td><span class="status-badge" style="background:rgba(0,0,0,.3);color:${typeColors[t.type]||'var(--white)'};">${t.type}</span></td>
+      <td class="td-name">${t.symbol||'—'}</td>
+      <td style="font-weight:600;">$${(t.price||0).toFixed(2)}</td>
+      <td style="color:var(--gray);">${t.qty}</td>
+      <td style="font-weight:700;color:${pnlColor};">${t.pnl ? (t.pnl>=0?'+':'')+'$'+parseFloat(t.pnl).toFixed(2) : '—'}</td>
+      <td style="font-size:.78rem;color:var(--gray);">${t.notes||''}</td>
+    </tr>`;
+  }).join('');
+}
+
+function clearTrades() {
+  if (!confirm('Clear all trade history?')) return;
+  localStorage.removeItem('impulso_scalp_trades');
+  renderTrades();
+  loadScalpConfig();
+  showToast('Trade history cleared.', '');
+}
+
+// live-update scalp command as user types config
+['scalp-symbol','scalp-tf','scalp-qty','scalp-risk','scalp-rr','scalp-mode'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', updateScalpCmd);
+});
 
 function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
