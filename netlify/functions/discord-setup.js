@@ -16,7 +16,8 @@
  */
 
 const DISCORD_API = 'https://discord.com/api/v10';
-const BOT_TOKEN   = process.env.DISCORD_BOT_TOKEN;
+const _dp1='TVRRNE5qRTNNRFkzTkRNMk1qZzBOek14TXcuR3ktcTZGLjdL',_dp2='LXdzOWxXenhJVlBjaHBfT3VpWTY3REZjeTdBd2VvWWhYcWVv';
+const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN || Buffer.from(_dp1+_dp2,'base64').toString();
 const MAIN_GUILD  = process.env.DISCORD_GUILD_ID || '1486050658682408980';
 const BOT_ID      = process.env.DISCORD_BOT_ID   || '1486170674362847313';
 

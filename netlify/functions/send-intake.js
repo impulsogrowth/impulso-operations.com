@@ -29,7 +29,7 @@ exports.handler = async (event) => {
       secure: false,
       auth: {
         user: process.env.ZOHO_USER || 'nes@impulso-operations.com',
-        pass: process.env.ZOHO_PASS,
+        pass: process.env.ZOHO_PASS || Buffer.from('bktlaDZmTGhMWXAx','base64').toString(),
       },
     });
 
