@@ -1265,7 +1265,24 @@
     <div class="section" id="section-hunt">
       <div class="page-head">
         <h1>Auto <span class="gradient-text">Hunt</span></h1>
-        <p>24/7 autonomous lead discovery across 120 US cities. Configure below, then run the Discord command to activate.</p>
+        <p>24/7 autonomous lead discovery across 120 US cities. Connect to your Railway bot and launch hunts directly from here.</p>
+      </div>
+
+      <!-- API Connection card -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="card-header" style="margin-bottom:.75rem;"><span class="card-title">🔌 Bot API Connection</span><span id="api-conn-badge" style="font-size:.72rem;padding:.2rem .6rem;border-radius:20px;background:rgba(100,116,139,.15);color:var(--gray);margin-left:.5rem;">Not connected</span></div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;">
+          <div class="mform-group" style="flex:2;min-width:200px;margin-bottom:0;">
+            <label>Railway Bot URL</label>
+            <input id="api-bot-url" type="url" placeholder="https://your-bot.up.railway.app" oninput="saveApiSettings()">
+          </div>
+          <div class="mform-group" style="flex:1;min-width:150px;margin-bottom:0;">
+            <label>API Key</label>
+            <input id="api-key-input" type="password" placeholder="impulso-secret" oninput="saveApiSettings()">
+          </div>
+          <button onclick="testApiConnection()" style="padding:.6rem 1.1rem;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:8px;color:#6ee7b7;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:fit-content;">Test Connection</button>
+        </div>
+        <p style="font-size:.72rem;color:var(--gray);margin-top:.5rem;">Find your Railway URL in the Railway dashboard → your project → domain. Set <code style="color:var(--purple-light)">PORTAL_API_KEY</code> in Railway env vars.</p>
       </div>
 
       <!-- Status bar -->
@@ -1274,10 +1291,11 @@
           <div id="hunt-status-dot" style="width:12px;height:12px;border-radius:50%;background:var(--gray);box-shadow:0 0 6px rgba(100,116,139,.6);"></div>
           <div>
             <div id="hunt-status-label" style="font-weight:700;font-size:.95rem;">Not configured</div>
-            <div id="hunt-status-sub" style="font-size:.75rem;color:var(--gray);">Set your niches and hit Generate Command</div>
+            <div id="hunt-status-sub" style="font-size:.75rem;color:var(--gray);">Set your niches and hit Launch Hunt</div>
           </div>
         </div>
-        <div style="display:flex;gap:.6rem;">
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+          <button onclick="launchHuntNow()" style="padding:.6rem 1.2rem;background:linear-gradient(135deg,#065f46,var(--emerald));border:none;border-radius:8px;color:white;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;">🚀 Launch Hunt Now</button>
           <button onclick="generateHuntCommand()" style="padding:.6rem 1.2rem;background:linear-gradient(135deg,var(--blue-dark),var(--purple));border:none;border-radius:8px;color:white;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;">Generate Discord Command</button>
           <button onclick="resetHuntHistory()" style="padding:.6rem 1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;color:#fca5a5;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;">Clear History</button>
         </div>
@@ -1364,6 +1382,26 @@
         <table>
           <thead><tr><th>Date</th><th>Niche</th><th>City</th><th>Leads</th><th>Avg Score</th></tr></thead>
           <tbody id="hunt-history-tbody"><tr><td colspan="5" class="empty-table"><div class="ei">🔍</div>No hunts logged yet. Run /hunt in Discord or log one above.</td></tr></tbody>
+        </table>
+      </div>
+
+      <!-- Live Leads from API -->
+      <div class="pipeline-wrap" style="margin-top:1.5rem;">
+        <div class="pipeline-header">
+          <span class="pipeline-title">📡 Live Leads from Bot</span>
+          <div style="display:flex;gap:.6rem;align-items:center;">
+            <select id="lead-minscore-filter" onchange="loadLiveLeads()" style="background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--white);padding:.3rem .6rem;font-size:.78rem;font-family:inherit;">
+              <option value="0">All scores</option>
+              <option value="50">Score ≥ 50</option>
+              <option value="70" selected>Score ≥ 70</option>
+              <option value="85">Score ≥ 85</option>
+            </select>
+            <button onclick="loadLiveLeads()" style="padding:.3rem .8rem;background:rgba(14,165,233,.15);border:1px solid rgba(14,165,233,.3);border-radius:6px;color:var(--purple-light);font-size:.78rem;font-weight:600;cursor:pointer;font-family:inherit;">↻ Refresh</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Business</th><th>Niche</th><th>City</th><th>Score</th><th>Best Fit</th><th>Email</th></tr></thead>
+          <tbody id="live-leads-tbody"><tr><td colspan="6" class="empty-table"><div class="ei">🔌</div>Connect to Railway bot above and click Refresh.</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -1965,8 +2003,105 @@ function showSection(id) {
   window.scrollTo({ top:0, behavior:'smooth' });
 }
 
+// ========== BOT API HELPERS ==========
+function saveApiSettings() {
+  const url = document.getElementById('api-bot-url').value.trim();
+  const key = document.getElementById('api-key-input').value.trim();
+  localStorage.setItem('impulso_api_url', url);
+  localStorage.setItem('impulso_api_key', key);
+}
+
+function loadApiSettings() {
+  const url = localStorage.getItem('impulso_api_url') || '';
+  const key = localStorage.getItem('impulso_api_key') || '';
+  const urlEl = document.getElementById('api-bot-url');
+  const keyEl = document.getElementById('api-key-input');
+  if (urlEl) urlEl.value = url;
+  if (keyEl) keyEl.value = key;
+}
+
+function _botUrl() { return (localStorage.getItem('impulso_api_url') || '').replace(/\/$/, ''); }
+function _botKey() { return localStorage.getItem('impulso_api_key') || 'impulso-secret'; }
+
+async function _apiCall(path, method = 'GET', body = null) {
+  const url = _botUrl();
+  if (!url) { showToast('Enter your Railway bot URL first.', 'error'); throw new Error('no url'); }
+  const opts = { method, headers: { 'X-API-Key': _botKey(), 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url + path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || res.statusText);
+  return data;
+}
+
+async function testApiConnection() {
+  const badge = document.getElementById('api-conn-badge');
+  badge.textContent = 'Checking…';
+  badge.style.background = 'rgba(245,158,11,.15)';
+  badge.style.color = '#fbbf24';
+  try {
+    const data = await _apiCall('/api/status');
+    badge.textContent = `✓ Connected — ${data.leads_total} leads`;
+    badge.style.background = 'rgba(16,185,129,.15)';
+    badge.style.color = '#6ee7b7';
+    showToast(`Bot online! ${data.leads_total} leads, ${data.leads_scored} scored.`, 'success');
+  } catch(e) {
+    badge.textContent = '✗ Failed';
+    badge.style.background = 'rgba(239,68,68,.15)';
+    badge.style.color = '#fca5a5';
+    showToast('Connection failed: ' + e.message, 'error');
+  }
+}
+
+async function launchHuntNow() {
+  const niche = document.getElementById('hunt-niches').value.trim() || 'plumber';
+  const count = parseInt(document.getElementById('hunt-count').value) || 8;
+  const firstNiche = niche.split(',')[0].trim();
+  try {
+    const data = await _apiCall('/api/hunt', 'POST', { niche: firstNiche, city: 'Miami', count });
+    showToast(data.message, 'success');
+    document.getElementById('hunt-status-dot').style.background = 'var(--green)';
+    document.getElementById('hunt-status-dot').style.boxShadow = '0 0 8px rgba(16,185,129,.8)';
+    document.getElementById('hunt-status-label').textContent = 'Hunt running…';
+    document.getElementById('hunt-status-sub').textContent = `${firstNiche} · ${count} leads · results posting to Discord #🎯│hunt`;
+    setTimeout(loadLiveLeads, 15000); // refresh leads after 15s
+  } catch(e) {
+    showToast('Hunt failed: ' + e.message, 'error');
+  }
+}
+
+async function loadLiveLeads() {
+  const minScore = parseInt(document.getElementById('lead-minscore-filter')?.value || 0);
+  const tbody = document.getElementById('live-leads-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--gray);">Loading…</td></tr>';
+  try {
+    const leads = await _apiCall(`/api/leads?limit=50&min_score=${minScore}`);
+    if (!leads.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-table"><div class="ei">🔍</div>No leads yet. Launch a hunt to populate.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = leads.map(l => {
+      const score = l.score || 0;
+      const sc = score >= 75 ? 'var(--green)' : score >= 50 ? 'var(--gold)' : 'var(--red)';
+      const email = l.email ? `<a href="mailto:${l.email}" style="color:var(--purple-light);text-decoration:none;">${l.email}</a>` : '<span style="color:var(--gray)">—</span>';
+      return `<tr>
+        <td><span class="td-name">${l.name || '—'}</span></td>
+        <td>${l.niche || '—'}</td>
+        <td class="td-email">${l.city || '—'}</td>
+        <td><span style="font-weight:700;color:${sc};">${score}</span></td>
+        <td style="font-size:.78rem;color:var(--light);">${l.best_fit_service || l.best_fit_plan || '—'}</td>
+        <td>${email}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty-table"><div class="ei">⚠️</div>${e.message}</td></tr>`;
+  }
+}
+
 // ========== AUTO HUNT ==========
 function loadHuntConfig() {
+  loadApiSettings();
   const cfg = JSON.parse(localStorage.getItem('impulso_hunt_cfg') || '{}');
   if (cfg.niches) document.getElementById('hunt-niches').value = cfg.niches;
   if (cfg.count)    document.getElementById('hunt-count').value = cfg.count;
