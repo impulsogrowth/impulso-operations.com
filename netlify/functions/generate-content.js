@@ -52,10 +52,12 @@ Task: ${typePrompt}
 
 Write content specifically for ${bizName || 'this business'}. Make it niche-specific, conversion-focused, and ready to use immediately. No explanations — just the content.`;
 
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set in Netlify env vars');
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'x-api-key':         process.env.ANTHROPIC_API_KEY,
+        'x-api-key':         apiKey,
         'anthropic-version': '2023-06-01',
         'Content-Type':      'application/json',
       },
