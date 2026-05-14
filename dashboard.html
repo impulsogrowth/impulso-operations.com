@@ -436,7 +436,7 @@
 
 <div id="loadingScreen">
   <div class="load-logo-wrap">
-    <div class="load-logo">IMPULSO</div>
+    <div class="load-logo"><img src="/logo.png" alt="Impulso" style="height:48px;object-fit:contain;display:block;margin:0 auto;"></div>
     <div class="load-sub">Operations Command Center</div>
   </div>
   <div class="load-bar"><div class="load-fill"></div></div>
@@ -527,7 +527,7 @@
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <a href="index.html"><span class="wordmark">IMPULSO</span><span class="dot">.</span><span class="badge-os">OS</span></a>
+    <a href="index.html"><img src="/logo.png" alt="Impulso" style="height:36px;object-fit:contain;display:block;"><span class="badge-os" style="display:inline-block;margin-top:4px;">OS</span></a>
   </div>
   <nav class="sidebar-nav">
     <p class="nav-section">Overview</p>
@@ -1462,24 +1462,7 @@
     <div class="section" id="section-hunt">
       <div class="page-head">
         <h1>Auto <span class="gradient-text">Hunt</span></h1>
-        <p>24/7 autonomous lead discovery across 120 US cities. Connect to your Railway bot and launch hunts directly from here.</p>
-      </div>
-
-      <!-- API Connection card -->
-      <div class="card" style="margin-bottom:1rem;">
-        <div class="card-header" style="margin-bottom:.75rem;"><span class="card-title">🔌 Bot API Connection</span><span id="api-conn-badge" style="font-size:.72rem;padding:.2rem .6rem;border-radius:20px;background:rgba(100,116,139,.15);color:var(--gray);margin-left:.5rem;">Not connected</span></div>
-        <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end;">
-          <div class="mform-group" style="flex:2;min-width:200px;margin-bottom:0;">
-            <label>Railway Bot URL</label>
-            <input id="api-bot-url" type="url" placeholder="https://your-bot.up.railway.app" oninput="saveApiSettings()">
-          </div>
-          <div class="mform-group" style="flex:1;min-width:150px;margin-bottom:0;">
-            <label>API Key</label>
-            <input id="api-key-input" type="password" placeholder="impulso-secret" oninput="saveApiSettings()">
-          </div>
-          <button onclick="testApiConnection()" style="padding:.6rem 1.1rem;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:8px;color:#6ee7b7;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;height:fit-content;">Test Connection</button>
-        </div>
-        <p style="font-size:.72rem;color:var(--gray);margin-top:.5rem;">Find your Railway URL in the Railway dashboard → your project → domain. Set <code style="color:var(--purple-light)">PORTAL_API_KEY</code> in Railway env vars.</p>
+        <p>24/7 autonomous lead discovery. Hit Launch — the bot picks it up instantly via your private Discord commands channel.</p>
       </div>
 
       <!-- Status bar -->
@@ -1509,7 +1492,35 @@
       <div class="two-col">
         <!-- Config -->
         <div class="card">
-          <div class="card-header"><span class="card-title">⚙️ Configuration</span></div>
+          <div class="card-header"><span class="card-title">⚙️ Hunt Configuration</span></div>
+
+          <!-- Audience -->
+          <div class="mform-group">
+            <label>Who are you targeting?</label>
+            <div style="display:flex;gap:.5rem;margin-top:.35rem;">
+              <button id="aud-b2b" onclick="setAudience('b2b')" style="flex:1;padding:.55rem;border-radius:8px;border:1.5px solid var(--purple);background:rgba(139,92,246,.15);color:var(--purple-light);font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">🏢 B2B — Businesses</button>
+              <button id="aud-b2c" onclick="setAudience('b2c')" style="flex:1;padding:.55rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--gray);font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">👤 B2C — Consumers</button>
+            </div>
+          </div>
+
+          <!-- Goal -->
+          <div class="mform-group">
+            <label>What's the goal?</label>
+            <div style="display:flex;gap:.5rem;margin-top:.35rem;">
+              <button id="goal-clients" onclick="setGoal('clients')" style="flex:1;padding:.55rem;border-radius:8px;border:1.5px solid var(--emerald);background:rgba(16,185,129,.12);color:#6ee7b7;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">💰 Get Clients</button>
+              <button id="goal-partners" onclick="setGoal('partners')" style="flex:1;padding:.55rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;color:var(--gray);font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;">🤝 Partnerships</button>
+            </div>
+          </div>
+
+          <!-- Offering -->
+          <div class="mform-group">
+            <label>What are you offering?</label>
+            <textarea id="hunt-offering" rows="2" placeholder="e.g. Lead generation & outreach systems for local service businesses — we fill their pipeline on autopilot." style="resize:vertical;width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;padding:.7rem .85rem;color:var(--text);font-size:.84rem;font-family:inherit;outline:none;"></textarea>
+          </div>
+
+          <div style="border-top:1px solid var(--border);margin:.75rem 0;"></div>
+
+          <!-- Niches & Count -->
           <div class="mform-group">
             <label>Niches (comma-separated)</label>
             <input id="hunt-niches" type="text" placeholder="plumber, dentist, HVAC, gym, med spa" value="">
@@ -2398,20 +2409,63 @@ async function testApiConnection() {
   }
 }
 
+// ── Hunt audience/goal toggles ────────────────────────────────────────────
+let _huntAudience = 'b2b';
+let _huntGoal     = 'clients';
+
+function setAudience(val) {
+  _huntAudience = val;
+  const active   = 'border:1.5px solid var(--purple);background:rgba(139,92,246,.15);color:var(--purple-light);';
+  const inactive = 'border:1.5px solid var(--border);background:transparent;color:var(--gray);';
+  document.getElementById('aud-b2b').style.cssText += val === 'b2b' ? active : inactive;
+  document.getElementById('aud-b2c').style.cssText += val === 'b2c' ? active : inactive;
+}
+function setGoal(val) {
+  _huntGoal = val;
+  const activeC  = 'border:1.5px solid var(--emerald);background:rgba(16,185,129,.12);color:#6ee7b7;';
+  const activeP  = 'border:1.5px solid #f59e0b;background:rgba(245,158,11,.1);color:#fbbf24;';
+  const inactive = 'border:1.5px solid var(--border);background:transparent;color:var(--gray);';
+  document.getElementById('goal-clients').style.cssText  += val === 'clients'  ? activeC  : inactive;
+  document.getElementById('goal-partners').style.cssText += val === 'partners' ? activeP : inactive;
+}
+
 async function launchHuntNow() {
-  const niche = document.getElementById('hunt-niches').value.trim() || 'plumber';
-  const count = parseInt(document.getElementById('hunt-count').value) || 8;
+  const niche      = document.getElementById('hunt-niches').value.trim() || 'plumber';
+  const count      = parseInt(document.getElementById('hunt-count').value) || 8;
   const firstNiche = niche.split(',')[0].trim();
+  const location   = 'Miami FL';
+  const offering   = document.getElementById('hunt-offering').value.trim();
+  const audience   = _huntAudience;
+  const goal       = _huntGoal;
+
+  if (!offering) {
+    showToast('Add what you\'re offering before launching.', 'error');
+    document.getElementById('hunt-offering').focus();
+    return;
+  }
+
+  const btn = document.querySelector('[onclick="launchHuntNow()"]');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Triggering…'; }
+
   try {
-    const data = await _apiCall('/api/hunt', 'POST', { niche: firstNiche, city: 'Miami', count });
-    showToast(data.message, 'success');
+    const res = await fetch('/.netlify/functions/trigger-hunt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ niche: firstNiche, location, count, audience, goal, offering }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed');
+
+    showToast('🚀 ' + data.message, 'success');
     document.getElementById('hunt-status-dot').style.background = 'var(--green)';
     document.getElementById('hunt-status-dot').style.boxShadow = '0 0 8px rgba(16,185,129,.8)';
     document.getElementById('hunt-status-label').textContent = 'Hunt running…';
-    document.getElementById('hunt-status-sub').textContent = `${firstNiche} · ${count} leads · results posting to Discord #🎯│hunt`;
-    setTimeout(loadLiveLeads, 15000); // refresh leads after 15s
+    document.getElementById('hunt-status-sub').textContent =
+      `${firstNiche} · ${location} · ${count} leads · ${audience.toUpperCase()} · ${goal} · results in Discord #hunt`;
   } catch(e) {
     showToast('Hunt failed: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '🚀 Launch Hunt Now'; }
   }
 }
 
