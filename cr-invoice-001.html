@@ -225,14 +225,75 @@ body { font-family: 'Inter', sans-serif; background: #F4F4F2; color: #111; }
 .btn-print:hover { background: #222; transform: translateY(-1px); }
 .btn-pdf.loading { opacity: 0.7; pointer-events: none; }
 
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal {
+  background: white; border-radius: 16px;
+  padding: 40px 36px; width: 100%; max-width: 460px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+}
+.modal h2 {
+  font-size: 20px; font-weight: 900; letter-spacing: -0.5px;
+  margin-bottom: 6px; color: #111;
+}
+.modal p { font-size: 13px; color: #888; margin-bottom: 28px; }
+.modal label {
+  display: block; font-size: 10px; font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase; color: #aaa;
+  margin-bottom: 6px;
+}
+.modal input, .modal textarea {
+  width: 100%; font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 500; color: #111;
+  border: 1.5px solid #E5E5E5; border-radius: 8px;
+  padding: 11px 14px; outline: none; margin-bottom: 18px;
+  transition: border-color 0.2s;
+}
+.modal input:focus, .modal textarea:focus { border-color: #0AB5B5; }
+.modal textarea { height: 72px; resize: none; }
+.modal-btn {
+  width: 100%; padding: 14px;
+  background: #0C0C0C; color: white;
+  border: none; border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 800; letter-spacing: 0.5px;
+  cursor: pointer; transition: background 0.2s;
+}
+.modal-btn:hover { background: #222; }
+
 @media print {
   body { background: white; }
   .page { margin: 0; border-radius: 0; box-shadow: none; }
   .btn-row { display: none; }
+  .modal-overlay { display: none; }
 }
 </style>
 </head>
 <body>
+
+<!-- Client Info Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2>Invoice #INV-001</h2>
+    <p>Enter the client's information to generate the invoice.</p>
+    <label>Client Name</label>
+    <input type="text" id="m-name" placeholder="Full name or company" />
+    <label>Address</label>
+    <textarea id="m-addr" placeholder="Street address, City, State ZIP"></textarea>
+    <label>Phone / Email</label>
+    <input type="text" id="m-contact" placeholder="786-000-0000 or email@email.com" />
+    <label>Project Address (optional)</label>
+    <input type="text" id="m-project" placeholder="Job site address or description" />
+    <button class="modal-btn" onclick="fillInvoice()">Generate Invoice →</button>
+  </div>
+</div>
 
 <div class="page">
 
@@ -260,13 +321,13 @@ body { font-family: 'Inter', sans-serif; background: #F4F4F2; color: #111; }
   <div class="meta-row">
     <div class="meta-block">
       <div class="meta-label">Bill To</div>
-      <input type="text" placeholder="Client Full Name" /><br><br>
-      <textarea placeholder="Address&#10;City, State ZIP"></textarea>
+      <div class="meta-val" id="f-name" style="font-weight:700;font-size:15px;margin-bottom:4px">—</div>
+      <div class="meta-val muted" id="f-addr">—</div>
     </div>
     <div class="meta-block">
       <div class="meta-label">Project</div>
-      <input type="text" placeholder="Project Description or Address" /><br><br>
-      <input type="text" placeholder="Phone / Email" />
+      <div class="meta-val" id="f-project" style="margin-bottom:4px">—</div>
+      <div class="meta-val muted" id="f-contact">—</div>
     </div>
     <div class="meta-block">
       <div class="meta-label">Invoice Details</div>
@@ -388,6 +449,19 @@ body { font-family: 'Inter', sans-serif; background: #F4F4F2; color: #111; }
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  function fillInvoice() {
+    const name    = document.getElementById('m-name').value.trim() || '—';
+    const addr    = document.getElementById('m-addr').value.trim() || '—';
+    const contact = document.getElementById('m-contact').value.trim() || '—';
+    const project = document.getElementById('m-project').value.trim() || 'Closets & Bathroom Renovation';
+    document.getElementById('f-name').textContent    = name;
+    document.getElementById('f-addr').textContent    = addr;
+    document.getElementById('f-contact').textContent = contact;
+    document.getElementById('f-project').textContent = project;
+    document.getElementById('modal').style.display   = 'none';
+  }
+</script>
 <div class="btn-row">
   <button class="action-btn btn-pdf" id="pdfBtn" onclick="downloadPDF()">
     ⬇ Download PDF
