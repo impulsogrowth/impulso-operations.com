@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impulso CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #080808;
+  --mid:    #111111;
+  --card:   #161616;
+  --card2:  #1C1C1C;
+  --teal:   #0AB5B5;
+  --gold:   #C9A84C;
+  --coral:  #FF6B5B;
+  --purple: #7C6EF5;
+  --green:  #22C55E;
+  --border: rgba(255,255,255,0.07);
+  --muted:  rgba(255,255,255,0.38);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:white;min-height:100vh;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+input,select,textarea,button{font-family:'DM Sans',sans-serif;}
+
+/* ─── LOGIN ───────────────────────────────────── */
+#loginScreen{
+  position:fixed;inset:0;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;
+}
+.login-wrap{width:100%;max-width:380px;padding:24px;}
+.login-logo{
+  font-family:'Fraunces',serif;font-size:20px;font-weight:700;
+  text-align:center;margin-bottom:6px;
+}
+.login-logo em{color:var(--teal);font-style:normal;}
+.login-eyebrow{text-align:center;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;}
+.login-box{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:36px 32px;
+}
+.login-box h2{font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:24px;}
+.f-group{margin-bottom:14px;}
+.f-group label{display:block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.f-group input,.f-group select,.f-group textarea{
+  width:100%;background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);border-radius:10px;
+  padding:11px 14px;font-size:14px;color:white;outline:none;
+  transition:border-color 0.2s;
+}
+.f-group input:focus,.f-group select:focus,.f-group textarea:focus{border-color:var(--teal);}
+.f-group input::placeholder,.f-group textarea::placeholder{color:rgba(255,255,255,0.18);}
+.f-group select option{background:var(--mid);}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-teal{
+  width:100%;background:var(--teal);color:var(--ink);
+  border:none;padding:13px;border-radius:10px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  transition:background 0.2s,transform 0.2s;margin-top:4px;
+}
+.btn-teal:hover{background:#08a0a0;transform:translateY(-1px);}
+.login-err{
+  background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.2);
+  border-radius:8px;padding:10px 14px;font-size:13px;color:#ff8080;
+  margin-top:12px;display:none;
+}
+
+/* ─── APP LAYOUT ──────────────────────────────── */
+#app{display:none;}
+.layout{display:flex;min-height:100vh;}
+
+/* ─── SIDEBAR ─────────────────────────────────── */
+.sidebar{
+  width:220px;flex-shrink:0;background:var(--mid);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;bottom:0;overflow-y:auto;
+  z-index:50;
+}
+.sb-logo{
+  font-family:'Fraunces',serif;font-size:15px;font-weight:700;
+  padding:22px 20px 18px;border-bottom:1px solid var(--border);
+}
+.sb-logo em{color:var(--teal);font-style:normal;}
+.sb-badge{
+  margin:10px 20px 4px;background:rgba(201,168,76,0.1);
+  border:1px solid rgba(201,168,76,0.2);border-radius:6px;
+  padding:5px 10px;font-size:9px;font-weight:800;
+  letter-spacing:2px;text-transform:uppercase;color:var(--gold);
+}
+.sb-section{
+  font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(255,255,255,0.18);
+  padding:14px 20px 6px;
+}
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px;font-size:13px;font-weight:500;
+  color:var(--muted);cursor:pointer;
+  transition:all 0.15s;border-left:2px solid transparent;
+}
+.sb-item:hover{color:white;background:rgba(255,255,255,0.03);}
+.sb-item.active{color:var(--teal);border-left-color:var(--teal);background:rgba(10,181,181,0.06);}
+.sb-icon{font-size:14px;flex-shrink:0;}
+.sb-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);}
+.sb-user{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.btn-logout{
+  font-size:11px;color:var(--muted);cursor:pointer;
+  background:none;border:none;padding:0;transition:color 0.2s;
+}
+.btn-logout:hover{color:white;}
+
+/* ─── MAIN ────────────────────────────────────── */
+.main{margin-left:220px;flex:1;min-height:100vh;}
+.topbar{
+  height:56px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;position:sticky;top:0;
+  background:rgba(8,8,8,0.9);backdrop-filter:blur(16px);z-index:40;
+}
+.topbar-title{font-family:'Fraunces',serif;font-size:17px;font-weight:700;letter-spacing:-0.3px;}
+.topbar-actions{display:flex;gap:10px;align-items:center;}
+.btn-sm{
+  padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;
+  cursor:pointer;transition:all 0.2s;border:none;
+}
+.btn-sm.teal{background:var(--teal);color:var(--ink);}
+.btn-sm.teal:hover{background:#08a0a0;}
+.btn-sm.ghost{background:rgba(255,255,255,0.06);color:white;border:1px solid var(--border);}
+.btn-sm.ghost:hover{background:rgba(255,255,255,0.1);}
+
+.content{padding:32px;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ─── STAT GRID ───────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px;}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:18px 16px;
+}
+.stat-card .s-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.stat-card .s-val{font-family:'Fraunces',serif;font-size:28px;font-weight:900;line-height:1;margin-bottom:3px;}
+.stat-card .s-val.teal{color:var(--teal);}
+.stat-card .s-val.gold{color:var(--gold);}
+.stat-card .s-val.green{color:var(--green);}
+.stat-card .s-val.coral{color:var(--coral);}
+.stat-card .s-note{font-size:11px;color:var(--muted);}
+
+/* ─── SECTION HEADER ──────────────────────────── */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sec-hdr h2{font-family:'Fraunces',serif;font-size:17px;font-weight:700;letter-spacing:-0.3px;}
+.sec-hdr span{font-size:12px;color:var(--muted);}
+
+/* ─── PIPELINE ────────────────────────────────── */
+.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:start;}
+.pipeline-col{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.pipeline-col-hdr{
+  padding:12px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.pipeline-col-hdr .col-name{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+.pipeline-col-hdr .col-count{
+  font-size:11px;font-weight:700;padding:2px 7px;
+  border-radius:100px;background:rgba(255,255,255,0.07);
+  color:var(--muted);
+}
+.pipeline-col[data-stage="Lead"] .col-name{color:var(--muted);}
+.pipeline-col[data-stage="Meeting"] .col-name{color:var(--purple);}
+.pipeline-col[data-stage="Proposal"] .col-name{color:var(--gold);}
+.pipeline-col[data-stage="Active"] .col-name{color:var(--teal);}
+.pipeline-col[data-stage="Closed"] .col-name{color:var(--green);}
+.pipeline-cards{padding:10px;display:flex;flex-direction:column;gap:8px;min-height:60px;}
+.pipeline-card{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:10px;padding:12px;cursor:pointer;
+  transition:border-color 0.2s,transform 0.15s;
+}
+.pipeline-card:hover{border-color:rgba(10,181,181,0.3);transform:translateY(-1px);}
+.pc-name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.pc-niche{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.pc-meta{display:flex;align-items:center;justify-content:space-between;}
+.pc-type{font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;}
+.pc-type.content{background:rgba(10,181,181,0.12);color:var(--teal);border:1px solid rgba(10,181,181,0.2);}
+.pc-type.ai{background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+.pc-retainer{font-size:11px;color:var(--muted);}
+.pc-ig{display:flex;align-items:center;gap:4px;margin-top:8px;font-size:11px;color:var(--muted);}
+.pc-ig-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);}
+.pc-ig-dot.connected{background:var(--green);}
+
+/* ─── CLIENT TABLE ────────────────────────────── */
+.crm-table{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.crm-table table{width:100%;border-collapse:collapse;}
+.crm-table th{
+  background:rgba(255,255,255,0.03);padding:11px 16px;
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);
+  text-align:left;border-bottom:1px solid var(--border);
+}
+.crm-table td{padding:13px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.crm-table tr:last-child td{border-bottom:none;}
+.crm-table tr:hover td{background:rgba(255,255,255,0.02);}
+.td-name{font-weight:600;cursor:pointer;color:white;}
+.td-name:hover{color:var(--teal);}
+.stage-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:1px;text-transform:uppercase;}
+.stage-Lead{background:rgba(255,255,255,0.07);color:var(--muted);}
+.stage-Meeting{background:rgba(124,110,245,0.12);color:var(--purple);border:1px solid rgba(124,110,245,0.2);}
+.stage-Proposal{background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid rgba(201,168,76,0.2);}
+.stage-Active{background:rgba(10,181,181,0.12);color:var(--teal);border:1px solid rgba(10,181,181,0.2);}
+.stage-Closed{background:rgba(34,197,94,0.12);color:var(--green);border:1px solid rgba(34,197,94,0.2);}
+.ig-connected{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--green);}
+.ig-none{font-size:11px;color:var(--muted);}
+.td-action-btn{
+  font-size:11px;color:var(--teal);background:none;border:none;
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;
+  padding:5px 10px;border-radius:6px;transition:background 0.2s;
+}
+.td-action-btn:hover{background:rgba(10,181,181,0.1);}
+.tbl-add-row{padding:12px 16px;border-top:1px solid var(--border);}
+.btn-add{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(10,181,181,0.07);border:1px dashed rgba(10,181,181,0.25);
+  border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;
+  color:var(--teal);cursor:pointer;transition:all 0.2s;
+}
+.btn-add:hover{background:rgba(10,181,181,0.14);}
+
+/* ─── CLIENT DETAIL ───────────────────────────── */
+.client-detail-hdr{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:28px;gap:20px;flex-wrap:wrap;
+}
+.cdh-left .cd-name{font-family:'Fraunces',serif;font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:4px;}
+.cdh-left .cd-sub{font-size:13px;color:var(--muted);}
+.cdh-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.detail-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
+.detail-left{display:flex;flex-direction:column;gap:16px;}
+.detail-right{display:flex;flex-direction:column;gap:16px;}
+.dcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;}
+.dcard-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-row .i-label{color:var(--muted);}
+.info-row .i-val{font-weight:600;text-align:right;}
+.ig-box{
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:10px;padding:14px;
+}
+.ig-box-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.ig-handle{font-size:13px;font-weight:600;color:white;}
+.ig-status{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.ig-status.live{color:var(--green);}
+.ig-status.disconnected{color:var(--muted);}
+.ig-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.ig-stat{text-align:center;}
+.ig-stat .ig-val{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--teal);}
+.ig-stat .ig-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+.ig-posts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
+.ig-post{
+  aspect-ratio:1;background:var(--card2);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;border:1px solid var(--border);
+  cursor:pointer;transition:border-color 0.2s;overflow:hidden;
+}
+.ig-post:hover{border-color:rgba(10,181,181,0.3);}
+.ig-post img{width:100%;height:100%;object-fit:cover;}
+.ig-connect-btn{
+  width:100%;background:rgba(10,181,181,0.1);
+  border:1px solid rgba(10,181,181,0.25);
+  color:var(--teal);border-radius:8px;padding:10px;
+  font-size:12px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all 0.2s;
+}
+.ig-connect-btn:hover{background:rgba(10,181,181,0.2);}
+.meta-stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.meta-stat{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:12px;}
+.meta-stat .m-val{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--teal);margin-bottom:2px;}
+.meta-stat .m-val.gold{color:var(--gold);}
+.meta-stat .m-val.coral{color:var(--coral);}
+.meta-stat .m-val.green{color:var(--green);}
+.meta-stat .m-lbl{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+
+/* ─── NOTES / ACTIVITY ────────────────────────── */
+.note-input-row{display:flex;gap:10px;margin-bottom:14px;}
+.note-input{
+  flex:1;background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:10px;padding:10px 14px;font-size:13px;color:white;
+  outline:none;transition:border-color 0.2s;
+}
+.note-input:focus{border-color:var(--teal);}
+.note-input::placeholder{color:rgba(255,255,255,0.2);}
+.btn-note{
+  background:var(--teal);color:var(--ink);border:none;
+  padding:10px 18px;border-radius:10px;font-size:12px;font-weight:700;
+  cursor:pointer;flex-shrink:0;transition:background 0.2s;
+}
+.btn-note:hover{background:#08a0a0;}
+.activity-feed{display:flex;flex-direction:column;gap:6px;}
+.activity-item{
+  display:flex;gap:12px;padding:10px 12px;
+  background:rgba(255,255,255,0.02);border-radius:8px;
+  border:1px solid var(--border);font-size:12px;
+  align-items:flex-start;
+}
+.activity-item .a-dot{
+  width:7px;height:7px;border-radius:50%;
+  flex-shrink:0;margin-top:3px;
+}
+.activity-item .a-dot.teal{background:var(--teal);}
+.activity-item .a-dot.gold{background:var(--gold);}
+.activity-item .a-dot.muted{background:rgba(255,255,255,0.2);}
+.activity-item .a-text{flex:1;color:rgba(255,255,255,0.7);line-height:1.5;}
+.activity-item .a-time{color:var(--muted);flex-shrink:0;font-size:11px;}
+
+/* ─── MODAL ───────────────────────────────────── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px);display:none;
+  align-items:center;justify-content:center;z-index:500;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:36px;width:100%;max-width:520px;
+  max-height:90vh;overflow-y:auto;
+}
+.modal h3{font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin-bottom:24px;letter-spacing:-0.5px;}
+.modal-btns{display:flex;gap:10px;margin-top:24px;}
+.btn-save{
+  flex:1;background:var(--teal);color:var(--ink);border:none;
+  padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;
+  transition:background 0.2s;
+}
+.btn-save:hover{background:#08a0a0;}
+.btn-cancel{
+  background:rgba(255,255,255,0.05);color:var(--muted);
+  border:1px solid var(--border);padding:13px 20px;border-radius:10px;
+  font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;
+}
+.btn-cancel:hover{background:rgba(255,255,255,0.1);}
+
+/* ─── META CONNECT BANNER ─────────────────────── */
+.meta-banner{
+  background:rgba(26,111,232,0.07);border:1px solid rgba(26,111,232,0.2);
+  border-radius:12px;padding:16px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;margin-bottom:20px;flex-wrap:wrap;
+}
+.meta-banner p{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5;}
+.meta-banner p strong{color:white;}
+.btn-meta{
+  background:#1A6FE8;color:white;border:none;
+  padding:9px 18px;border-radius:8px;font-size:12px;font-weight:700;
+  cursor:pointer;flex-shrink:0;transition:background 0.2s;
+  font-family:'DM Sans',sans-serif;
+}
+.btn-meta:hover{background:#1560d0;}
+
+/* ─── INSTAGRAM PAGE ──────────────────────────── */
+.ig-accounts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.ig-account-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden;
+}
+.ig-account-card .iac-hdr{
+  padding:16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+}
+.ig-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--teal),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.ig-account-name{font-size:14px;font-weight:700;margin-bottom:2px;}
+.ig-account-handle{font-size:11px;color:var(--muted);}
+.iac-stats{display:grid;grid-template-columns:repeat(3,1fr);padding:14px;}
+.iac-stat{text-align:center;}
+.iac-stat .iv{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--teal);}
+.iac-stat .il{font-size:10px;color:var(--muted);margin-top:2px;}
+.iac-footer{padding:12px 14px;border-top:1px solid var(--border);}
+.iac-posts{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;}
+.iac-post{
+  aspect-ratio:1;background:var(--card2);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.connect-card{
+  background:var(--card);border:1px dashed rgba(10,181,181,0.25);
+  border-radius:14px;padding:32px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:12px;cursor:pointer;transition:all 0.2s;
+  min-height:200px;
+}
+.connect-card:hover{border-color:rgba(10,181,181,0.5);background:rgba(10,181,181,0.04);}
+.connect-card .cc-icon{font-size:32px;}
+.connect-card p{font-size:13px;color:var(--muted);}
+.connect-card strong{color:var(--teal);font-size:14px;}
+
+/* ─── RESPONSIVE ──────────────────────────────── */
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .main{margin-left:0;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .pipeline{grid-template-columns:1fr;}
+  .detail-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── LOGIN ─────────────────────────────────── -->
+<div id="loginScreen">
+  <div class="login-wrap">
+    <div class="login-logo">Impulso <em>CRM</em></div>
+    <div class="login-eyebrow">Operations · Nes Garcia</div>
+    <div class="login-box">
+      <h2>Sign In</h2>
+      <div class="f-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="nes@impulso-operations.com">
+      </div>
+      <div class="f-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="••••••••">
+      </div>
+      <button class="btn-teal" onclick="doLogin()">Access CRM →</button>
+      <div class="login-err" id="loginErr">Invalid credentials.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── APP ───────────────────────────────────── -->
+<div id="app">
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">Impulso <em>CRM</em></div>
+    <div class="sb-badge">Admin · Nes Garcia</div>
+
+    <div class="sb-section">Overview</div>
+    <div class="sb-item active" onclick="showPage('dashboard',this)">
+      <span class="sb-icon">🏠</span> Dashboard
+    </div>
+    <div class="sb-item" onclick="showPage('pipeline',this)">
+      <span class="sb-icon">📊</span> Pipeline
+    </div>
+    <div class="sb-item" onclick="showPage('clients',this)">
+      <span class="sb-icon">👥</span> All Clients
+    </div>
+
+    <div class="sb-section">By Type</div>
+    <div class="sb-item" onclick="showPage('content',this)">
+      <span class="sb-icon">📱</span> Content Agency
+    </div>
+    <div class="sb-item" onclick="showPage('ai',this)">
+      <span class="sb-icon">🤖</span> AI Implementation
+    </div>
+
+    <div class="sb-section">Connections</div>
+    <div class="sb-item" onclick="showPage('instagram',this)">
+      <span class="sb-icon">📸</span> Instagram
+    </div>
+    <div class="sb-item" onclick="showPage('meta',this)">
+      <span class="sb-icon">🎯</span> Meta Ads
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-user">nes@impulso-operations.com</div>
+      <button class="btn-logout" onclick="logout()">← Sign out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <button class="btn-sm ghost" onclick="openModal('add')">+ Add Client</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ─── DASHBOARD ─── -->
+      <div class="page active" id="page-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="s-label">Active Clients</div>
+            <div class="s-val teal" id="stat-active">2</div>
+            <div class="s-note">Content + AI</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-label">Monthly Revenue</div>
+            <div class="s-val gold" id="stat-mrr">$500</div>
+            <div class="s-note">Retainers only</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-label">Pipeline</div>
+            <div class="s-val" id="stat-pipeline">5</div>
+            <div class="s-note">Leads + prospects</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-label">IG Connected</div>
+            <div class="s-val green" id="stat-ig">0</div>
+            <div class="s-note">Accounts linked</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-label">Meta Campaigns</div>
+            <div class="s-val coral">0</div>
+            <div class="s-note">Live ads</div>
+          </div>
+        </div>
+
+        <div class="meta-banner">
+          <p><strong>Connect Meta Business Suite</strong> — link your clients' ad accounts to pull live CPC, CPL, and ROAS directly into this CRM.</p>
+          <button class="btn-meta" onclick="showPage('meta', document.querySelector('[onclick*=meta]'))">Connect Meta →</button>
+        </div>
+
+        <div class="sec-hdr" style="margin-bottom:14px;">
+          <h2>Recent Activity</h2>
+        </div>
+        <div class="activity-feed" id="dashActivity">
+          <div class="activity-item">
+            <div class="a-dot teal"></div>
+            <div class="a-text">Exotic Kitchens & Baths — Week 1 content filming started</div>
+            <div class="a-time">Today</div>
+          </div>
+          <div class="activity-item">
+            <div class="a-dot gold"></div>
+            <div class="a-text">All Family Med Care — Meeting pushed to next week</div>
+            <div class="a-time">Today</div>
+          </div>
+          <div class="activity-item">
+            <div class="a-dot teal"></div>
+            <div class="a-text">C&R General Carpentry — Week 4 active, ads launching</div>
+            <div class="a-time">May 27</div>
+          </div>
+          <div class="activity-item">
+            <div class="a-dot muted"></div>
+            <div class="a-text">Impulso CRM launched</div>
+            <div class="a-time">May 29</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── PIPELINE ─── -->
+      <div class="page" id="page-pipeline">
+        <div class="pipeline" id="pipelineBoard"></div>
+      </div>
+
+      <!-- ─── ALL CLIENTS ─── -->
+      <div class="page" id="page-clients">
+        <div class="crm-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Type</th>
+                <th>Niche</th>
+                <th>Retainer</th>
+                <th>Stage</th>
+                <th>Instagram</th>
+                <th>Next Action</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="clientTableBody"></tbody>
+          </table>
+          <div class="tbl-add-row">
+            <button class="btn-add" onclick="openModal('add')">+ Add Client</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── CONTENT AGENCY ─── -->
+      <div class="page" id="page-content">
+        <div class="crm-table">
+          <table>
+            <thead>
+              <tr><th>Client</th><th>Niche</th><th>Retainer</th><th>Stage</th><th>Instagram</th><th>Week</th><th></th></tr>
+            </thead>
+            <tbody id="contentTableBody"></tbody>
+          </table>
+          <div class="tbl-add-row">
+            <button class="btn-add" onclick="openModal('add')">+ Add Client</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── AI IMPLEMENTATION ─── -->
+      <div class="page" id="page-ai">
+        <div class="crm-table">
+          <table>
+            <thead>
+              <tr><th>Client</th><th>System Built</th><th>Retainer</th><th>Stage</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody id="aiTableBody"></tbody>
+          </table>
+          <div class="tbl-add-row">
+            <button class="btn-add" onclick="openModal('add')">+ Add Client</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── INSTAGRAM ─── -->
+      <div class="page" id="page-instagram">
+        <div class="meta-banner">
+          <p><strong>Connect client Instagram accounts</strong> via Meta Graph API to pull live follower counts, reach, and post performance into the CRM.</p>
+          <button class="btn-meta" onclick="openModal('igconnect')">+ Connect Account</button>
+        </div>
+        <div class="ig-accounts-grid" id="igGrid"></div>
+      </div>
+
+      <!-- ─── META ADS ─── -->
+      <div class="page" id="page-meta">
+        <div class="meta-banner">
+          <p><strong>Meta Business Suite connection</strong> — enter your Meta App credentials to pull live ad metrics (CPC, CPL, ROAS, spend, reach) for all client campaigns.</p>
+        </div>
+        <div class="dcard" style="max-width:500px;">
+          <div class="dcard-title">Meta API Setup</div>
+          <div class="f-group">
+            <label>Meta App ID</label>
+            <input type="text" id="metaAppId" placeholder="Your Meta App ID">
+          </div>
+          <div class="f-group">
+            <label>System User Access Token</label>
+            <input type="text" id="metaToken" placeholder="Paste access token">
+          </div>
+          <div class="f-group">
+            <label>Ad Account ID</label>
+            <input type="text" id="metaAdAccount" placeholder="act_XXXXXXXXXXXXXXXXX">
+          </div>
+          <button class="btn-teal" onclick="connectMeta()">Connect Meta Account →</button>
+          <p style="font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6;">
+            Get your access token from <strong style="color:white;">developers.facebook.com</strong> → Your App → Tools → Graph API Explorer. Select your ad account and generate a token with <em>ads_read</em> permission.
+          </p>
+        </div>
+
+        <div style="margin-top:28px;">
+          <div class="sec-hdr"><h2>Connected Ad Accounts</h2></div>
+          <div class="crm-table">
+            <table>
+              <thead><tr><th>Client</th><th>Ad Account ID</th><th>Spend (MTD)</th><th>Leads</th><th>CPL</th><th>ROAS</th><th>Status</th></tr></thead>
+              <tbody id="metaTableBody">
+                <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px;">No ad accounts connected yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── CLIENT DETAIL ─── -->
+      <div class="page" id="page-client-detail">
+        <div class="client-detail-hdr">
+          <div class="cdh-left">
+            <div class="cd-name" id="cdName">—</div>
+            <div class="cd-sub" id="cdSub">—</div>
+          </div>
+          <div class="cdh-right">
+            <button class="btn-sm ghost" onclick="showPage('clients', null)">← Back</button>
+            <button class="btn-sm ghost" onclick="openModal('editClient')">Edit</button>
+            <button class="btn-sm teal" onclick="openModal('addNote')">+ Note</button>
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-left">
+            <!-- Info -->
+            <div class="dcard">
+              <div class="dcard-title">Client Info</div>
+              <div id="cdInfo"></div>
+            </div>
+
+            <!-- Meta Ad Metrics -->
+            <div class="dcard">
+              <div class="dcard-title">Meta Ad Metrics</div>
+              <div class="meta-stats-grid" id="cdMetaStats">
+                <div class="meta-stat"><div class="m-val">—</div><div class="m-lbl">Spend MTD</div></div>
+                <div class="meta-stat"><div class="m-val gold">—</div><div class="m-lbl">Reach</div></div>
+                <div class="meta-stat"><div class="m-val coral">—</div><div class="m-lbl">CPL</div></div>
+                <div class="meta-stat"><div class="m-val green">—</div><div class="m-lbl">Leads</div></div>
+              </div>
+              <p style="font-size:11px;color:var(--muted);margin-top:12px;">Connect Meta account to pull live data.</p>
+            </div>
+
+            <!-- Notes -->
+            <div class="dcard">
+              <div class="dcard-title">Activity & Notes</div>
+              <div class="note-input-row">
+                <input class="note-input" id="noteInput" placeholder="Add a note, call log, or update...">
+                <button class="btn-note" onclick="addNote()">Add</button>
+              </div>
+              <div class="activity-feed" id="cdActivity"></div>
+            </div>
+          </div>
+
+          <div class="detail-right">
+            <!-- Instagram -->
+            <div class="dcard">
+              <div class="dcard-title">Instagram</div>
+              <div class="ig-box" id="cdIgBox">
+                <div class="ig-box-hdr">
+                  <span class="ig-handle" id="cdIgHandle">Not connected</span>
+                  <span class="ig-status disconnected" id="cdIgStatus">Disconnected</span>
+                </div>
+                <div class="ig-stats" id="cdIgStats">
+                  <div class="ig-stat"><div class="ig-val">—</div><div class="ig-lbl">Followers</div></div>
+                  <div class="ig-stat"><div class="ig-val">—</div><div class="ig-lbl">Avg Reach</div></div>
+                  <div class="ig-stat"><div class="ig-val">—</div><div class="ig-lbl">Eng Rate</div></div>
+                </div>
+                <div class="ig-posts" id="cdIgPosts">
+                  <div class="ig-post">📷</div>
+                  <div class="ig-post">📷</div>
+                  <div class="ig-post">📷</div>
+                </div>
+                <button class="ig-connect-btn" style="margin-top:12px;" onclick="openModal('igconnect')">
+                  Connect Instagram Account →
+                </button>
+              </div>
+            </div>
+
+            <!-- Stage -->
+            <div class="dcard">
+              <div class="dcard-title">Pipeline Stage</div>
+              <div id="cdStageButtons" style="display:flex;flex-direction:column;gap:6px;"></div>
+            </div>
+
+            <!-- Quick Info -->
+            <div class="dcard">
+              <div class="dcard-title">Quick Actions</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <button class="btn-sm ghost" style="width:100%;text-align:left;padding:10px 14px;" onclick="alert('Opening WhatsApp...')">💬 WhatsApp Client</button>
+                <button class="btn-sm ghost" style="width:100%;text-align:left;padding:10px 14px;" onclick="alert('Opening email...')">📧 Send Email</button>
+                <button class="btn-sm ghost" style="width:100%;text-align:left;padding:10px 14px;" onclick="window.open('https://business.facebook.com','_blank')">🎯 Open Meta Ads</button>
+                <button class="btn-sm ghost" style="width:100%;text-align:left;padding:10px 14px;" onclick="alert('Report sent!')">📊 Send Weekly Report</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+</div><!-- /app -->
+
+<!-- ─── ADD CLIENT MODAL ────────────────────────── -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <h3>Add New Client</h3>
+    <div class="f-row">
+      <div class="f-group"><label>Business Name</label><input type="text" id="n-name" placeholder="Company name"></div>
+      <div class="f-group"><label>Contact Name</label><input type="text" id="n-contact" placeholder="Owner / Manager"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>Niche</label><input type="text" id="n-niche" placeholder="e.g. Renovation"></div>
+      <div class="f-group"><label>Impulso Side</label>
+        <select id="n-type">
+          <option value="content">Content Agency</option>
+          <option value="ai">AI Implementation</option>
+        </select>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>Retainer</label><input type="text" id="n-retainer" placeholder="$250/wk"></div>
+      <div class="f-group"><label>Pipeline Stage</label>
+        <select id="n-stage">
+          <option>Lead</option><option>Meeting</option><option>Proposal</option><option>Active</option><option>Closed</option>
+        </select>
+      </div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>Phone</label><input type="text" id="n-phone" placeholder="786-000-0000"></div>
+      <div class="f-group"><label>Email</label><input type="email" id="n-email" placeholder="email@company.com"></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>Instagram Handle</label><input type="text" id="n-ig" placeholder="@handle"></div>
+      <div class="f-group"><label>Next Action</label><input type="text" id="n-action" placeholder="e.g. Send proposal"></div>
+    </div>
+    <div class="f-group"><label>Notes</label><textarea id="n-notes" rows="2" placeholder="Any details about this client..."></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-save" onclick="saveClient()">Save Client</button>
+      <button class="btn-cancel" onclick="closeModal('add')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── IG CONNECT MODAL ────────────────────────── -->
+<div class="modal-overlay" id="modal-igconnect">
+  <div class="modal">
+    <h3>Connect Instagram Account</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">
+      Connect a client's Instagram Business Account via Meta Graph API to pull live followers, reach, and post performance into their CRM profile.
+    </p>
+    <div class="f-group"><label>Client</label>
+      <select id="ig-client-select"></select>
+    </div>
+    <div class="f-group"><label>Instagram Handle</label><input type="text" id="ig-handle-input" placeholder="@exotickitchensandbath"></div>
+    <div class="f-group"><label>Instagram Business Account ID</label><input type="text" id="ig-account-id" placeholder="From Meta Business Suite"></div>
+    <div class="f-group"><label>Access Token</label><input type="text" id="ig-access-token" placeholder="Long-lived access token from developers.facebook.com"></div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+      Get the access token: <strong style="color:white;">developers.facebook.com</strong> → Your App → Graph API Explorer → select <em>instagram_basic, instagram_manage_insights</em> permissions.
+    </p>
+    <div class="modal-btns">
+      <button class="btn-save" onclick="connectIG()">Connect Account →</button>
+      <button class="btn-cancel" onclick="closeModal('igconnect')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ──────────────────────────────────────
+const STAGES = ['Lead','Meeting','Proposal','Active','Closed'];
+const STAGE_COLORS = {Lead:'var(--muted)',Meeting:'var(--purple)',Proposal:'var(--gold)',Active:'var(--teal)',Closed:'var(--green)'};
+
+let clients = JSON.parse(localStorage.getItem('impulso_clients') || 'null') || [
+  {id:1, name:'C&R General Carpentry', contact:'Carlos', niche:'Renovation', type:'content', retainer:'$250/wk', stage:'Active', phone:'', email:'crgeneralcarpentry@gmail.com', ig:'@crgeneralcarpentry', igId:'', igToken:'', action:'Week 2 report', notes:'Running ads on Meta, avg job $20k', activity:['Client signed — May 5, 2026','Week 1 content live','Week 3 first report delivered']},
+  {id:2, name:'Exotic Kitchens & Baths', contact:'Owner', niche:'Kitchen & Bath', type:'content', retainer:'$250/wk', stage:'Active', phone:'786-277-8610', email:'', ig:'@exotickitchensandbath', igId:'', igToken:'', action:'Week 1 filming', notes:'90-day pilot started May 25', activity:['Pilot started — May 25, 2026','Week 1 filming underway']},
+  {id:3, name:'All Family Med Care', contact:'Manager', niche:'Medical + Dental', type:'content', retainer:'TBD', stage:'Meeting', phone:'', email:'', ig:'', igId:'', igToken:'', action:'Meeting next week', notes:'38 NW 8th St, Homestead FL. Manager husband also in construction.', activity:['First contact — May 28, 2026','Meeting rescheduled to next week']},
+];
+let nextId = 4;
+let currentClientId = null;
+
+function save(){ localStorage.setItem('impulso_clients', JSON.stringify(clients)); }
+
+// ─── LOGIN ─────────────────────────────────────
+function doLogin(){
+  const e = document.getElementById('loginEmail').value.toLowerCase().trim();
+  const p = document.getElementById('loginPass').value;
+  if(e === 'nes@impulso-operations.com' && p === 'admin2026'){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    renderAll();
+  } else {
+    document.getElementById('loginErr').style.display='block';
+  }
+}
+function logout(){ location.reload(); }
+document.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+// ─── NAVIGATION ───────────────────────────────
+function showPage(name, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles={dashboard:'Dashboard',pipeline:'Pipeline',clients:'All Clients',content:'Content Agency',ai:'AI Implementation',instagram:'Instagram Accounts',meta:'Meta Ads','client-detail':'Client Profile'};
+  document.getElementById('pageTitle').textContent = titles[name]||name;
+  if(name==='pipeline') renderPipeline();
+  if(name==='clients') renderTable();
+  if(name==='content') renderContentTable();
+  if(name==='ai') renderAITable();
+  if(name==='instagram') renderIG();
+}
+
+// ─── RENDER ALL ────────────────────────────────
+function renderAll(){
+  updateStats();
+  renderPipeline();
+  renderTable();
+  renderContentTable();
+  renderAITable();
+  renderIG();
+}
+
+function updateStats(){
+  const active = clients.filter(c=>c.stage==='Active').length;
+  let mrr = 0;
+  clients.filter(c=>c.stage==='Active').forEach(c=>{
+    const m = c.retainer.match(/\d+/);
+    if(m){
+      const v = parseInt(m[0]);
+      mrr += c.retainer.includes('wk') ? v*4 : v;
+    }
+  });
+  const pipeline = clients.filter(c=>['Lead','Meeting','Proposal'].includes(c.stage)).length;
+  const igConn = clients.filter(c=>c.igToken).length;
+  document.getElementById('stat-active').textContent = active;
+  document.getElementById('stat-mrr').textContent = '$'+mrr.toLocaleString();
+  document.getElementById('stat-pipeline').textContent = pipeline;
+  document.getElementById('stat-ig').textContent = igConn;
+}
+
+// ─── PIPELINE ─────────────────────────────────
+function renderPipeline(){
+  const board = document.getElementById('pipelineBoard');
+  board.innerHTML = '';
+  STAGES.forEach(stage=>{
+    const col = document.createElement('div');
+    col.className = 'pipeline-col';
+    col.dataset.stage = stage;
+    const stageClients = clients.filter(c=>c.stage===stage);
+    col.innerHTML = `
+      <div class="pipeline-col-hdr">
+        <span class="col-name">${stage}</span>
+        <span class="col-count">${stageClients.length}</span>
+      </div>
+      <div class="pipeline-cards">
+        ${stageClients.map(c=>`
+          <div class="pipeline-card" onclick="openClient(${c.id})">
+            <div class="pc-name">${c.name}</div>
+            <div class="pc-niche">${c.niche}</div>
+            <div class="pc-meta">
+              <span class="pc-type ${c.type}">${c.type==='content'?'Content':'AI'}</span>
+              <span class="pc-retainer">${c.retainer}</span>
+            </div>
+            <div class="pc-ig">
+              <span class="pc-ig-dot ${c.igToken?'connected':''}"></span>
+              ${c.ig || 'No Instagram'}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    board.appendChild(col);
+  });
+}
+
+// ─── TABLES ────────────────────────────────────
+function renderTable(){
+  document.getElementById('clientTableBody').innerHTML = clients.map(c=>`
+    <tr>
+      <td class="td-name" onclick="openClient(${c.id})">${c.name}</td>
+      <td><span class="pc-type ${c.type}" style="font-size:10px;padding:2px 8px;border-radius:100px;">${c.type==='content'?'Content':'AI'}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${c.niche}</td>
+      <td style="font-size:13px;">${c.retainer}</td>
+      <td><span class="stage-badge stage-${c.stage}">${c.stage}</span></td>
+      <td>${c.ig ? `<span class="ig-connected">${c.igToken?'●':''} ${c.ig}</span>` : '<span class="ig-none">—</span>'}</td>
+      <td style="font-size:12px;color:var(--muted);">${c.action}</td>
+      <td><button class="td-action-btn" onclick="openClient(${c.id})">View →</button></td>
+    </tr>
+  `).join('');
+}
+
+function renderContentTable(){
+  const cc = clients.filter(c=>c.type==='content');
+  document.getElementById('contentTableBody').innerHTML = cc.map(c=>`
+    <tr>
+      <td class="td-name" onclick="openClient(${c.id})">${c.name}</td>
+      <td style="font-size:12px;color:var(--muted);">${c.niche}</td>
+      <td>${c.retainer}</td>
+      <td><span class="stage-badge stage-${c.stage}">${c.stage}</span></td>
+      <td>${c.ig?`<span style="color:var(--teal);font-size:12px;">${c.ig}</span>`:'<span class="ig-none">—</span>'}</td>
+      <td style="font-size:12px;color:var(--muted);">—</td>
+      <td><button class="td-action-btn" onclick="openClient(${c.id})">View →</button></td>
+    </tr>
+  `).join('');
+}
+
+function renderAITable(){
+  const ac = clients.filter(c=>c.type==='ai');
+  document.getElementById('aiTableBody').innerHTML = ac.length ? ac.map(c=>`
+    <tr>
+      <td class="td-name" onclick="openClient(${c.id})">${c.name}</td>
+      <td style="font-size:12px;color:var(--muted);">—</td>
+      <td>${c.retainer}</td>
+      <td><span class="stage-badge stage-${c.stage}">${c.stage}</span></td>
+      <td style="font-size:12px;color:var(--muted);">${c.action}</td>
+      <td><button class="td-action-btn" onclick="openClient(${c.id})">View →</button></td>
+    </tr>
+  `).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:28px;">No AI clients yet. Add one above.</td></tr>';
+}
+
+// ─── INSTAGRAM ────────────────────────────────
+function renderIG(){
+  const grid = document.getElementById('igGrid');
+  const connected = clients.filter(c=>c.ig);
+  grid.innerHTML = connected.map(c=>`
+    <div class="ig-account-card">
+      <div class="iac-hdr">
+        <div class="ig-avatar">📸</div>
+        <div>
+          <div class="ig-account-name">${c.name}</div>
+          <div class="ig-account-handle">${c.ig}</div>
+        </div>
+      </div>
+      <div class="iac-stats">
+        <div class="iac-stat"><div class="iv">—</div><div class="il">Followers</div></div>
+        <div class="iac-stat"><div class="iv">—</div><div class="il">Reach</div></div>
+        <div class="iac-stat"><div class="iv">—</div><div class="il">Eng Rate</div></div>
+      </div>
+      <div class="iac-footer">
+        ${c.igToken ? `<span style="font-size:11px;color:var(--green);">● API Connected</span>` : `<button class="ig-connect-btn" onclick="openModal('igconnect')">Connect API →</button>`}
+      </div>
+    </div>
+  `).join('') + `
+    <div class="connect-card" onclick="openModal('igconnect')">
+      <div class="cc-icon">➕</div>
+      <strong>Connect Instagram Account</strong>
+      <p>Link a client's Instagram via Meta Graph API for live metrics</p>
+    </div>
+  `;
+
+  // populate ig client select
+  const sel = document.getElementById('ig-client-select');
+  if(sel) sel.innerHTML = clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+
+// ─── CLIENT DETAIL ────────────────────────────
+function openClient(id){
+  currentClientId = id;
+  const c = clients.find(x=>x.id===id);
+  if(!c) return;
+
+  document.getElementById('cdName').textContent = c.name;
+  document.getElementById('cdSub').textContent = `${c.niche} · ${c.type==='content'?'Content Agency':'AI Implementation'} · ${c.stage}`;
+
+  document.getElementById('cdInfo').innerHTML = `
+    <div class="info-row"><span class="i-label">Contact</span><span class="i-val">${c.contact||'—'}</span></div>
+    <div class="info-row"><span class="i-label">Phone</span><span class="i-val">${c.phone||'—'}</span></div>
+    <div class="info-row"><span class="i-label">Email</span><span class="i-val">${c.email||'—'}</span></div>
+    <div class="info-row"><span class="i-label">Retainer</span><span class="i-val">${c.retainer}</span></div>
+    <div class="info-row"><span class="i-label">Next Action</span><span class="i-val">${c.action||'—'}</span></div>
+    <div class="info-row"><span class="i-label">Notes</span><span class="i-val" style="font-size:12px;font-weight:400;color:var(--muted);max-width:160px;text-align:right;">${c.notes||'—'}</span></div>
+  `;
+
+  document.getElementById('cdIgHandle').textContent = c.ig || 'Not connected';
+  document.getElementById('cdIgStatus').textContent = c.igToken ? 'Live' : 'Disconnected';
+  document.getElementById('cdIgStatus').className = 'ig-status ' + (c.igToken?'live':'disconnected');
+
+  document.getElementById('cdActivity').innerHTML = (c.activity||[]).slice().reverse().map(a=>`
+    <div class="activity-item">
+      <div class="a-dot teal"></div>
+      <div class="a-text">${a}</div>
+    </div>
+  `).join('') || '<div style="font-size:12px;color:var(--muted);">No activity yet.</div>';
+
+  const stageDiv = document.getElementById('cdStageButtons');
+  stageDiv.innerHTML = STAGES.map(s=>`
+    <button onclick="setStage(${id},'${s}')" style="
+      padding:9px 14px;border-radius:8px;border:1px solid var(--border);
+      background:${c.stage===s?'rgba(10,181,181,0.15)':'rgba(255,255,255,0.03)'};
+      color:${c.stage===s?'var(--teal)':'var(--muted)'};
+      font-family:'DM Sans',sans-serif;font-size:12px;font-weight:${c.stage===s?'700':'500'};
+      cursor:pointer;text-align:left;transition:all 0.2s;
+      border-color:${c.stage===s?'rgba(10,181,181,0.3)':'var(--border)'};
+    ">${c.stage===s?'● ':''}${s}</button>
+  `).join('');
+
+  showPage('client-detail', null);
+}
+
+function setStage(id, stage){
+  const c = clients.find(x=>x.id===id);
+  if(!c) return;
+  c.stage = stage;
+  c.activity.push(`Stage changed to ${stage} — ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`);
+  save();
+  renderAll();
+  openClient(id);
+}
+
+function addNote(){
+  const input = document.getElementById('noteInput');
+  const val = input.value.trim();
+  if(!val) return;
+  const c = clients.find(x=>x.id===currentClientId);
+  if(!c) return;
+  c.activity.push(`${val} — ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`);
+  input.value='';
+  save();
+  openClient(currentClientId);
+}
+
+// ─── MODALS ────────────────────────────────────
+function openModal(name){
+  document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));
+  const m = document.getElementById('modal-'+name);
+  if(m) m.classList.add('open');
+  if(name==='igconnect') renderIG();
+}
+function closeModal(name){ document.getElementById('modal-'+name)?.classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+function saveClient(){
+  const name = document.getElementById('n-name').value.trim();
+  if(!name) return;
+  clients.push({
+    id: nextId++,
+    name,
+    contact: document.getElementById('n-contact').value,
+    niche:   document.getElementById('n-niche').value,
+    type:    document.getElementById('n-type').value,
+    retainer:document.getElementById('n-retainer').value||'TBD',
+    stage:   document.getElementById('n-stage').value,
+    phone:   document.getElementById('n-phone').value,
+    email:   document.getElementById('n-email').value,
+    ig:      document.getElementById('n-ig').value,
+    igId:'', igToken:'',
+    action:  document.getElementById('n-action').value,
+    notes:   document.getElementById('n-notes').value,
+    activity:[`Added to CRM — ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`],
+  });
+  save();
+  renderAll();
+  closeModal('add');
+  ['n-name','n-contact','n-niche','n-retainer','n-phone','n-email','n-ig','n-action','n-notes'].forEach(id=>{ const el=document.getElementById(id); if(el)el.value=''; });
+}
+
+function connectIG(){
+  const clientId = document.getElementById('ig-client-select')?.value;
+  const handle   = document.getElementById('ig-handle-input')?.value.trim();
+  const acctId   = document.getElementById('ig-account-id')?.value.trim();
+  const token    = document.getElementById('ig-access-token')?.value.trim();
+  if(!clientId || !token) return;
+  const c = clients.find(x=>x.id==clientId);
+  if(!c) return;
+  c.ig = handle || c.ig;
+  c.igId = acctId;
+  c.igToken = token;
+  c.activity.push(`Instagram connected: ${handle}`);
+  save();
+  renderAll();
+  closeModal('igconnect');
+  if(currentClientId == clientId) openClient(parseInt(clientId));
+}
+
+function connectMeta(){
+  const appId   = document.getElementById('metaAppId')?.value.trim();
+  const token   = document.getElementById('metaToken')?.value.trim();
+  const account = document.getElementById('metaAdAccount')?.value.trim();
+  if(!token) return;
+  localStorage.setItem('impulso_meta_token', token);
+  localStorage.setItem('impulso_meta_account', account);
+  document.getElementById('metaTableBody').innerHTML = `
+    <tr>
+      <td>All Clients</td>
+      <td style="font-size:11px;color:var(--muted);">${account}</td>
+      <td>—</td><td>—</td><td>—</td><td>—</td>
+      <td><span class="ig-connected">● Connected</span></td>
+    </tr>
+  `;
+  alert('Meta account connected! Live data will populate once ad campaigns are active.');
+}
+</script>
+</body>
+</html>

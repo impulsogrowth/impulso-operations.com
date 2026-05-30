@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Impulso Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:   #0A0A08;
+    --teal:  #0AB5B5;
+    --gold:  #C9A84C;
+    --coral: #FF6B5B;
+    --mid:   #141410;
+    --card:  #1A1A16;
+    --muted: rgba(255,255,255,0.4);
+    --border: rgba(255,255,255,0.07);
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--ink); color: white; min-height: 100vh; }
+
+  /* ── SIDEBAR ─── */
+  .layout { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 240px; flex-shrink: 0;
+    background: var(--mid);
+    border-right: 1px solid var(--border);
+    padding: 28px 0;
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+  }
+  .sidebar-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 16px; font-weight: 700;
+    padding: 0 24px 28px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .sidebar-logo em { color: var(--teal); font-style: normal; }
+  .sidebar-nav { flex: 1; }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 24px;
+    font-size: 14px; font-weight: 500;
+    color: var(--muted);
+    cursor: pointer; transition: all 0.2s;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+  }
+  .nav-item:hover { color: white; background: rgba(255,255,255,0.03); }
+  .nav-item.active { color: var(--teal); border-left-color: var(--teal); background: rgba(10,181,181,0.06); }
+  .nav-icon { font-size: 16px; flex-shrink: 0; }
+  .sidebar-bottom {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .client-badge {
+    background: rgba(10,181,181,0.1);
+    border: 1px solid rgba(10,181,181,0.2);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 12px; color: var(--teal);
+    font-weight: 600; margin-bottom: 12px;
+  }
+  .logout-btn {
+    font-size: 12px; color: var(--muted);
+    cursor: pointer; transition: color 0.2s;
+    background: none; border: none; font-family: 'DM Sans', sans-serif;
+    padding: 0;
+  }
+  .logout-btn:hover { color: white; }
+
+  /* ── MAIN ─── */
+  .main { margin-left: 240px; padding: 40px 48px; flex: 1; }
+  .main-header { margin-bottom: 40px; }
+  .main-header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 32px; font-weight: 900;
+    letter-spacing: -1px; margin-bottom: 6px;
+  }
+  .main-header p { font-size: 14px; color: var(--muted); }
+
+  /* ── STAT CARDS ─── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 22px 20px;
+  }
+  .stat-card .s-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .stat-card .s-val {
+    font-family: 'Fraunces', serif;
+    font-size: 32px; font-weight: 900; line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-card .s-val.teal  { color: var(--teal); }
+  .stat-card .s-val.gold  { color: var(--gold); }
+  .stat-card .s-val.coral { color: var(--coral); }
+  .stat-card .s-note { font-size: 11px; color: var(--muted); }
+
+  /* ── SECTION ─── */
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 16px; letter-spacing: -0.3px;
+  }
+
+  /* ── CONTENT CALENDAR ─── */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+  .cal-day-header {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+    text-align: center; padding-bottom: 8px;
+  }
+  .cal-day {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 8px;
+    min-height: 80px; font-size: 11px;
+  }
+  .cal-day.today { border-color: rgba(10,181,181,0.4); }
+  .cal-day .day-num {
+    font-size: 12px; font-weight: 700;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .cal-day.today .day-num { color: var(--teal); }
+  .cal-post {
+    background: rgba(10,181,181,0.12);
+    border-radius: 4px; padding: 3px 5px;
+    font-size: 10px; color: var(--teal);
+    margin-bottom: 3px; line-height: 1.3;
+    cursor: pointer;
+  }
+  .cal-post.gold { background: rgba(201,168,76,0.12); color: var(--gold); }
+
+  /* ── APPROVALS ─── */
+  .approval-list { margin-bottom: 36px; }
+  .approval-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 24px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px; align-items: center;
+  }
+  .approval-item.approved { border-left: 3px solid var(--teal); }
+  .approval-item.pending  { border-left: 3px solid var(--gold); }
+  .approval-type {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .approval-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .approval-preview { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .approval-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .btn-approve {
+    background: rgba(10,181,181,0.15);
+    border: 1px solid rgba(10,181,181,0.3);
+    color: var(--teal);
+    padding: 8px 16px; border-radius: 8px;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-approve:hover { background: rgba(10,181,181,0.25); }
+  .btn-edit {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: white; padding: 8px 16px;
+    border-radius: 8px; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-edit:hover { background: rgba(255,255,255,0.1); }
+  .status-approved {
+    font-size: 11px; font-weight: 700; color: var(--teal);
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  /* ── REPORT ─── */
+  .report-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px 32px;
+    margin-bottom: 36px;
+  }
+  .report-row {
+    display: flex; gap: 0;
+    border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .report-metric {
+    flex: 1; padding: 20px 16px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .report-metric:last-child { border-right: none; }
+  .report-metric .r-val {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; font-weight: 900;
+    color: var(--teal); margin-bottom: 4px;
+  }
+  .report-metric .r-label {
+    font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  /* ── COMING SOON OVERLAY ─── */
+  .coming-soon {
+    background: rgba(10,181,181,0.06);
+    border: 1px dashed rgba(10,181,181,0.2);
+    border-radius: 14px; padding: 32px;
+    text-align: center; color: var(--muted);
+    font-size: 14px;
+  }
+  .coming-soon strong { color: var(--teal); display: block; font-size: 16px; margin-bottom: 6px; }
+
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 24px 20px; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .calendar-grid { grid-template-columns: repeat(4, 1fr); }
+    .report-row { flex-wrap: wrap; }
+    .report-metric { min-width: 50%; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Impulso <em>Operations</em></div>
+    <nav class="sidebar-nav">
+      <a class="nav-item active" href="dashboard.html">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a class="nav-item" href="#approvals">
+        <span class="nav-icon">✅</span> Approvals
+      </a>
+      <a class="nav-item" href="#calendar">
+        <span class="nav-icon">📅</span> Content Calendar
+      </a>
+      <a class="nav-item" href="#reports">
+        <span class="nav-icon">📈</span> Weekly Reports
+      </a>
+      <a class="nav-item" href="#ads">
+        <span class="nav-icon">🎯</span> Ad Metrics
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="client-badge" id="clientBadge">Loading...</div>
+      <button class="logout-btn" onclick="logout()">← Sign out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="main-header">
+      <h1 id="pageTitle">Dashboard</h1>
+      <p id="pageSubtitle">Week of May 25, 2026 · Pilot Day 1</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="s-label">This Week</div>
+        <div class="s-val teal" id="postsCount">0</div>
+        <div class="s-note">Posts published</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Total Reach</div>
+        <div class="s-val gold">—</div>
+        <div class="s-note">Available Week 2</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Leads</div>
+        <div class="s-val coral">—</div>
+        <div class="s-note">Ads start Month 2</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Pilot Day</div>
+        <div class="s-val">1</div>
+        <div class="s-note">of 90</div>
+      </div>
+    </div>
+
+    <!-- PENDING APPROVALS -->
+    <div id="approvals">
+      <div class="section-title">✅ Pending Approvals</div>
+      <div class="approval-list">
+
+        <div class="approval-item pending">
+          <div>
+            <div class="approval-type">Reel Script · Week 1</div>
+            <div class="approval-title">Before & After Kitchen Reveal</div>
+            <div class="approval-preview">"You wouldn't believe what was here before. Watch what Exotic Kitchens & Baths did in just 3 weeks…" — approve or request edits.</div>
+          </div>
+          <div class="approval-actions">
+            <button class="btn-approve" onclick="approve(this)">✓ Approve</button>
+            <button class="btn-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="approval-item pending">
+          <div>
+            <div class="approval-type">Carousel · Week 1</div>
+            <div class="approval-title">5 Signs You Need a Kitchen Remodel</div>
+            <div class="approval-preview">Education carousel — 6 slides. Slide 1: hook. Slides 2–5: signs. Slide 6: CTA with contact info.</div>
+          </div>
+          <div class="approval-actions">
+            <button class="btn-approve" onclick="approve(this)">✓ Approve</button>
+            <button class="btn-edit">Edit</button>
+          </div>
+        </div>
+
+        <div class="approval-item approved">
+          <div>
+            <div class="approval-type">Caption · Week 1</div>
+            <div class="approval-title">Project Showcase — Master Bath</div>
+            <div class="approval-preview">Caption with hashtag set approved. Scheduled for Saturday.</div>
+          </div>
+          <div class="approval-actions">
+            <span class="status-approved">✓ Approved</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTENT CALENDAR -->
+    <div id="calendar">
+      <div class="section-title">📅 Content Calendar — Week of May 25</div>
+      <div class="calendar-grid">
+        <div class="cal-day-header">MON</div>
+        <div class="cal-day-header">TUE</div>
+        <div class="cal-day-header">WED</div>
+        <div class="cal-day-header">THU</div>
+        <div class="cal-day-header">FRI</div>
+        <div class="cal-day-header">SAT</div>
+        <div class="cal-day-header">SUN</div>
+
+        <div class="cal-day today">
+          <div class="day-num">25</div>
+          <div class="cal-post">🎬 Reel: Reveal</div>
+          <div class="cal-post">📸 Story: BTS</div>
+        </div>
+        <div class="cal-day">
+          <div class="day-num">26</div>
+          <div class="cal-post">📱 Carousel: Tips</div>
+          <div class="cal-post">📸 Story: Quote</div>
+        </div>
+        <div class="cal-day">
+          <div class="day-num">27</div>
+          <div class="cal-post gold">🎬 Reel: Process</div>
+          <div class="cal-post">📸 Story: Poll</div>
+        </div>
+        <div class="cal-day">
+          <div class="day-num">28</div>
+          <div class="cal-post">📱 Carousel: 5 Signs</div>
+          <div class="cal-post">📸 Story: BTS</div>
+        </div>
+        <div class="cal-day">
+          <div class="day-num">29</div>
+          <div class="cal-post">🎬 Reel: Timelapse</div>
+          <div class="cal-post">📸 Story: FAQ</div>
+        </div>
+        <div class="cal-day">
+          <div class="day-num">30</div>
+          <div class="cal-post gold">📸 Project Showcase</div>
+          <div class="cal-post">📸 Story: Review</div>
+        </div>
+        <div class="cal-day">
+          <div class="day-num">31</div>
+          <div class="cal-post">📱 Sunday recap</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEKLY REPORT -->
+    <div id="reports">
+      <div class="section-title">📈 Weekly Report</div>
+      <div class="report-box">
+        <div style="margin-bottom: 20px;">
+          <div style="font-size: 13px; color: var(--muted);">Week 1 · May 25–31 · Report available Monday June 1</div>
+        </div>
+        <div class="coming-soon">
+          <strong>Week 1 Report Pending</strong>
+          Content is live — your first performance report will be here Monday, June 1. It'll show reach, engagement, follower growth, and the top-performing post.
+        </div>
+      </div>
+    </div>
+
+    <!-- AD METRICS -->
+    <div id="ads">
+      <div class="section-title">🎯 Ad Metrics</div>
+      <div class="coming-soon">
+        <strong>Ads Launch Month 2 (June 22)</strong>
+        Once campaigns go live, you'll see live CPC, CPL, ROAS, and leads generated right here — updated weekly.
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // Read client from URL
+  const params = new URLSearchParams(window.location.search);
+  const client = params.get('client') || 'client';
+
+  const clientData = {
+    cr:     { name: 'C&R General Carpentry', posts: 6 },
+    exotic: { name: 'Exotic Kitchens & Baths', posts: 4 },
+  };
+
+  const data = clientData[client] || { name: 'Client', posts: 0 };
+  document.getElementById('clientBadge').textContent = data.name;
+  document.getElementById('pageTitle').textContent = 'Welcome, ' + data.name.split(' ')[0];
+  document.getElementById('postsCount').textContent = data.posts;
+
+  function approve(btn) {
+    const item = btn.closest('.approval-item');
+    item.classList.remove('pending');
+    item.classList.add('approved');
+    btn.closest('.approval-actions').innerHTML = '<span class="status-approved">✓ Approved</span>';
+  }
+
+  function logout() { window.location.href = 'index.html'; }
+</script>
+</body>
+</html>
